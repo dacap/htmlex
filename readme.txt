@@ -32,17 +32,17 @@ OPTIONS
 
   htmlex interprets the following options from the command line:
 
-    -c   compiles all subsequent files (use the active output file names
-         or defaults to converting from `file.htex' to `file.html')
-    -o   adds output files (note: must be used before the `-c')
-    -a   adds arguments for the input files (note: must be used before the `-c')
-    -i   adds all subsequent arguments to search include paths
-    -k   kill comments (old htmlex behavior)
+    -c   compiles all subsequent files (gets an output file name
+         from '-o' or generates a default name (with .html extension))
+    -o   adds output files
+    -a   adds input files
+    -I   adds search include paths (you can use old '-i' parameter)
+    -k   kills comments (old htmlex behavior)
     -d   calculates dependencies of the input files (output to STDOUT)
     -v   activates the verbose mode (to see what htmlex does)
-    -V   very verbose mode
+    -V   activates very verbose mode (to debug .htex files)
     -h   displays help screen and exit
-    --   terminates a -c, -o, -a or -i list
+    --   breaks -coaI arguments
 
 EXECUTION
 =========
@@ -63,9 +63,10 @@ EXECUTION
   ./htmlex file arguments...
   Process `file' and leave the results in STDOUT.
 
-  ./htmlex -c files...
+  ./htmlex -c files... -a arguments...
   Process `files' and leave the results in `files.html'.
 
+  ./htmlex -c files... -o destinations...
   ./htmlex -o destinations... -c files...
   Process the `files' and leave the results in the `destinations'.
 
@@ -73,40 +74,35 @@ EXECUTION
   ------------------------
 
   ./htmlex file.htex arg1 arg2 > file.html
-  ./htmlex -a arg1 arg2 -c file.htex
-  ./htmlex -a arg1 arg2 -o file.html -c file.htex
+  ./htmlex -c file.htex -a arg1 arg2
+  ./htmlex -c file.htex -o file.html -a arg1 arg2
   ./htmlex -a arg1 arg2 < file.htex > file.html
   ./htmlex -a arg1 arg2 -o file.html < file.htex
 
   Common mistakes
   ---------------
 
-  ./htmlex -c src.htex -o dest.html
-  Here the result will be outputted to src.html, and not to dest.html.
-  Solution:
-    ./htmlex -o dest.html -c src.htex
-
-  ./htmlex -i examples src.htex > src.html
-  Here the program waits for input from STDIN, because src.htex
-  counts as another path for -i.
-  Solution:
-    ./htmlex -i examples -- src.htex > src.html
-    ./htmlex -i examples -c src.htex
-
-  ./htmlex src.htex -i dir
-  Here src.htex will be looked for only in the active directory,
-  because dir/ is added only after orig.htex is processed.
-  Solution:
-    ./htmlex -i dir -- src.htex
-    ./htmlex dir/src.htex
+  ./htmlex -I examples file.htex > file.html
+  Here the program waits for input from STDIN, because file.htex
+  counts as another path for "-I".
+  Possible solutions:
+    ./htmlex -I examples -- file.htex > file.html
+    ./htmlex -I examples -c file.htex
+    ./htmlex file.htex -I examples > file.html
 
   ./htmlex -c index.htex en English
   Here, htmlex will try to compile the files `index.htex', `en' and
   `English', instead of passing the arguments to `index.htex'.
-  Possible options:
+  Possible solutions:
+    ./htmlex -c index.htex -a en English
     ./htmlex index.htex en English > index.html
-    ./htmlex -a en English -- index.htex > index.html
-    ./htmlex -a en English -c index.htex
+
+  Changes regarding previous versions
+  -----------------------------------
+
+  * Now you can use "-I" instead of "-i" (like gcc).
+  * The argument order isn't necessary anymore, so you can do:
+    ./htmlex -c src.htex -o dst.html -I dir
 
 FEATURES
 ========

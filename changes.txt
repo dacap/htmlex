@@ -1,3 +1,8 @@
+2003-02-23  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (main): Reestructured arguments processing. Now is not
+	necessary use "-o" y "-a" before "-c" (Andrew Vovk idea).
+
 2003-02-21  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex.c (process_file): Fixed some strange behavior of

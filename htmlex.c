@@ -547,22 +547,20 @@ htmlex %s - a powerful hypertext markup language preprocessor
 Copyright (C) 2001, 2002, 2003 by David A. Capello
 \n\
 Usage:\n\
-\n\
   htmlex [ options ] [ files... ]\n\
 \n\
 Options:\n\
-\n\
-  -c   compiles all subsequent files (use the active output file names\n\
-       or defaults to converting from `file.htex' to `file.html')\n\
-  -o   adds output files (note: must be used before the `-c')\n\
-  -a   adds arguments for the input files (note: must be used before the `-c')\n\
-  -i   adds all subsequent arguments to search include paths\n\
-  -k   kill comments (old htmlex behavior)\n\
+  -c   compiles all subsequent files (gets an output file name\n\
+       from '-o' or generates a default name (with .html extension))\n\
+  -o   adds output files\n\
+  -a   adds input files\n\
+  -I   adds search include paths (you can use old '-i' parameter)\n\
+  -k   kills comments (old htmlex behavior)\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
   -v   activates the verbose mode (to see what htmlex does)\n\
-  -V   very verbose mode\n\
+  -V   activates very verbose mode (to debug .htex files)\n\
   -h   displays help screen and exit\n\
-  --   terminates a -c, -o, -a or -i list\n\
+  --   breaks -coaI arguments\n\
 \n\
 Report bugs and patches to <dacap@users.sourceforge.net>\n\
 ", VERSION);
@@ -583,18 +581,78 @@ static void release_processing (void)
 int main (int argc, char *argv[])
 {
 #define MAX_FILES 256
-  char *files[MAX_FILES];
-  int nfiles = 0;
-  int process_stdin = TRUE;
+
+  STREAM *in, *out;
+  char *in_files[MAX_FILES];
+  char *out_files[MAX_FILES];
+  int in_nfiles = 0;
+  int out_nfiles = 0;
   int compile_next = FALSE;
   int output_next = FALSE;
   int argument_next = FALSE;
   int include_next = FALSE;
+  char *stdout_source = NULL;
+  int quit = -1;
+  char buf[512];
   int i, j;
 
   name = argv[0];
 
-  PRINTF (1, "processing arguments...\n");
+  /**********************************************************************
+   * Preprocess arguments
+   **********************************************************************/
+
+  for (i = 1; i < argc; i++) {
+    if (argv[i][0] == '-') {
+      for (j = 1; argv[i][j]; j++) {
+	switch (argv[i][j]) {
+	  case 'c':
+	  case 'o':
+	  case 'a':
+	  case 'i':
+	  case 'I':
+	    break;
+	  case 'k':
+	    kill_comments = TRUE;
+	    break;
+	  case 'd':
+	    calculating_deps = TRUE;
+	    break;
+	  case 'v':
+	  case 'V':
+	    verbose_level = (argv[i][j] == 'v')? 1: 2;
+	    break;
+	  case 'h':
+	    quit = 0;
+	    break;
+	  case '-':
+	    break;
+	  default:
+	    PRINTF (0, "in \"%s\", unknown option '%c'\n", argv[i], argv[i][j]);
+	    quit = 1;
+	    break;
+	}
+      }
+    }
+  }
+
+  if (quit >= 0) {
+    if (!quit)
+      usage ();
+    else
+      PRINTF (0, "try \"htmlex -h\"\n");
+
+    exit (quit);
+  }
+
+  if (verbose_level > 0)
+    PRINTF (verbose_level, "verbose level: %d\n", verbose_level);
+
+  /**********************************************************************
+   * Process arguments
+   **********************************************************************/
+
+  PRINTF (1, "processing arguments ---\n");
 
   for (i = 1; i < argc; i++) {
     if (argv[i][0] == '-') {
@@ -615,37 +673,23 @@ int main (int argc, char *argv[])
 	    argument_next = TRUE;
 	    break;
 	  case 'i':
+	  case 'I':
 	    include_next = TRUE;
 	    break;
-	  case 'k':
-	    kill_comments = TRUE;
-	    break;
-	  case 'd':
-	    calculating_deps = TRUE;
-	    break;
-	  case 'v':
-	    verbose_level = 1;
-	    break;
-	  case 'V':
-	    verbose_level = 2;
-	    break;
-	  case 'h':
-	    usage ();
-	    exit (0);
-	    break;
 	  case '-':
-	    break;
-	  default:
-	    PRINTF (0, "%s: unknow option\n", argv[i]);
-	    exit (1);
 	    break;
 	}
       }
     }
+    /* new input file */
+    else if (compile_next) {
+      in_files[in_nfiles++] = argv[i];
+      PRINTF (1, "new input: \"%s\"\n", argv[i]);
+    }
     /* new output file */
     else if (output_next) {
-      files[nfiles++] = argv[i];
-      PRINTF (1, "new output file: \"%s\"\n", argv[i]);
+      out_files[out_nfiles++] = argv[i];
+      PRINTF (1, "new output: \"%s\"\n", argv[i]);
     }
     /* new arguments for the input files */
     else if (argument_next) {
@@ -655,111 +699,42 @@ int main (int argc, char *argv[])
     /* new path for inclusion of files */
     else if (include_next) {
       paths[npaths++] = argv[i];
-      PRINTF (1, "new path: \"%s\"\n", argv[i]);
+      PRINTF (1, "new include: \"%s\"\n", argv[i]);
     }
     else {
-      STREAM *in, *out;
-      char buf[256];
-
-      PRINTF (1, "processing \"%s\" file\n", argv[i]);
-
-      /* open the input file */
-      in = try_sopen (argv[i], "r");
-      if (!in) {
-	PRINTF (0, "%s: file not found\n", argv[i]);
-	exit (1);
-      }
-
-      /* output to file */
-      if (compile_next) {
-	/* we can get a file name from the output's files */
-	if (nfiles > 0) {
-	  strcpy (buf, files[0]);
-
-	  nfiles--;
-	  for (j = 0; j < nfiles; j++)
-	    files[j] = files[j + 1];
-	}
-	/* auto generate the output file name */
-	else {
-	  replace_extension (buf, success_path, ".html");
-	}
-
-	PRINTF (1, "output to \"%s\" file\n", buf);
-
-	update_state ();
-
-	if (calculating_deps) {
-	  add_deps (buf);
-	  add_deps (argv[i]);
-	  out = NULL;
-	}
-	else {
-	  out = try_sopen (buf, "w");
-	  if (!out) {
-	    PRINTF (0, "%s: can't create file\n", buf);
-	    exit (1);
-	  }
-	}
-
-	/* "j" will be used for PRINTF () */
-	j = i;
-      }
-      /* output to STDOUT */
-      else {
-	PRINTF (1, "output to STDOUT\n");
-
-	update_state ();
-
-	add_deps (argv[i]);
-
-	if (calculating_deps)
-	  out = NULL;
-	else
-	  out = stfile (stdout);
-
-	/* "j" will be used for PRINTF () */
-	j = i;
-
-	/* all next arguments for the file too */
-	for (i++; i < argc; i++)
-	  args[nargs++] = argv[i];
-      }
-
-      /* process the file */
-      prepare_processing ();
-      process_file (in, out);
-      release_processing ();
-
-      /* close the files */
-      stclose (in);
-      stclose (out);
-
-      PRINTF (1, "done with \"%s\" file\n", argv[j]);	/* "j" is used here */
-
-      out_deps ();
-
-      process_stdin = FALSE;
+      stdout_source = argv[i];
+      argument_next = TRUE;
+      PRINTF (1, "main input file: \"%s\"\n", stdout_source);
     }
   }
 
-  /* we must process STDIN because none file was process yet */
-  if ((process_stdin) && (!calculating_deps)) {
-    STREAM *in, *out;
+  PRINTF (1, "arguments processed ---\n");
 
-    PRINTF (1, "processing STDIN\n");
+  /**********************************************************************
+   * Process STDIN
+   **********************************************************************/
 
+  if ((in_nfiles == 0) && (!stdout_source) && (!calculating_deps)) {
+    PRINTF (1, "STDIN: compiling\n");
+
+    /* open stdin */
     in = stfile (stdin);
 
-    if (nfiles > 0) {
-      out = try_sopen (files[0], "w");
+    /* get output file */
+    if (out_nfiles > 0) {
+      PRINTF (1, "STDIN: output to %s\n", out_files[0]);
+
+      out = try_sopen (out_files[0], "w");
       if (!out) {
-	PRINTF (0, "%s: can't create file\n", files[0]);
+	PRINTF (0, "%s: can't create file\n", out_files[0]);
 	exit (1);
       }
     }
-    else
+    else {
+      PRINTF (1, "STDIN: output to STDOUT\n");
+
       out = stfile (stdout);
+    }
 
     prepare_processing ();
     process_file (in, out);
@@ -768,7 +743,105 @@ int main (int argc, char *argv[])
     stclose (in);
     stclose (out);
 
-    PRINTF (1, "done with STDIN\n");
+    PRINTF (1, "STDIN: done\n");
+  }
+
+  /**********************************************************************
+   * Process one file (output to STDOUT if there aren't output files)
+   **********************************************************************/
+
+  else if (stdout_source) {
+    PRINTF (1, "%s: compiling\n", stdout_source);
+
+    /* open the input file */
+    in = try_sopen (stdout_source, "r");
+    if (!in) {
+      PRINTF (0, "%s: file not found\n", stdout_source);
+      exit (1);
+    }
+
+    /* get output file */
+    if (calculating_deps) {
+      out = NULL;
+    }
+    else {
+      if (out_nfiles > 0) {
+	PRINTF (1, "%s: output to %s\n", stdout_source, out_files[0]);
+
+	out = try_sopen (out_files[0], "w");
+	if (!out) {
+	  PRINTF (0, "%s: can't create file\n", out_files[0]);
+	  exit (1);
+	}
+      }
+      else {
+	PRINTF (1, "%s: output to STDOUT\n", stdout_source, stdout_source);
+
+	out = stfile (stdout);
+      }
+    }
+
+    update_state ();
+    add_deps (stdout_source);
+
+    prepare_processing ();
+    process_file (in, out);
+    release_processing ();
+
+    stclose (in);
+    stclose (out);
+
+    out_deps ();
+  }
+
+  /**********************************************************************
+   * Process all input files (never output to STDOUT)
+   **********************************************************************/
+
+  else {
+    for (i=0; i<in_nfiles; i++) {
+      PRINTF (1, "%s: compiling\n", in_files[i]);
+
+      /* open the input file */
+      in = try_sopen (in_files[i], "r");
+      if (!in) {
+	PRINTF (0, "%s: file not found\n", in_files[i]);
+	exit (1);
+      }
+
+      /* get an output file name */
+      if (i < out_nfiles)
+	strcpy (buf, out_files[i]);
+      /* auto generate output file name */
+      else
+	replace_extension (buf, success_path, ".html");
+
+      PRINTF (1, "%s: output to %s\n", in_files[i], buf);
+
+      if (calculating_deps) {
+	out = NULL;
+      }
+      else {
+	out = try_sopen (buf, "w");
+	if (!out) {
+	  PRINTF (0, "%s: can't create file\n", buf);
+	  exit (1);
+	}
+      }
+
+      update_state ();
+      add_deps (buf);
+      add_deps (in_files[i]);
+
+      prepare_processing ();
+      process_file (in, out);
+      release_processing ();
+
+      stclose (in);
+      stclose (out);
+
+      out_deps ();
+    }
   }
 
   PRINTF (1, "all done\n");

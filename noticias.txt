@@ -1,5 +1,7 @@
 [-- htmlex 0.4.1 release --]
 
+* Se cambió la forma en que se procesan los argumentos, le recomiendo
+  ver la sección "EJECUCIÓN" del archivo "leame.txt".
 * Arreglados un par de errores con las dependencias y las macros
   funcionales.
 * Nueva conducta por defecto para los comentarios: Ahora son

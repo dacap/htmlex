@@ -33,20 +33,18 @@ OPCIONES
 
   htmlex interpreta las siguientes opciones en la línea de comandos:
 
-    -c   compila todos los próximos ficheros (usa los nombres de salida
-         activos o los genera como `fichero.htex' a `fichero.html')
-    -o   agrega nombres de ficheros de salida (use esto antes del `-c')
-    -a   agrega argumentos para los ficheros de entrada (use esto antes
-         del `-c')
-    -i   agrega todos los próximos argumentos a las rutas de inclusión
-         (para la búsqueda de ficheros)
+    -c   compila todos los próximos ficheros (obtiene un archivo de salida
+	 desde "-o" o genera uno por defecto (con extension .html))
+    -o   agrega ficheros de salida
+    -a   agrega ficheros de entrada
+    -I   agrega rutas de inclusión para búscar ficheros
     -k   elimina los comentarios (comportamiento antiguo de htmlex)
     -d   calcula las dependencias de los ficheros de entrada (salida
          hacia STDOUT)
     -v   activa el modo verboso (para ver que hace htmlex)
-    -V   modo muy verboso
+    -V   activa el modo muy verboso (para depurar archivos .htex)
     -h   muestra esta ayuda (en inglés) y sale
-    --   frena los argumentos -c, -o y -i
+    --   frena los argumentos -coaI
 
 EJECUCIÓN
 =========
@@ -67,9 +65,10 @@ EJECUCIÓN
   ./htmlex archivo argumentos...
   Procesa el `archivo' y deja el resultado en STDOUT.
 
-  ./htmlex -c archivos...
+  ./htmlex -c archivos... -a argumentos...
   Procesa los `archivos' y deja los resultados en `archivos.html'.
 
+  ./htmlex -c archivos... -o destinos...
   ./htmlex -o destinos... -c archivos...
   Procesa los `archivos' y deja los resultados en los `destinos'.
 
@@ -77,40 +76,36 @@ EJECUCIÓN
   ---------------------------------
 
   ./htmlex fichero.htex arg1 arg2 > fichero.html
-  ./htmlex -a arg1 arg2 -c fichero.htex
-  ./htmlex -a arg1 arg2 -o fichero.html -c fichero.htex
+  ./htmlex -c fichero.htex -a arg1 arg2
+  ./htmlex -c fichero.htex -o fichero.html -a arg1 arg2
   ./htmlex -a arg1 arg2 < fichero.htex > fichero.html
   ./htmlex -a arg1 arg2 -o fichero.html < fichero.htex
 
   Errores comunes
   ---------------
 
-  ./htmlex -c orig.htex -o dest.html
-  Aquí el resultado queda en orig.html, y no en dest.html.
-  Solución:
-    ./htmlex -o dest.html -c orig.htex
-
-  ./htmlex -i ejemplos orig.htex > orig.html
-  Aquí el programa esperará la entrada de STDIN, ya que orig.htex
-  cuenta como otra ruta más para -i.
-  Solución:
-    ./htmlex -i ejemplos -- orig.htex > orig.html
-    ./htmlex -i ejemplos -c orig.htex
-
-  ./htmlex orig.htex -i dir
-  Aquí orig.htex se buscará solamente en el directorio actual,
-  ya que dir/ se agrega una vez que orig.htex ya es procesado.
-  Solución:
-    ./htmlex -i dir -- orig.htex
-    ./htmlex dir/orig.htex
+  ./htmlex -I ejemplos archivo.htex > archivo.html
+  Aquí el programa esperará la entrada de STDIN, ya que archivo.htex
+  cuenta como otra ruta más para "-I".
+  Posibles soluciones:
+    ./htmlex -I ejemplos -- archivo.htex > archivo.html
+    ./htmlex -I ejemplos -c archivo.htex
+    ./htmlex archivo.htex -I ejemplos > archivo.html
 
   ./htmlex -c index.htex es Español
   Aquí se intentará compilar los ficheros `index.htex', `es' y
   `Español', en vez de pasarle los argumentos al fichero `index.htex'.
-  Posibles opciones:
+  Posibles soluciones:
+    ./htmlex -c index.htex -a es Español
     ./htmlex index.htex es Español > index.html
-    ./htmlex -a es Español -- index.htex > index.html
-    ./htmlex -a es Español -c index.htex
+
+  Cambios con respecto a versiones anteriores
+  -------------------------------------------
+
+  * Ahora puede utilizar "-I" en vez de "-i" (como en gcc).
+  * Desde ahora el orden de los argumentos no es necesario, por lo que
+    puede hacer cosas como:
+    ./htmlex -c orig.htex -o dest.html -I dir
 
 CARACTERÍSTICAS
 ===============

@@ -1,3 +1,9 @@
+2003-02-23  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (main): Reestructurada la forma en que se analizan los
+	argumentos. Ahora ya no es más necesario colocar "-o" y "-a" antes
+	de "-c" (idea de Andrew Vovk).
+
 2003-02-21  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex.c (process_file): Arreglada una extraña conducta con las

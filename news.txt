@@ -1,5 +1,7 @@
 [-- htmlex 0.4.1 release --]
 
+* Arguments processing was changed, I recommend you see the
+  "EXECUTION" section in "readme.txt".
 * Fixed a couple of bugs in dependencies generation and functional
   macros.
 * New default behavior for comments: Now are preserved, and a new
