@@ -1,3 +1,8 @@
+2003-02-21  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (process_file): Fixed some strange behavior of
+	functional macros.
+
 2003-02-17  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex.c (main): Fixed dependencies generation.

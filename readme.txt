@@ -37,6 +37,7 @@ OPTIONS
     -o   adds output files (note: must be used before the `-c')
     -a   adds arguments for the input files (note: must be used before the `-c')
     -i   adds all subsequent arguments to search include paths
+    -k   kill comments (old htmlex behavior)
     -d   calculates dependencies of the input files (output to STDOUT)
     -v   activates the verbose mode (to see what htmlex does)
     -V   very verbose mode

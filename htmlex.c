@@ -310,8 +310,7 @@ void process_file (STREAM * in, STREAM * out)
 	/* check for built-ins functions <!...> */
 	if (!used) {
 	  for (i = 0; i < ntags; i++) {
-	    if (strncmp (tag + 1, tags[i].name, strlen (tags[i].name)) ==
-		0) {
+	    if (strncmp (tag + 1, tags[i].name, strlen (tags[i].name)) == 0) {
 	      int x = tag[1 + strlen (tags[i].name)];
 	      if (IS_BLANK (x) || (!x)) {
 		char *tok, *argv[MAX_ARGS];
@@ -353,7 +352,7 @@ void process_file (STREAM * in, STREAM * out)
 	  }
 	}
 	/* check for user functional macros <!...> */
-	if (!used) {
+	if (!used && can_attach) {
 	  char *replacement = function_macro (global_macros, tag);
 	  if (replacement) {
 	    stputs (replacement, out);

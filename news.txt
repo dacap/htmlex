@@ -1,6 +1,7 @@
 [-- htmlex 0.4.1 release --]
 
-* Fixed a couple of bugs in dependencies generation.
+* Fixed a couple of bugs in dependencies generation and functional
+  macros.
 * New default behavior for comments: Now are preserved, and a new
   parameter (-k) was added to "kill" them.
 * Optimized dependencies generation: Now <!include> and <!dep> tags

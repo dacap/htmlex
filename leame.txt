@@ -40,6 +40,7 @@ OPCIONES
          del `-c')
     -i   agrega todos los próximos argumentos a las rutas de inclusión
          (para la búsqueda de ficheros)
+    -k   elimina los comentarios (comportamiento antiguo de htmlex)
     -d   calcula las dependencias de los ficheros de entrada (salida
          hacia STDOUT)
     -v   activa el modo verboso (para ver que hace htmlex)
