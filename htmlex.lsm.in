@@ -1,0 +1,21 @@
+Begin3
+Title:		@PACKAGE@
+Version:	@VERSION@
+Entered-date:	@ISODATE@
+Description:	a powerful html preprocessor
+		@configure_input@
+		Please edit htmlex.lsm.in to fix the Keywords and
+		Primary-site entries, add several more lines of
+		description here if appropriate, and to delete these
+		instructions.
+Keywords:	html preprocessor perl macro include
+Author: 	dacap@users.sourceforge.net (David A. Capello)
+Maintained-by:	dacap@users.sourceforge.net (David A. Capello)
+Primary-site:	http://htmlex.sourceforge.net
+		31k  @PACKAGE@-@VERSION@.tar.gz
+		500  @PACKAGE@.lsm
+Alternate-site: 
+Original-site:  
+Platforms:      
+Copying-policy:	GNU copyleft
+End

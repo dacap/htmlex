@@ -1,0 +1,27 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(htmlex.in)
+AM_INIT_AUTOMAKE(htmlex, 0.1.0)
+
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+ISODATE = `date +%Y-%m-%d`
+AC_SUBST(ISODATE)
+
+dnl Checks for programs.
+AC_PATH_PROG(PERL, perl, /usr/bin/env perl, /opt/perl5/bin:"$PATH")
+AC_SUBST(PERL)
+
+AC_PROG_INSTALL
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+dnl Checks for library functions.
+
+AC_OUTPUT(Makefile htmlex htmlex-site htmlex.1 htmlex.lsm htmlex.spec,
+  [chmod +x htmlex]
+  [chmod +x htmlex-site])

@@ -1,0 +1,1001 @@
+#! /usr/bin/perl -w
+#! @PERL@
+# @configure_input@
+#
+# htmlex - a powerful html preprocessor
+# Copyright (C) 2001 David A. Capello
+#
+# http://htmlex.sourceforge.net
+#
+
+use strict;
+
+
+
+# ==========================================================================
+# htmlex variables
+# ==========================================================================
+
+
+
+# get the real program name
+my $htmlex = __FILE__;
+
+# we are reading from the standard input stream?
+my $htmlex_using_stdin = 0;
+
+# list of available paths to search all files (default=only '.')
+my @htmlex_include = ( '.' );
+
+# the file to be process (default=stdin)
+my $htmlex_filename = '';
+
+# list of arguments for the file
+my @htmlex_fileargs = ();
+
+# last read line of the input file
+my $htmlex_fileline = 0;
+
+# file dependencies
+my %htmlex_filedeps = ();
+
+# output dependencies? (default=no)
+my $htmlex_dependencies = 0;
+
+# process macros value? (default=yes)
+my $htmlex_process_macro = 1;
+
+# preserve HTML comments? (default=no)
+my $htmlex_preserve_comments = 0;
+
+# show the HTTP header? (default=no)
+my $htmlex_http_header = 0;
+
+# show more information of the process (0=none(default), 1=normal, 2=high)?
+my $htmlex_verbose = 0;
+
+# show version? (default=no)
+my $htmlex_version = 0;
+
+# show usage? (defualt=no)
+my $htmlex_help = 0;
+
+# list of macros
+my %htmlex_macro = ();
+
+# usage text
+my $htmlex_usage = <<EOT;
+Usage:
+  $htmlex [ options ] file [ args ]
+  $htmlex [ options ] [ -- [ args ] ] < stdin
+
+Compile the FILE (or STDIN) and output the results to the STDOUT.
+
+      --                all next arguments are for the file
+  -I, --include <dir>   add <dir> to the end of include paths
+  -M, --dependencies    generate make dependencies
+  -p, --no-process      don\'t process the macro content in the defition
+                        like C/C++ style, warning: this option can cause
+                        recursive macros
+  -c, --comments        preserve HTML comments in the result
+  -n, --number          print all lines with line numbers added
+  -t, --http-header     output the HTTP header
+  -v, --verbose         explain what is being done
+  -V, --very-verbose    explain with a lot of information what is being done
+      --help            display this help and exit
+      --version         output version information and exit
+
+Report bugs to <dacap\@users.sourceforge.net>.
+EOT
+
+
+
+# ==========================================================================
+# htmlex functions
+# ==========================================================================
+
+
+
+sub htmlex_exists ($\%);
+sub htmlex_getoptions ();
+sub htmlex_getattr ($);
+sub htmlex_extag (*;$\$);
+sub htmlex_process_text (*$$);
+
+
+
+# auxiliary function for search a key in a hash table
+sub htmlex_exists ($\%)
+{
+  my $key = shift;
+  my $hash = shift;
+  return grep ($_ eq $key, keys %$hash);
+}
+
+
+
+# shows all the help or the way of how obtain it
+sub htmlex_usage ($)
+{
+  my $code = shift;
+
+  if (!$code) {
+    print STDOUT ($htmlex_usage);
+  }
+  else {
+    print STDERR ("Try `$htmlex --help' for more information.\n");
+  }
+
+  exit ($code);
+}
+
+
+
+# gets the options in the arguments
+sub htmlex_getoptions ()
+{
+  my $next_to_args = 0;
+  my $next_to_include = 0;
+  my $arg;
+
+  # process argument by argument
+  foreach $arg (@ARGV) {
+    # this parameter is (and all next) an argument for the input file
+    if ($next_to_args) {
+      $htmlex_fileargs[$#htmlex_fileargs+1] = $arg;
+      next;
+    }
+
+    # this parameter is a path to `@htmlex_include' array
+    if ($next_to_include) {
+      $next_to_include = 0;
+      $htmlex_include[$#htmlex_include+1] = $arg;
+      next;
+    }
+
+    # a long option "--..."
+    if ($arg =~ /^--/) {
+      # next arguments to the htmlex file
+      if ($arg eq '--') {
+        $next_to_args = 1;
+      }
+      # new include path
+      elsif ($arg eq '--include') {
+        $next_to_include = 1;
+      }
+      elsif ($arg =~ '--include=(.*)') {
+        $htmlex_include[$#htmlex_include+1] = $1;
+      }
+      # generate dependencies
+      elsif ($arg eq '--dependencies') {
+        $htmlex_dependencies = 1;
+      }
+      # process the macro value
+      elsif ($arg eq '--no-process') {
+        $htmlex_process_macro = 0;
+      }
+      # preserve
+      elsif ($arg eq '--comments') {
+        $htmlex_preserve_comments = 1;
+      }
+      # output the http header
+      elsif ($arg eq '--http-header') {
+        $htmlex_http_header = 1;
+      }
+      # verbose mode on
+      elsif ($arg eq '--verbose') {
+        $htmlex_verbose = 1 if ($htmlex_verbose < 1);
+      }
+      # very verbose mode on
+      elsif ($arg eq '--very-verbose') {
+        $htmlex_verbose = 2;
+      }
+      # display the program usage
+      elsif ($arg eq '--help') {
+        $htmlex_help = 1;
+      }
+      # display the program version
+      elsif ($arg eq '--version') {
+        $htmlex_version = 1;
+      }
+      # error, this option isn't availabled
+      else {
+        print STDERR ("$htmlex: unrecognized option `$arg'\n");
+        htmlex_usage 1;
+      }
+    }
+    # short options "-..."
+    elsif ($arg =~ /^-/) {
+      my $i;
+
+      # go char-by-char
+      for ($i=1; substr ($arg, $i, 1) ne ''; $i++) {
+        # get a sub-string of 1 character of length in the `$i' index position
+        $_ = substr ($arg, $i, 1);
+
+        # what means this character?
+        SWITCH: {
+          # -I path
+          $next_to_include = 1,
+          last SWITCH if (/I/ and (substr ($arg, $i+1, 1) ne '='));
+
+          # -I=path
+          $htmlex_include[$#htmlex_include+1] = substr ($arg, $i+2),
+          $i += length (substr ($arg, $i+1)),
+          last SWITCH if ((/I/) and (substr ($arg, $i+1, 1) eq '='));
+
+          # -M
+          $htmlex_dependencies = 1,
+          last SWITCH if (/M/);
+
+          # -p
+          $htmlex_process_macro = 0,
+          last SWITCH if (/p/);
+
+          # -c
+          $htmlex_preserve_comments = 1,
+          last SWITCH if (/c/);
+
+          # -t
+          $htmlex_http_header = 1,
+          last SWITCH if (/t/);
+
+          # -v
+          $htmlex_verbose = ($htmlex_verbose < 1)? 1: $htmlex_verbose,
+          last SWITCH if (/v/);
+
+          # -V
+          $htmlex_verbose = 2,
+          last SWITCH if (/V/);
+
+          # unknow option
+          print STDERR ("$htmlex: invalid option -- $_\n");
+          htmlex_usage(1);
+        }
+      }
+    }
+    # the input file name
+    else {
+      # name of the file to open
+      $htmlex_filename = $arg;
+
+      # all next arguments for that file
+      $next_to_args = 1;
+    }
+  }
+}
+
+
+
+# Returns a hash table with all the attributes of the specified
+# tag by the string. This string can be something like this:
+# foo=value bar="blabla" ex='morebla'
+sub htmlex_getattr ($)
+{
+  my $string = shift;
+  my ($e, $i, $v, $c) = (0, -1, 0, ' ');
+  my $value;
+  my %attr = ();
+
+  for (; $c ne ''; $e++) {
+    # a character
+    $c = substr ($string, $e, 1);
+
+    # if it not is a space and the final of the string
+    if (($c ne ' ') and ($c ne '')) {
+      # its the start of a new attribute (if we aren't in one)
+      $i = $e if $i < 0;
+
+      if ($c eq '=') {
+        # get the next character after the `=' sign
+        $c = substr ($string, $e+1, 1);
+
+        # ...="..."
+        if ($c eq '"') {
+          $c = 0;
+          for ($v=$e+2; ($c ne '"') and ($c ne ''); $v++) {
+            $c = substr ($string, $v, 1);
+          }
+        }
+        # ...='...'
+        elsif ($c eq '\'') {
+          $c = 0;
+          for ($v=$e+2; ($c ne '\'') and ($c ne ''); $v++) {
+            $c = substr ($string, $v, 1);
+          }
+        }
+        # ...=...
+        else {
+          for ($v=$e+2; ($c ne ' ') and ($c ne ''); $v++) {
+            $c = substr ($string, $v, 1);
+          }
+          $v--;
+        }
+
+        # example:
+        #
+        # i=0  e+1
+        # |    |
+        # name=value
+        #     |    |
+        #     e=4  v=10
+
+        # the value of the attribute
+        $value = substr ($string, $e+1, $v-($e+1));
+
+        # remove the quotes ("..." or '...')
+        if ($value =~ /^(\"|\')/) {
+          chop ($value);
+          $value = substr ($value, 1);
+        }
+
+        # assign the value to the attribute
+        @attr{lc (substr ($string, $i, $e-$i))} = $value;
+
+        # jump this text for read the next attribute
+        $e = $v - 1;
+        $i = -1;
+      }
+    }
+    # if the character is a space or the end of the string
+    elsif ($i >= 0) {
+      # its the final of the active attribute
+      @attr{lc (substr ($string, $i, $e-$i))} = '';
+      $i = -1;
+    }
+  }
+
+  # return the hash table
+  return %attr;
+}
+
+
+
+# process a htmlex tag (return 0 if the tag is HTML and not html"ex")
+sub htmlex_extag (*;$\$)
+{
+  my $filehandle = shift;
+  my $tag = shift;
+  my $res = shift;
+  my %attr = ();
+
+  # gets and prints all attributes of the macro
+  sub htmlex_extag_attributes (\$\%)
+  {
+    my $tag = shift;
+    my $attr = shift;
+    my ($key, $value);
+
+    $$tag =~ / (.*)/;
+    %$attr = htmlex_getattr ($1);
+
+    if ($htmlex_verbose > 1) {
+      while (($key, $value) = each %$attr) {
+        print STDERR ("$htmlex_filename:$htmlex_fileline: tag attribute: $key=\"$value\"\n");
+      }
+    }
+  }
+
+  # "ARGS" o "ARGn"
+  if ($tag =~ /^arg(s|[0-9]+)( |$)/i) {
+    if ($1 =~ /s/i) {
+      $$res .= $#htmlex_fileargs+1;
+    }
+    elsif ($1-1 >= 0 and $1-1 <= $#htmlex_fileargs) {
+      $$res .= $htmlex_fileargs[$1-1];
+    }
+  }
+  # "MACRO..."
+  elsif ($tag =~ /^macro( |$)/i) {
+    # read attributes
+    htmlex_extag_attributes ($tag, %attr);
+
+    # reset all macros?
+    if (htmlex_exists ('reset', %attr)) {
+      print STDERR ("$htmlex_filename:$htmlex_fileline: reset all macros\n")
+        if ($htmlex_verbose > 0);
+
+      %htmlex_macro = ();
+    }
+    # create or modify a macro?
+    else {
+      # have the `name'?
+      if (htmlex_exists ('name', %attr)) {
+        # have a `value'?
+        if (htmlex_exists ('value', %attr)) {
+          # add the macro
+          if ($htmlex_process_macro) {
+            # process the macro value
+            $htmlex_macro{$attr{'name'}} = htmlex_process_text (*$filehandle, 0, $attr{'value'});
+          }
+          else {
+            # leave the value intact, it will be processed in the future
+            $htmlex_macro{$attr{'name'}} = $attr{'value'};
+          }
+
+          print STDERR ("$htmlex_filename:$htmlex_fileline: new macro: \""
+            . $attr{'name'} . "\" -> \"" . $htmlex_macro{$attr{'name'}} . "\"\n")
+            if ($htmlex_verbose > 0);
+        }
+        # delete the macro
+        else {
+          delete $htmlex_macro{$attr{'name'}};
+
+          print STDERR ("$htmlex_filename:$htmlex_fileline: delete macro: \""
+            . $attr{'name'} . "\"\n")
+            if ($htmlex_verbose > 0);
+        }
+      }
+    }
+  }
+  # "INCLUDE..."
+  elsif ($tag =~ /^include( |$)/i) {
+    # local file (needed for multiple includes)
+    local *INCFILE;
+
+    # read attributes
+    htmlex_extag_attributes ($tag, %attr);
+
+    # flush the `$res' content
+    print STDOUT ($$res) if (!$htmlex_dependencies);
+    $$res = '';
+
+    # process the `src' attribute (it can has some macros and/or tags)
+    my $filename = htmlex_process_text (*$filehandle, 0, $attr{'src'});
+
+    # temporary values
+    my ($path, $usedpath, $opened) = ('', '', 0);
+
+    # try to open the file in all posible locations
+    foreach $path (@htmlex_include) {
+      open (*INCFILE, "$path/$filename") or next;
+      $usedpath = $path;
+      $opened = 1;
+      last;
+    }
+
+    # not founded?
+    if (!$opened) {
+      die "$htmlex: $filename: $!\n";
+    }
+    # all right
+    else {
+      print STDERR ("$htmlex_filename:$htmlex_fileline: including: \"$usedpath/$filename\"\n")
+        if ($htmlex_verbose > 0);
+
+      # add a new dependency
+      $htmlex_filedeps{"$usedpath/$filename"} = 1 if ($htmlex_dependencies);
+
+      # now process all `arg*' attributes and
+      # they will be the new `@htmlex_fileargs'
+      my @htmlex_fileargs_new = ();
+
+      # get the length of the hash table (how many attributes)
+      my $len = scalar keys %attr;
+
+      # for each "arg*" (in order: arg1, then the arg2, and go on...)
+      for (my $c=1; $c<=$len; $c++) {
+        if (htmlex_exists ("arg$c", %attr)) {
+          $htmlex_fileargs_new[$#htmlex_fileargs_new+1] =
+            htmlex_process_text (*$filehandle, 0, $attr{"arg$c"});
+        }
+        else {
+          last;
+        }
+      }
+
+      # backup the name, line count and arguments of the file
+      my $htmlex_filename_backup = $htmlex_filename;
+      my $htmlex_fileline_backup = $htmlex_fileline;
+      my @htmlex_fileargs_backup = @htmlex_fileargs;
+
+      # reset the line counter
+      $htmlex_filename = "$usedpath/$filename";
+
+      # reset the line counter
+      $htmlex_fileline = 0;
+
+      # use the new file arguments
+      @htmlex_fileargs = @htmlex_fileargs_new;
+
+      # line-by-line
+      my ($line, $lineout);
+      while (!eof (*INCFILE)) {
+        # read a line
+        $line = readline (*INCFILE);
+
+        # count a line
+        $htmlex_fileline++;
+
+        # process that line
+        $lineout = htmlex_process_text (*INCFILE, 1, $line);
+        print STDOUT ($lineout) if (!$htmlex_dependencies);
+      }
+
+      # restore the old name, count and arguments
+      $htmlex_filename = $htmlex_filename_backup;
+      $htmlex_fileline = $htmlex_fileline_backup;
+      @htmlex_fileargs = @htmlex_fileargs_backup;
+
+      # close the file
+      close (*INCFILE);
+    }
+  }
+  # "EXEC..."
+  elsif ($tag =~ /^exec( |$)/i) {
+    # local file (needed for multiple executes)
+    local *OUTFILE;
+
+    # read attributes
+    htmlex_extag_attributes ($tag, %attr);
+
+    # flush the `$res' content
+    print STDOUT ($$res) if (!$htmlex_dependencies);
+    $$res = '';
+
+    # process the `src' attribute (it can has some macros and/or tags)
+    # and assign the result to the command to execute
+    my $command = htmlex_process_text (*$filehandle, 0, $attr{'src'});
+
+    # we need to process the STDOUT?
+    my $process = htmlex_exists ('process', %attr);
+
+    # redir STDOUT to this file
+    my $outfile = '_stdout_.tmp';
+
+    # execute the command and output the result to `$outfile'
+    system ("$command > \"$outfile\"");
+
+    # open the output file
+    open (*OUTFILE, $outfile) or die "$htmlex: $outfile: $!\n";
+
+    # backup the line count
+    my $htmlex_fileline_backup = $htmlex_fileline;
+
+    # line-by-line
+    my ($line, $lineout);
+    while (!eof (*OUTFILE)) {
+      # read a line
+      $line = readline (*OUTFILE);
+
+      # process and output that line
+      if ($process) {
+        $lineout = htmlex_process_text (*OUTFILE, 1, $line);
+        print STDOUT ($lineout) if (!$htmlex_dependencies);
+
+        # restore the old counter 
+        $htmlex_fileline = $htmlex_fileline_backup;
+      }
+      # don't process anything, print the text and all done
+      else {
+        print STDOUT ($line) if (!$htmlex_dependencies);
+      }
+    }
+
+    # close the output file
+    close (OUTFILE);
+
+    # remove the file
+    unlink $outfile;
+  }
+  # "!..."
+  elsif ($tag =~ /^\!([a-zA-Z][a-zA-Z0-9\-]*)(.*)/) {
+    # name of the function
+    my $function = lc ($1);
+
+    print STDERR ("$htmlex_filename:$htmlex_fileline: function founded: \"$function\"\n")
+      if ($htmlex_verbose > 1);
+
+    # get the argument for the function
+    my $arg = $2;
+
+    # extract leading and trailing whitespaces
+    while ($arg =~ /^ /) { $arg = substr $arg, 1 }
+    while ($arg =~ / $/) { chop $arg }
+
+    # extract the quotes (if have)
+    $arg = $1 if ($arg =~ /^\"(.*)\"$/);
+
+    # process the argument (because it can has some macros and other tags)
+    $arg = htmlex_process_text (*$filehandle, 0, $arg);
+
+    # <!print>
+    if ($function eq 'print') {
+      # do nothing, only print the such argument
+      $$res .= $arg;
+    }
+    # <!dir>
+    elsif ($function eq 'dir') {
+      # all text before the last slash
+      if ($arg =~ /(.*\/).*$/) {
+        $$res .= $1;
+      }
+      # else, if `arg' is a file name without path,
+      # put just the current directory
+      else {
+        $$res .= './';
+      }
+    }
+    # <!notdir>
+    elsif ($function eq 'notdir') {
+      # all text after the last slash (/)
+      if ($arg =~ /.*\/(.*)$/) {
+        $$res .= $1;
+      }
+      # if don't have a slash, this means that `arg' is
+      # a file name without the path
+      else {
+        $$res .= $arg;
+      }
+    }
+    # <!suffix>
+    elsif ($function eq 'suffix') {
+      # first, like <!notdir...>
+      if ($arg =~ /.*\/(.*)$/) {
+        # all text after the last period (.) in the file name
+        if ($1 =~ /.*(\..*)$/) {
+          $$res .= $1;
+        }
+      }
+      # `arg' is a file name, without a path
+      else {
+        # all text after the last period (.) in the file name
+        if ($arg =~ /.*(\..*)$/) {
+          $$res .= $1;
+        }
+      }
+    }
+    # <!basename>
+    elsif ($function eq 'basename') {
+      # first, like <!notdir...>
+      if ($arg =~ /.*\/(.*)$/) {
+        # the file name (without the path) have a period?
+        if ($1 =~ /\./) {
+          # remove the extension of the complete path
+          if ($arg =~ /(.*)\..*$/) {
+            $$res .= $1;
+          }
+          # don't have extension, put all the path with the file name
+          else {
+            $$res .= $arg;
+          }
+        }
+        # the file name don't have periods, put all
+        else {
+          $$res .= $arg;
+        }
+      }
+      # `arg' is a file name, without a path
+      else {
+        # remove the extension of the file name
+        if ($arg =~ /(.*)\..*$/) {
+          $$res .= $1;
+        }
+        # don't have extension, put the file name
+        else {
+          $$res .= $arg;
+        }
+      }
+    }
+    # <!chop>
+    elsif ($function eq 'chop') {
+      chop $arg;
+      $$res .= $arg;
+    }
+    # <!remove>
+    elsif ($function eq 'remove') {
+      $$res .= substr ($arg, 1);
+    }
+    # <!lc>
+    elsif ($function eq 'lc') {
+      $$res .= lc $arg;
+    }
+    # <!lcfirst>
+    elsif ($function eq 'lcfirst') {
+      $$res .= lcfirst $arg;
+    }
+    # <!uc>
+    elsif ($function eq 'uc') {
+      $$res .= uc $arg;
+    }
+    # <!ucfirst>
+    elsif ($function eq 'ucfirst') {
+      $$res .= ucfirst $arg;
+    }
+    # the function isn't defined (or not is a function (like <!DOCTYPE ...>))
+    else {
+      return 0;
+    }
+  }
+  # this tag is HTML (or a invalid tag)
+  else {
+    return 0;
+  }
+
+  # the tag is htmlex
+  return 1;
+}
+
+
+
+# process a block of text
+sub htmlex_process_text (*$$)
+{
+  my $filehandle = shift;
+  my $icanread = shift;
+  my $line = shift;
+  my $res = '';
+  my ($i, $c);
+
+  # char-by-char
+  for ($i=0; substr ($line, $i, 1) ne ''; $i++) {
+    # get a character from the line
+    $c = substr ($line, $i, 1);
+
+    # is a tag start? ("<...")
+    if ($c eq '<') {
+      my $bracket_count = 1;
+      my $tag_string = '';
+      my $old_i = $i;
+
+      # is it a comment?
+      if (substr ($line, $i, 4) eq '<!--') {
+        $res .= '<' if $htmlex_preserve_comments;
+
+        # jump all text to `-->'
+        for (;;) {
+          # get one character
+          $c = substr ($line, ++$i, 1);
+
+          # print that character?
+          $res .= $c if $htmlex_preserve_comments;
+
+          # end of the comments?
+          if (substr ($line, $i, 3) eq '-->') {
+            # print the `->' string
+            $res .= '->' if $htmlex_preserve_comments;
+
+            # jump two remaining characters `-' (the `>' will be
+            # skipped in the first `for' of this function)
+            $i += 2;
+            last;
+          }
+
+          # read other line
+          if ($c eq '') {
+            # is allowed read from the file?
+            # doesn't end of file?
+            if (($icanread) && (!eof (*$filehandle))) {
+              # attach the new line
+              $line .= readline (*$filehandle);
+
+              # count a line
+              $htmlex_fileline++;
+
+              # back one position
+              $i--;
+            }
+            else {
+              die "$htmlex: not found the end of comment\n";
+            }
+          }
+        }
+        next;
+      }
+
+      # go to the end of the tag ("...>")
+      for (; $bracket_count > 0; ) {
+        # get the character
+        $c = substr ($line, ++$i, 1);
+
+        # brackets control
+        $bracket_count++ if ($c eq '<');
+        $bracket_count-- if ($c eq '>');
+
+        # attach the character
+        $tag_string .= $c;
+
+        # read other line
+        if ($c eq '') {
+          # is allowed read from the file?
+          # doesn't end of file?
+          if (($icanread) && (!eof (*$filehandle))) {
+            # attach the new line
+            $line .= readline (*$filehandle);
+
+            # count a line
+            $htmlex_fileline++;
+
+            # back one position
+            $i--;
+          }
+          else {
+            die "$htmlex: not found the closer bracket > for the tag: \""
+                . substr ($tag_string, 0, 16) . "\"...\n";
+          }
+        }
+      }
+
+      # cut the '>' character in the end of the string (if exists)
+      chop ($tag_string) if (substr ($tag_string, length ($tag_string)-1) eq '>');
+
+      # replace all newlines ('\n') with spaces (' ')
+      $tag_string =~ s/\n/ /gs;
+
+      # tag founded
+      print STDERR ("$htmlex_filename:$htmlex_fileline: tag founded: \"$tag_string\"\n")
+        if ($htmlex_verbose > 1);
+
+      # is a htmlex tag?
+      if (!htmlex_extag(*$filehandle, $tag_string, $res)) {
+        # no, it's a normal HTML tag...
+
+        # print the angular bracket character
+        $res .= '<';
+
+        # and continue in the first character of the HTML tag
+        $i = $old_i;
+      }
+    }
+    # is a normal character
+    else {
+      my ($key, $founded) = ( '', 0 );
+
+      # is the start of a macro?
+      foreach $key (sort { length ($b) <=> length ($a) } (keys %htmlex_macro)) {
+        if (substr ($line, $i, length ($key)) eq $key) {
+          # verbose message
+          print STDERR ("$htmlex_filename:$htmlex_fileline: macro founded: \"$key\"\n")
+            if ($htmlex_verbose > 0);
+
+          # print the value of the macro
+          if ($htmlex_process_macro) {
+            # the macro value is ready processed
+            $res .= $htmlex_macro{$key};
+          }
+          else {
+            # the macro value need be processed
+            $res .= htmlex_process_text (*$filehandle, 0, $htmlex_macro{$key});
+          }
+
+          # macro founded
+          $founded = 1;
+
+          # jump the length of the macro
+          $i += length ($key) - 1;
+
+          # stop the iteration
+          last;
+        }
+      }
+
+      # print the character (if it didn't use for the macro)
+      $res .= $c if (!$founded);
+    }
+  }
+
+  return $res;
+}
+
+
+
+# ==========================================================================
+# htmlex main program body
+# ==========================================================================
+
+
+
+# get the program options
+htmlex_getoptions ();
+
+# process the results of the arguments
+
+# display the usage of the program
+if ($htmlex_help) {
+  htmlex_usage (0);
+}
+# display the program name and the actual version number
+elsif ($htmlex_version) {
+  print STDOUT ('htmlex @VERSION@' . "\n");
+  exit (0);
+}
+
+# show more information
+if ($htmlex_verbose > 1) {
+  my $path;
+
+  # all list of paths
+  foreach $path (@htmlex_include) {
+    print STDERR ("$htmlex: include path: \"$path\"\n");
+  }
+}
+
+# output the HTTP header
+if ($htmlex_http_header) {
+  print STDOUT ("Content-type: text/html\n\n") if (!$htmlex_dependencies);
+}
+
+
+
+# no file, we will read from stdin
+if ($htmlex_filename eq '') {
+  # we can't make the dependencies of the STDIN
+  if ($htmlex_dependencies) {
+    die "$htmlex: can't make dependencies from STDIN\n";
+  }
+
+  $htmlex_filename = 'STDIN';
+
+  print STDERR ("$htmlex: reading $htmlex_filename\n")
+    if ($htmlex_verbose > 1);
+
+  # pointer to stdin
+  *FILE = *STDIN;
+  $htmlex_using_stdin = 1;
+}
+# open the file
+else {
+  my ($path, $usedpath, $opened) = ('', '', 0);
+
+  # try to open the file in all posible locations
+  foreach $path (@htmlex_include) {
+    open (*FILE, "$path/$htmlex_filename") or next;
+    $usedpath = $path;
+    $opened = 1;
+    last;
+  }
+
+  # not founded?
+  if (!$opened) {
+    die "$htmlex: $htmlex_filename: $!\n";
+  }
+  # all right
+  else {
+    print STDERR ("$htmlex: reading file: \"$usedpath/$htmlex_filename\"\n")
+      if ($htmlex_verbose > 1);
+
+    # the file need be closed
+    $htmlex_using_stdin = 0;
+  }
+}
+
+
+
+# line-by-line
+my ($line, $lineout);
+while (!eof (*FILE)) {
+  # read a line
+  $line = readline (*FILE);
+
+  # count a line
+  $htmlex_fileline++;
+
+  # process and output that line
+  $lineout = htmlex_process_text (*FILE, 1, $line);
+  print STDOUT ($lineout) if (!$htmlex_dependencies);
+}
+
+
+
+# generate dependencies
+if ($htmlex_dependencies) {
+  # file name
+  print STDOUT ("$htmlex_filename:");
+
+  # all dependencies
+  foreach my $file (keys %htmlex_filedeps) {
+    print STDOUT (" \\\n\t$file");
+  }
+
+  # end of dependencies
+  print STDOUT ("\n\n");
+}
+
+
+
+# close the file
+close (*FILE) if (!$htmlex_using_stdin);
+
+# no errors
+exit (0);
+

@@ -1,0 +1,28 @@
+.TH HTMLEX 1 "21 Agoust, 2001"
+.SH NAME
+htmlex \- a powerful html preprocessor
+.SH SYNOPSIS
+.B htmlex
+.RI [ options ]
+.br
+.B htmlex
+.RI [ options ]
+.SH DESCRIPTION
+\fBhtmlex\fP washes your windows, mends your fences, mows your lawn...
+.PP
+It also...
+.SH OPTIONS
+\fBhtmlex\fP accepts the following options:
+.TP
+.B  --verbose
+Print more information.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-v, \-\-version
+Show version of program.
+.\" .SH "SEE ALSO"
+.\" .BR foo "(1), " bar (1)
+.SH AUTHOR
+David A. Capello <dacap@users.sourceforge.net>.
