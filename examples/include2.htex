@@ -1,0 +1,19 @@
+<INCLUDE
+	 src=args.htex
+	 arg1="primero"
+	 arg2="segundo"
+	 arg3="tercero"
+	 arg4="cuarto"
+	 arg5="quinto"
+	 arg6="sexto"
+	 arg7="séptimo"
+	 arg8="octavo"
+	 arg9="noveno"
+	 arg10="décimo"
+	 arg11="décimo primero"
+	 arg12="décimo segundo"
+	 arg13="décimo tercero"
+	 arg14="décimo cuarto"
+	 arg15="décimo quinto"
+	 arg16="décimo sexto"
+	>

@@ -1,0 +1,8 @@
+DIR:
+<INCLUDE src="dir.htex">
+NOTDIR:
+<INCLUDE src="notdir.htex">
+SUFFIX:
+<INCLUDE src="suffix.htex">
+BASENAME:
+<INCLUDE src="basename.htex">

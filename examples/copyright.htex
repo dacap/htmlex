@@ -1,0 +1,5 @@
+<MACRO name=$AUTHOR_NAME value="David A. Capello">
+<MACRO name=$AUTHOR_ADDRESS value="dacap@users.sourceforge.net">
+
+Copyright (C) $AUTHOR_NAME<BR>
+$AUTHOR_ADDRESS

@@ -1,0 +1,2 @@
+dir "src/foo.c" = <!dir "src/foo.c">
+dir "hacks"     = <!dir "hacks">

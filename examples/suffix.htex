@@ -1,0 +1,3 @@
+suffix "src/foo.c"   = <!suffix "src/foo.c">
+suffix "src-1.0/bar" = <!suffix "src-1.0/bar">
+suffix "hacks"       = <!suffix "hacks">

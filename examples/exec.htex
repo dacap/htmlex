@@ -1,0 +1,2 @@
+En el año <EXEC src="date +%Y | tr -d '\n'"> se ejecutó este
+programa por el usuario `<EXEC src="echo -n $USER">'

@@ -1,0 +1,2 @@
+notdir "src/foo.c" = <!notdir "src/foo.c">
+notdir "hacks"     = <!notdir "hacks">

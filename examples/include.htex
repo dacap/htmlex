@@ -1,0 +1,8 @@
+<MACRO name="FILENAME" value="iso-8859-1.htex">
+
+Incluyendo fichero "FILENAME":
+
+<INCLUDE src="FILENAME">
+
+Fin del fichero "FILENAME"
+(aquí siguen tomando efecto las macros de "FILENAME").

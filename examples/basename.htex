@@ -1,0 +1,3 @@
+basename "src/foo.c"   = <!basename "src/foo.c">
+basename "src-1.0/bar" = <!basename "src-1.0/bar">
+basename "hacks"       = <!basename "hacks">
