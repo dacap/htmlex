@@ -1,7 +1,10 @@
 <!if <!arg1> == es>
-  Españõl
+  Españõl <!if <!arg2> == ar><!uc <!arg2>><!else>(desconocido)<!fi>
 <!elif <!arg1> == en>
-  English
+  English <!if <!arg2> == uk><!uc <!arg2>><!else>(unknow)<!fi>
+<!elif <!arg1> == --help>
+  Usage:
+    if.htex [ es [ ar ] | en [ uk ] ]
 <!else>
-  Unknow (use `if.htex [es|en]')
+  Try `if.htex --help'...
 <!fi>

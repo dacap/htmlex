@@ -62,6 +62,16 @@ my $htmlex_help = 0;
 # list of macros
 my %htmlex_macro = ();
 
+# states of the `if' comparations
+#  -1 = if-spaces separator (one space is a independent block of other)
+#   0 = not yet enter in the if-block
+#   1 = inside the if-block
+#   2 = outside the if-block (but we already pass for a if-block)
+my @htmlex_if_status = ( -1 ); # define the first if-space
+
+# is allowed print text?
+my $htmlex_can_attach = 1;
+
 # usage text
 my $htmlex_usage = <<EOT;
 Usage:
@@ -96,7 +106,10 @@ EOT
 
 
 sub htmlex_exists ($\%);
+sub htmlex_refresh ();
 sub htmlex_print (\$);
+sub htmlex_attach (\$$$);
+sub htmlex_usage ($);
 sub htmlex_getoptions ();
 sub htmlex_getargs ($);
 sub htmlex_extag (*$$\$);
@@ -114,14 +127,60 @@ sub htmlex_exists ($\%)
 
 
 
+# updates the `htmlex_can_attach' flag
+sub htmlex_refresh ()
+{
+  for (my $c=0; $c<=$#htmlex_if_status; $c++) {
+    last if ($htmlex_if_status[$c] == -1);
+
+    # if some previous if-block give false
+    if ($htmlex_if_status[$c] != 1) {
+      # we can't print text
+      $htmlex_can_attach = 0;
+      return;
+    }
+  }
+
+  # we can print text
+  $htmlex_can_attach = 1;
+}
+
+
+
 # print text in the result file
 sub htmlex_print (\$)
 {
   my $text = shift;
 
-  print STDOUT ($$text) if (!$htmlex_dependencies);
+  # print the text
+  print STDOUT ($$text) if ((!$htmlex_dependencies) && ($htmlex_can_attach));
 
+  # and delete the text
   $$text = '';
+}
+
+
+
+# attachs a string to the text-block
+sub htmlex_attach (\$$$)
+{
+  my $text = shift;
+  my $more = shift;
+  my $icanread = shift;
+
+  # attach the text in the case that we really can attach text,
+  # or we can't read from the file (because the text don't go to
+  # the output, rather to a tag argument or something like this)
+#  $$text .= $more if ($htmlex_can_attach || !$icanread);
+
+  $$text .= $more if ($htmlex_can_attach);
+
+#  $$text .= $more if ($htmlex_can_attach ||
+#                     (!$icanread &&
+#                      (($#htmlex_if_status < 0) || ($htmlex_if_status[0] == 1))
+#                     ));
+
+#  $$text .= $more;
 }
 
 
@@ -404,10 +463,10 @@ sub htmlex_extag (*$$\$)
     # "args" and "argN"
     if ($name =~ /^arg(s|[0-9]+)$/) {
       if ($1 =~ /s/) {
-        $$res .= $#htmlex_fileargs+1;
+        htmlex_attach ($$res, $#htmlex_fileargs+1, $icanread);
       }
       elsif ($1-1 >= 0 and $1-1 <= $#htmlex_fileargs) {
-        $$res .= $htmlex_fileargs[$1-1];
+        htmlex_attach ($$res, $htmlex_fileargs[$1-1], $icanread);
       }
     }
     # "macro..."
@@ -529,7 +588,7 @@ sub htmlex_extag (*$$\$)
           }
           else {
             # attach the line to the result
-            $$res .= $line;
+            htmlex_attach ($$res, $line, $icanread);
           }
         }
 
@@ -549,7 +608,7 @@ sub htmlex_extag (*$$\$)
       # print the list of paths
       if ($#args < 0) {
         foreach $path (@htmlex_include) {
-          $$res .= "$path ";
+          htmlex_attach ($$res, "$path ", $icanread);
         }
       }
       # print where the file can be founded
@@ -560,7 +619,8 @@ sub htmlex_extag (*$$\$)
         # try to open the file in all posible locations
         foreach $path (@htmlex_include) {
           if (-r "$path/$filename") {
-            $$res .= "$path/$filename";
+            htmlex_attach ($$res, "$path/$filename", $icanread);
+
             print STDERR ("$htmlex_filename:$htmlex_fileline: file founded: \"$path/$filename\"\n")
               if ($htmlex_verbose > 0);
             return 1;
@@ -635,7 +695,7 @@ sub htmlex_extag (*$$\$)
         }
         else {
           # attach the line to the result
-          $$res .= $line;
+          htmlex_attach ($$res, $line, $icanread);
         }
       }
   
@@ -652,12 +712,12 @@ sub htmlex_extag (*$$\$)
 
       # all text before the last slash
       if ($args[0] =~ /(.*\/).*$/) {
-        $$res .= $1;
+        htmlex_attach ($$res, $1, $icanread);
       }
       # else, if `args[0]' is a file name without path,
       # put just the current directory
       else {
-        $$res .= './';
+        htmlex_attach ($$res, './', $icanread);
       }
     }
     # "notdir..."
@@ -667,12 +727,12 @@ sub htmlex_extag (*$$\$)
 
       # all text after the last slash (/)
       if ($args[0] =~ /.*\/(.*)$/) {
-        $$res .= $1;
+        htmlex_attach ($$res, $1, $icanread);
       }
       # if don't have a slash, this means that `args[0]' is
       # a file name without the path
       else {
-        $$res .= $args[0];
+        htmlex_attach ($$res, $args[0], $icanread);
       }
     }
     # "suffix..."
@@ -684,14 +744,14 @@ sub htmlex_extag (*$$\$)
       if ($args[0] =~ /.*\/(.*)$/) {
         # all text after the last period (.) in the file name
         if ($1 =~ /.*(\..*)$/) {
-          $$res .= $1;
+          htmlex_attach ($$res, $1, $icanread);
         }
       }
       # `args[0]' is a file name, without a path
       else {
         # all text after the last period (.) in the file name
         if ($args[0] =~ /.*(\..*)$/) {
-          $$res .= $1;
+          htmlex_attach ($$res, $1, $icanread);
         }
       }
     }
@@ -706,27 +766,27 @@ sub htmlex_extag (*$$\$)
         if ($1 =~ /\./) {
           # remove the extension of the complete path
           if ($args[0] =~ /(.*)\..*$/) {
-            $$res .= $1;
+            htmlex_attach ($$res, $1, $icanread);
           }
           # don't have extension, put all the path with the file name
           else {
-            $$res .= $args[0];
+            htmlex_attach ($$res, $args[0], $icanread);
           }
         }
         # the file name don't have periods, put all
         else {
-          $$res .= $args[0];
+          htmlex_attach ($$res, $args[0], $icanread);
         }
       }
       # `args[0]' is a file name, without a path
       else {
         # remove the extension of the file name
         if ($args[0] =~ /(.*)\..*$/) {
-          $$res .= $1;
+          htmlex_attach ($$res, $1, $icanread);
         }
         # don't have extension, put the file name
         else {
-          $$res .= $args[0];
+          htmlex_attach ($$res, $args[0], $icanread);
         }
       }
     }
@@ -737,7 +797,7 @@ sub htmlex_extag (*$$\$)
 
       # remove the last character
       chop $args[0];
-      $$res .= $args[0];
+      htmlex_attach ($$res, $args[0], $icanread);
     }
     # "shift..."
     elsif ($name eq 'shift') {
@@ -745,7 +805,7 @@ sub htmlex_extag (*$$\$)
       $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
 
       # remove the first character
-      $$res .= substr ($args[0], 1);
+      htmlex_attach ($$res, substr ($args[0], 1), $icanread);
     }
     # "lc..."
     elsif ($name eq 'lc') {
@@ -753,7 +813,7 @@ sub htmlex_extag (*$$\$)
       $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
 
       # all to lower case
-      $$res .= lc $args[0];
+      htmlex_attach ($$res, lc $args[0], $icanread);
     }
     # "lcfirst..."
     elsif ($name eq 'lcfirst') {
@@ -761,7 +821,7 @@ sub htmlex_extag (*$$\$)
       $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
 
       # the first character to lower case
-      $$res .= lcfirst $args[0];
+      htmlex_attach ($$res, lcfirst $args[0], $icanread);
     }
     # "uc..."
     elsif ($name eq 'uc') {
@@ -769,7 +829,7 @@ sub htmlex_extag (*$$\$)
       $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
 
       # the first character to upper case
-      $$res .= uc $args[0];
+      htmlex_attach ($$res, uc $args[0], $icanread);
     }
     # "ucfirst..."
     elsif ($name eq 'ucfirst') {
@@ -777,7 +837,7 @@ sub htmlex_extag (*$$\$)
       $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
 
       # the first character to upper case
-      $$res .= ucfirst $args[0];
+      htmlex_attach ($$res, ucfirst $args[0], $icanread);
     }
     # "if..." and "elif..."
     elsif (($name eq 'if') or ($name eq 'elif')) {
@@ -786,14 +846,68 @@ sub htmlex_extag (*$$\$)
         $args[$c] = htmlex_process_text (*$filehandle, 0, $args[$c]);
       }
 
-      # true expression
+      # evaluate the expression
       if (htmlex_eval (@args)) {
-        $if_status[0] = 1;
+        # for a true expression...
+
+        # is this tag a `if'?...
+        if ($name eq 'if') {
+          # `if' = new level of state (1: we are now inside the if-block)
+          unshift (@htmlex_if_status, 1);
+        }
+        # this tag is a `elif'...
+        # if we not yet pass for any if-block
+        elsif ($htmlex_if_status[0] != 2) {
+          # enter in this level
+          $htmlex_if_status[0] = 1;
+        }
       }
-      # false expression
+      # the evaluation give false
       else {
-        $if_status[0] = 0;
+        # for a false expression...
+
+        # is this tag a `if'?...
+        if ($name eq 'if') {
+          # `if' = new level of state (0: but don't enter in this if-block)
+          unshift (@htmlex_if_status, 0);
+        }
+        # this tag is a `elif'...
+        # if we are inside of the previous if-block, now we need to jump
+        # all to the next `fi' (end of the if-block)
+        elsif ($htmlex_if_status[0] == 1) {
+          $htmlex_if_status[0] = 2;
+        }
       }
+
+      # update $htmlex_can_attach flag
+      htmlex_refresh ();
+    }
+    # "else"
+    elsif ($name eq 'else') {
+      # if we not yet pass for any if-block
+      if ($htmlex_if_status[0] != 2) {
+        # if all previous `if' and `elif' give false
+        if ($htmlex_if_status[0] == 0) {
+          # now, is time to pass for the `else'
+          $htmlex_if_status[0] = 1;
+        }
+        # if the previous `if' or `elif' give true
+        else {
+          # we need to jump the `else' block
+          $htmlex_if_status[0] = 0;
+        }
+      }
+
+      # update $htmlex_can_attach flag
+      htmlex_refresh ();
+    }
+    # "fi"
+    elsif ($name eq 'fi') {
+      # back to the old if-level
+      shift (@htmlex_if_status);
+
+      # update $htmlex_can_attach flag
+      htmlex_refresh ();
     }
     # this tag isn't defined (or not is a htmlex tag (like <!DOCTYPE ...>))
     else {
@@ -820,6 +934,14 @@ sub htmlex_process_text (*$$)
   my $res = '';
   my ($i, $c);
 
+  # if we can't read from the file, this signify that we are
+  # reading from an argument of any tag
+  if (!$icanread) {
+    # thereby, we need to create a new if-space
+    unshift (@htmlex_if_status, -1);
+    htmlex_refresh ();
+  }
+
   # char-by-char
   for ($i=0; substr ($line, $i, 1) ne ''; $i++) {
     # get a character from the line
@@ -833,7 +955,7 @@ sub htmlex_process_text (*$$)
 
       # is it a comment?
       if (substr ($line, $i, 4) eq '<!--') {
-        $res .= '<' if $htmlex_preserve_comments;
+        htmlex_attach ($res, '<', $icanread) if $htmlex_preserve_comments;
 
         # jump all text to `-->'
         for (;;) {
@@ -841,12 +963,12 @@ sub htmlex_process_text (*$$)
           $c = substr ($line, ++$i, 1);
 
           # print that character?
-          $res .= $c if $htmlex_preserve_comments;
+          htmlex_attach ($res, $c, $icanread) if $htmlex_preserve_comments;
 
           # end of the comments?
           if (substr ($line, $i, 3) eq '-->') {
             # print the `->' string
-            $res .= '->' if $htmlex_preserve_comments;
+            htmlex_attach ($res, '->', $icanread) if $htmlex_preserve_comments;
 
             # jump two remaining characters `-' (the `>' will be
             # skipped in the first `for' of this function)
@@ -924,7 +1046,7 @@ sub htmlex_process_text (*$$)
         # no, it's a normal HTML tag...
 
         # print the angular bracket character
-        $res .= '<';
+        htmlex_attach ($res, '<', $icanread);
 
         # and continue in the first character of the HTML tag
         $i = $old_i;
@@ -944,11 +1066,12 @@ sub htmlex_process_text (*$$)
           # print the value of the macro
           if ($htmlex_process_macro) {
             # the macro value is ready processed
-            $res .= $htmlex_macro{$key};
+            htmlex_attach ($res, $htmlex_macro{$key}, $icanread);
           }
           else {
             # the macro value need be processed
-            $res .= htmlex_process_text (*$filehandle, 0, $htmlex_macro{$key});
+            htmlex_attach ($res, htmlex_process_text
+              (*$filehandle, 0, $htmlex_macro{$key}), $icanread);
           }
 
           # macro founded
@@ -963,10 +1086,17 @@ sub htmlex_process_text (*$$)
       }
 
       # print the character (if it didn't use for the macro)
-      $res .= $c if (!$founded);
+      htmlex_attach ($res, $c, $icanread) if (!$founded);
     }
   }
 
+  # remove the personal if-space
+  if (!$icanread) {
+    shift (@htmlex_if_status);
+    htmlex_refresh ();
+  }
+
+  # return the result
   return $res;
 }
 
