@@ -23,7 +23,7 @@ struct STREAM;
 struct MACRO_LIST;
 
 /* version of the program */
-#define VERSION "0.4"
+#define VERSION "0.4.2"
 
 /* classic macros */
 #ifndef NULL
@@ -34,12 +34,18 @@ struct MACRO_LIST;
 
 /* determine is the characer is a blank space */
 #define IS_BLANK(chr) (((chr) ==  ' ') ||  \
-                       ((chr) == '\t') || \
-                       ((chr) == '\n') || \
-                       ((chr) == '\r'))
+		       ((chr) == '\t') || \
+		       ((chr) == '\n') || \
+		       ((chr) == '\r'))
+
+#define MAX_FILES 256
+#define MAX_ARGS 256
+#define MAX_PATHS 256
+
+/* name of the executable */
+extern char *htmlex_name;
 
 /* arguments for the input file */
-#define MAX_ARGS 256
 extern char *args[MAX_ARGS];
 extern int nargs;
 

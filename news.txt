@@ -1,13 +1,14 @@
-[-- htmlex 0.4.1 release --]
+[-- htmlex 0.4.2 release --]
 
+* Added -E option to change the default .html extension used by -c.
 * Arguments processing was changed, I recommend you see the
   "EXECUTION" section in "readme.txt".
 * Fixed a couple of bugs in dependencies generation and functional
   macros.
 * New default behavior for comments: Now are preserved, and a new
   parameter (-k) was added to "kill" them.
-* Optimized dependencies generation: Now <!include> and <!dep> tags
-  inside false <!if...> expressions, aren't processed.
+* Optimized dependencies generation: Because from now tags inside
+  false <!if...> expressions, aren't processed.
 
 [-- htmlex 0.4 release --]
 

@@ -1,5 +1,7 @@
-[-- htmlex 0.4.1 release --]
+[-- htmlex 0.4.2 release --]
 
+* Nueva opción -E para cambiar la extensión por defecto .html
+  utilizada por -c.
 * Se cambió la forma en que se procesan los argumentos, le recomiendo
   ver la sección "EJECUCIÓN" del archivo "leame.txt".
 * Arreglados un par de errores con las dependencias y las macros
@@ -7,9 +9,8 @@
 * Nueva conducta por defecto para los comentarios: Ahora son
   preservados, y un nuevo parámetro (-k) fue agregado para
   eliminarlos.
-* Optimizada la generación de dependencias: Ahora las etiquetas
-  <!include> y <!dep> dentro de una expresión <!if...> falsa, no son
-  procesadas.
+* Optimizada la generación de dependencias: Ya que desde ahora las
+  etiquetas dentro de una expresión <!if...> falsa, no son procesadas.
 
 [-- htmlex 0.4 release --]
 

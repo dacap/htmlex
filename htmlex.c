@@ -25,48 +25,51 @@
 #include "stream.h"
 #include "tags.h"
 
+/* name of the executable */
+char *htmlex_name;
+
 /* arguments for the input file */
 char *args[MAX_ARGS];
-int nargs = 0;
-
-/* verbose mode stuff */
-int verbose_level = 0;
+int nargs;
 
 /* the current streams */
-STREAM *_i_stream = NULL;
-STREAM *_o_stream = NULL;
+STREAM *_i_stream;
+STREAM *_o_stream;
 
 /* current line */
-char *current_line = NULL;
-char *current_col = NULL;
+char *current_line;
+char *current_col;
 
 /* last path utiliced by the `try_fopen' function */
 char success_path[256];
 
 /* parser states */
 char token[MAX_TOKENS];
-int ntoken = 0;
+int ntoken;
 
 /* does user want comments? */
-int kill_comments = FALSE;
+int kill_comments;
+
+/* verbose mode stuff */
+static int verbose_level;
 
 /* we can can attach text in the output */
 static int can_attach;
 static int can_dep;
 
-/* name of the executable */
-static char *name = NULL;
-
 /* is the program calculating dependencies? */
-static int calculating_deps = FALSE;
-static STREAM *depstream = NULL;
+static int calculating_deps;
+static STREAM *depstream;
 
-/* paths where we can find/create files */
-#define MAX_PATHS 256
-static char *paths[MAX_PATHS];
-static int npaths = 0;
+/* default HTML extension */
+static const char *html_extension;
 
 /* tries open a file in all posible locations */
+/* paths where we can find/create files */
+static char *paths[MAX_PATHS];
+static int npaths;
+
+/* tries open a file in all possible locations */
 STREAM *try_sopen (const char *filename, const char *mode)
 {
   STREAM *stream;
@@ -535,7 +538,7 @@ void PRINTF (int level, const char *format, ...)
     va_start (ap, format);
     vsprintf (buf, format, ap);
     va_end (ap);
-    fprintf (stderr, "%s: %s", name, buf);
+    fprintf (stderr, "%s: %s", htmlex_name, buf);
   }
 }
 
@@ -547,14 +550,15 @@ htmlex %s - a powerful hypertext markup language preprocessor
 Copyright (C) 2001, 2002, 2003 by David A. Capello
 \n\
 Usage:\n\
-  htmlex [ options ] [ files... ]\n\
+  htmlex [ OPTIONS ] [ FILES... ]\n\
 \n\
 Options:\n\
   -c   compiles all subsequent files (gets an output file name\n\
-       from '-o' or generates a default name (with .html extension))\n\
+       from '-o' or generates a name with .html extension, see -E)\n\
   -o   adds output files\n\
   -a   adds input files\n\
   -I   adds search include paths (you can use old '-i' parameter)\n\
+  -E   changes the HTML extension used by -c option (.html by default)
   -k   kills comments (old htmlex behavior)\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
   -v   activates the verbose mode (to see what htmlex does)\n\
@@ -580,8 +584,6 @@ static void release_processing (void)
 /* main function */
 int main (int argc, char *argv[])
 {
-#define MAX_FILES 256
-
   STREAM *in, *out;
   char *in_files[MAX_FILES];
   char *out_files[MAX_FILES];
@@ -591,12 +593,29 @@ int main (int argc, char *argv[])
   int output_next = FALSE;
   int argument_next = FALSE;
   int include_next = FALSE;
+  int html_extension_next = FALSE;
   char *stdout_source = NULL;
   int quit = -1;
   char buf[512];
   int i, j;
 
-  name = argv[0];
+  /**********************************************************************
+   * Reset variables
+   **********************************************************************/
+
+  nargs = 0;
+  _i_stream = NULL;
+  _o_stream = NULL;
+  current_line = NULL;
+  current_col = NULL;
+  ntoken = 0;
+  kill_comments = FALSE;
+  verbose_level = 0;
+  htmlex_name = argv[0];
+  calculating_deps = FALSE;
+  depstream = NULL;
+  html_extension = "html";
+  npaths = 0;
 
   /**********************************************************************
    * Preprocess arguments
@@ -611,6 +630,7 @@ int main (int argc, char *argv[])
 	  case 'a':
 	  case 'i':
 	  case 'I':
+	  case 'E':
 	    break;
 	  case 'k':
 	    kill_comments = TRUE;
@@ -660,6 +680,7 @@ int main (int argc, char *argv[])
       output_next = FALSE;
       argument_next = FALSE;
       include_next = FALSE;
+      html_extension_next = FALSE;
 
       for (j = 1; argv[i][j]; j++) {
 	switch (argv[i][j]) {
@@ -675,6 +696,9 @@ int main (int argc, char *argv[])
 	  case 'i':
 	  case 'I':
 	    include_next = TRUE;
+	    break;
+	  case 'E':
+	    html_extension_next = TRUE;
 	    break;
 	  case '-':
 	    break;
@@ -701,6 +725,12 @@ int main (int argc, char *argv[])
       paths[npaths++] = argv[i];
       PRINTF (1, "new include: \"%s\"\n", argv[i]);
     }
+    /* new path for inclusion of files */
+    else if (html_extension_next) {
+      html_extension = argv[i];
+      PRINTF (1, "html extension: \"%s\"\n", argv[i]);
+    }
+    /* default source file to put in STDOUT */
     else {
       stdout_source = argv[i];
       argument_next = TRUE;
@@ -813,8 +843,15 @@ int main (int argc, char *argv[])
       if (i < out_nfiles)
 	strcpy (buf, out_files[i]);
       /* auto generate output file name */
-      else
-	replace_extension (buf, success_path, ".html");
+      else {
+	if (*html_extension) {
+	  char ext[32];
+	  sprintf (ext, ".%s", html_extension);
+	  replace_extension (buf, success_path, ext);
+	}
+	else
+	  replace_extension (buf, success_path, "");
+      }
 
       PRINTF (1, "%s: output to %s\n", in_files[i], buf);
 

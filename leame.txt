@@ -34,10 +34,12 @@ OPCIONES
   htmlex interpreta las siguientes opciones en la línea de comandos:
 
     -c   compila todos los próximos ficheros (obtiene un archivo de salida
-	 desde "-o" o genera uno por defecto (con extension .html))
+	 desde "-o" o genera un nombre con extension .html, mire -E)
     -o   agrega ficheros de salida
     -a   agrega ficheros de entrada
     -I   agrega rutas de inclusión para búscar ficheros
+    -E   cambia la extensión HTML utilizada por la opción -c (.html por
+         defecto)
     -k   elimina los comentarios (comportamiento antiguo de htmlex)
     -d   calcula las dependencias de los ficheros de entrada (salida
          hacia STDOUT)
