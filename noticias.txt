@@ -1,0 +1,63 @@
+[-- htmlex 0.2 release --]
+
+* Mayores facilidades para las comparaciones <!if>.
+* Nuevo funcionamiento para varias etiquetas, para más información
+  ver `leame.txt'.
+* Nuevos nombres de etiquetas:
+  <!uc>, <!ucfirst>                   -> <!toupper>
+  <!lc>, <!lcfirst>                   -> <!tolower>
+  <!htmlex-version>                   -> <!version>
+  <!include-path archivo> y <!exists> -> <!find archivo>
+* Nuevo código en C, y programa ejecutable.
+* Eliminado el formato GNU.
+
+[-- htmlex 0.1.3 beta --]
+
+* Nueva etiqueta <!file-size>.
+
+[-- htmlex 0.1.2 beta --]
+
+* Nueva etiqueta <!clean>.
+* Mejoras en la utilidad htmlex-site.
+* Nueva etiqueta <!exists> para averiguar si un fichero existe o no.
+* Mayor velocidad de procesamiento.
+* <!htmlex-version> para imprimir la versión de htmlex.
+* Una pobre (y mala) documentación en inglés.
+* Optimizado htmlex-site para crear el "esqueleto" de un nuevo sitio.
+
+[-- htmlex 0.1.1 beta --]
+
+* Etiquetas `<!if...>' para controlar bloques de condiciones:
+    <!if>
+    <!elif>
+    <!else>
+    <!fi>
+  Se soportan anidamientos (teóricamente) infinitos.
+
+[-- htmlex 0.1.0 pre-alpha --]
+
+* Los ficheros HTML (.html) convencionales son totalmente compatible con el
+  formato utilizado por htmlex (.htex).
+* Etiquetas extras con formato similar al HTML.
+* Etiqueta `<!macro...>' para crear macros que serán reemplazadas por su valor
+  cuando se encuentre el nombre exacto de la misma.
+* Etiqueta `<!include...>' para incluir todo un ficheros dentro de otro.
+* Generación de dependencias apartir de los `<!include...>' totalmente
+  compatibles con los Makefiles.
+* Soporte para pasarle argumentos al fichero principal de entrada, y a los
+  ficheros incluidos detro del mismo.
+* Etiqueta `<!exec...>' para ejecutar programas externos y colocar la salida en
+  el fichero resultado.
+* Funciones para controlar texto:
+  <!dir palabra>
+  <!notdir palabra>
+  <!suffix palabra>
+  <!basename palabra>
+    (Todas con el mismo funcionamiento que en los Makefiles).
+  <!chop palabra>
+  <!shift palabra>
+  <!lc palabra>
+  <!lcfirst palabra>
+  <!uc palabra>
+  <!ucfirst palabra>
+    (Todas con el mismo funcionamiento que en Perl).

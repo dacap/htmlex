@@ -1,0 +1,12 @@
+2001-11-01  David A. Capello  <dacap@users.sourceforge.net>
+
+	* New version 0.2 release.
+	* Ready, in 5 days I make a program much better of which I make in
+	  two months, and though the code is a complete mess, I love it :-)
+
+...
+
+2001-07-17  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Inicial version: htmlex 0.1
+

@@ -1,0 +1,62 @@
+[-- htmlex 0.2 release --]
+
+* More facilities for the <!if> comparations.
+* New operation for various tags, for more information see `readme.txt'.
+* New tags names:
+  <!uc>, <!ucfirst>                  -> <!toupper>
+  <!lc>, <!lcfirst>                  -> <!tolower>
+  <!htmlex-version>                  -> <!version>
+  <!include-path file> and <!exists> -> <!find file>
+* New C code, and an executable program.
+* Eliminated the GNU format.
+
+[-- htmlex 0.1.3 beta --]
+
+* New tag <!file-size>.
+
+[-- htmlex 0.1.2 beta --]
+
+* New tag <!clean>.
+* Enhanced the htmlex-site utility.
+* New tag <!exists> to know if a file exist or not.
+* Improve the process speed.
+* <!htmlex-version> to print the htmlex version.
+* A poor (and bad) english documentation.
+* Optimized htmlex-site to create the "skeleton" of a new site.
+
+[-- htmlex 0.1.1 beta --]
+
+* Tags `<!if...>' to control conditional-blocks:
+    <!if>
+    <!elif>
+    <!else>
+    <!fi>
+  Support (theoretical) infinites nestles.
+
+[-- htmlex 0.1.0 pre-alpha --]
+
+* The conventional HTML files (.html) are fully compatible with the
+  format used by htmlex (.htex).
+* Extra tags with similar format to the HTML.
+* Tag `<!macro...>' to create macros which will be replaces with theirs
+  values when will find the exact name of itself.
+* Tag `<!include...>' to include a complete file within other.
+* Dependencies generation since <!include ...> tag, fully compatible with
+  the Makefiles.
+* Support for pass arguments to the main input file, and all the files
+  included in itself.
+* Tag `<!exec...>' to execute extern programs and put its output in the
+  result file.
+* Functions for control text:
+  <!dir word>
+  <!notdir word>
+  <!suffix word>
+  <!basename word>
+    (All with the same functionality which in the Makefiles).
+  <!chop word>
+  <!shift word>
+  <!lc word>
+  <!lcfirst word>
+  <!uc word>
+  <!ucfirst word>
+    (All with the same functionality which in Perl).

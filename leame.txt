@@ -1,0 +1,365 @@
+htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
+Copyright (C) 2001 por David A. Capello
+
+LICENCIA
+========
+
+  htmlex es software libre; usted puede redistribuirlo y/o modificarlo bajo los
+  términos de la Licencia Pública General GNU (o GNU General Public License)
+  publicada por la Fundación de Software Libre (Free Software Foundation);
+  cualquier versión 2 de la Licencia, o (a su elección) alguna versión más
+  antigua.
+
+  Este programa es distribuido con la esperanza de que sea útil, pero SIN
+  GARANTÍA ALGUNA; sin incluso la garantía implícita de COMERCIALIZACIÓN o
+  IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la GNU General Public License
+  para más detalles.
+
+  Usted debe de haber recibido una copia de la GNU General Public License junto
+  con este programa; si no, escriba a la Free Software Foundation, Inc., 59
+  Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+INTRODUCCIÓN
+============
+
+  htmlex es un pequeño pero poderoso preprocesador de ficheros HTML, con el
+  cual podrá tener varias ventajas con respecto al formato convencional de
+  los archivos .html. Además, como htmlex es completamente compatible con la
+  sintaxis HTML estandard, significa que cualquier archivo que ya haya creado
+  en HTML puro, lo podrá renombrar tranquilamente a .htex.
+
+OPCIONES
+========
+
+  htmlex interpreta las siguientes opciones en la línea de comandos:
+
+    -c   compila todos los próximos ficheros (usa los nombres de salida
+         activos o los genera como `fichero.htex' a `fichero.html')
+    -o   agrega nombres de ficheros de salida (use esto antes del `-c')
+    -a   agrega argumentos para los ficheros de entrada (use esto antes
+         del `-c')
+    -i   agrega todos los próximos argumentos a las rutas de inclusión
+         (para la búsqueda de ficheros)
+    -d   calcula las dependencias de los ficheros de entrada (salida
+         hacia STDOUT)
+    -h   muestra esta ayuda (en inglés) y sale
+    -v   muestra la versión de htmlex y sale
+    --   frena los argumentos -c, -o y -i
+
+EJECUCIÓN
+=========
+
+  Referencias
+  -----------
+
+  STDIN      Entrada estandard: desde el teclado o desde un fichero.
+
+  STDOUT     Salida estandard: hacia la pantalla o hacia un fichero.
+
+  Conducta común
+  --------------
+
+  ./htmlex
+  Procesa STDIN y deja los resultados en STDOUT.
+
+  ./htmlex archivo argumentos...
+  Procesa el `archivo' y deja el resultado en STDOUT.
+
+  ./htmlex -c archivos...
+  Procesa los `archivos' y deja los resultados en `archivos.html'.
+
+  ./htmlex -o destinos... -c archivos...
+  Procesa los `archivos' y deja los resultados en los `destinos'.
+
+  Algunos ejemplos de equivalencias
+  ---------------------------------
+
+  ./htmlex fichero.htex arg1 arg2 > fichero.html
+  ./htmlex -a arg1 arg2 -c fichero.htex
+  ./htmlex -a arg1 arg2 -o fichero.html -c fichero.htex
+  ./htmlex -a arg1 arg2 < fichero.htex > fichero.html
+  ./htmlex -a arg1 arg2 -o fichero.html < fichero.htex
+
+  Errores comunes
+  ---------------
+
+  ./htmlex -c orig.htex -o dest.html
+  Aquí el resultado queda en orig.html, y no en dest.html.
+  Solución:
+    ./htmlex -o dest.html -c orig.htex
+
+  ./htmlex -i ejemplos orig.htex > orig.html
+  Aquí el programa esperará la entrada de STDIN, ya que orig.htex
+  cuenta como otra ruta más para -i.
+  Solución:
+    ./htmlex -i ejemplos -- orig.htex > orig.html
+    ./htmlex -i ejemplos -c orig.htex
+
+  ./htmlex orig.htex -i dir
+  Aquí orig.htex se buscará solamente en el directorio actual,
+  ya que dir/ se agrega una vez que orig.htex ya es procesado.
+  Solución:
+    ./htmlex -i dir -- orig.htex
+    ./htmlex dir/orig.htex
+
+  ./htmlex -c index.htex es Español
+  Aquí se intentará compilar los ficheros `index.htex', `es' y
+  `Español', en vez de pasarle los argumentos al fichero `index.htex'.
+  Solución:
+    ./htmlex index.htex es Español > index.html
+    ./htmlex -a es Español -- index.htex > index.html
+    ./htmlex -a es Español -c index.htex
+
+CARACTERÍSTICAS
+===============
+
+  Referencias
+  -----------
+
+  Esta notación se usará a lo largo de las definiciones:
+    expresión             La _expresión_ es obligatoria.
+    [ expresión ]         La _expresión_ es opcional, puede o no estar.
+    { expresión }         La _expresión_ puede no estar o puede repetirse
+                          una o más veces.
+    origen -> resultado   Indica que _resultado_ será obtenido al procesar
+                          mediante el programa el texto de _origen_.
+
+  Etiquetas
+  ---------
+
+  Lista de las etiquetas extras que puede utilizar en los ficheros
+  (por orden alfabético):
+
+  <!args>
+    Devuelve la cantidad de argumentos que se le pasaron al fichero de
+    entrada. Es igual a 0 si no se le pasó ningún parámetro.
+    Ejemplo:
+      A ingresado <!args> argumento(s).
+
+  <!arg1> ... <!argN>
+    Retornan el valor del argumento indicado. Los argumentos se le pasan a
+    los ficheros a través de la línea de comandos con la opción -a o por
+    medio de la etiqueta <!include fichero arg1 ... argN>.
+    Ejemplo:
+       2do argumento = <!arg2>.
+
+  <!basename fichero>
+    Devuelve el nombre base del _fichero_, es decir, le saca la extensión.
+    Ejemplos:
+      <!basename src/foo.c>    -> src/foo
+      <!basename src-1.0/bar>  -> src-1.0/bar
+      <!basename hacks>        -> hacks
+
+  <!chop palabra>
+    Le quita el último carácter a la _palabra_.
+    Ejemplos:
+      <!chop hola>        -> hol
+      <!chop directorio/> -> directorio
+
+  <!clean palabra>
+    Limpia la _palabra_ quitándole los espacios (tabuladores y retornos
+    de líneas) que tenga al inicio y al final.
+    Ejemplo:
+      *<!clean " hola ">* -> *hola*
+
+  <!dir fichero>
+    Devuelve el directorio del _fichero_, es decir, le saca nombre.
+    Ejemplos:
+      <!dir src/foo.c> -> src/
+      <!dir a/b/foo.h> -> a/b/
+      <!dir hacks>     -> ./
+
+  <!elif expresión>
+    Ver <!if>.
+
+  <!else>
+    Ver <!if>.
+
+  <!exec fichero { argumentos }>
+    Ejecuta el _fichero_ indicado pasándole los _argumentos_. Lo que el
+    comando imprima por la salida estandard (STDOUT), será insertado tal
+    cual en el resultado. Algo a tomar en cuenta, es que todos los
+    argumentos (menos el fichero claro está), serán encerrados entre
+    comillas dobles antes de pasarle el comando a la shell.
+    Ejemplos:
+      <!exec date>
+      <!exec gcc --version>
+
+  <!exec-proc fichero { argumentos }>
+    Igual que <!exec ...> solamente que éste procesará los resultados
+    como a otro fichero htmlex.
+    Ejemplos:
+      <!exec-proc cat cabecera.htex>
+      <!exec-proc cat "pie de pagina.htex">
+      <!exec-proc cat <!include-path macros.htex>>
+
+  <!fi>
+    Ver <!if>.
+
+  <!file-size fichero>
+    Devuelve el tamaño del _fichero_ en bytes, kilo-bytes (k) o mega-bytes (M)
+    dependiendo de cual sea mejor para la "vista humana".
+    Ejemplo:
+      imagen <!file-size imagen.jpg>
+
+  <!find fichero>
+    Intentará encontrar el _fichero_ en todas las ubicaciones posibles
+    (en el directorio actual y en los directorios indicados con -i), y
+    devolverá el nombre del mismo con la ruta de acceso correspondiente,
+    en caso de que el _fichero_ no se pueda encontrar, no devuelve nada.
+    Ejemplos:
+      <!if <!find index.es.html>>
+        español
+      </!if>
+
+  <!if expresión>
+    Una de las más poderosas características que tiene htmlex con respecto
+    al HTML convencional, es la posibilidad de controlar bloques de
+    condiciones.
+
+    Por medio de cuatro etiquetas podrá hacer la mayoría de operaciones de
+    condición de cualquier otro lenguaje de programación. Aunque hoy en día,
+    htmlex posee un pobre manejo de operaciones, en el futuro tal vez se
+    intente mejorar este aspecto.
+
+    La sintaxis general es la siguiente:
+
+      <!if expresión> bloque
+      { <!elif expresión> bloque }
+      [ <!else> bloque ]
+      <!fi>
+
+    Los _bloques_ pueden ser cualquier texto (o simplemente nada), hasta
+    pueden tener otras etiquetas a su vez, y por consiguiente, puede tener
+    más etiquetas <!if> anidadas.
+
+    En cuanto a las _expresiones_ para realizar las comparaciones, pueden
+    tener estos formatos (en caso contrario siempre dará falso):
+
+      FORMATO                VERDADERO SI...
+      -------                ---------------
+      número                 _número_ es distinto a cero
+      ! número               _número_ es cero
+      palabra                _palabra_ tiene un caracter como mínimo
+      ! palabra              _palabra_ está vacía
+      número1 < número2      _numero1_ es menor a _número2_
+      número1 > número2      _numero1_ es mayor a _número2_
+      número1 <= número2     _numero1_ es menor o igual a _número2_
+      número1 >= número2     _numero1_ es mayor o igual a _número2_
+      número1 == número2     _numero1_ es igual a _número2_
+      número1 != número2     _numero1_ es diferente a _número2_
+      palabra1 == palabra2   _palabra1_ es idéntica a _palabra2_
+      palabra1 != palabra2   _palabra1_ difiere en un caracter a _palabra2_
+
+    Los números se distinguen de las palabras cuando tiene alguno de
+    los siguientes formatos:
+
+      [1-9][0-9]*      un decimal
+      0x[0-9a-fA-F]*   un hexadecimal
+      0[0-7]           un octal
+
+    Ejemplos:
+      <!if <!arg1> == --help>
+        ¿Necesita ayuda?
+      <!else>
+        Pruebe con --help.
+      <!fi>
+      <!if <!tolower HOLA> == <!tolower Hola>>
+        funciona
+      <!fi>
+
+  <!include fichero { argumentos }>
+    Incluye el _fichero_ para que sea procesado como un archivo .htex.
+    Dicho archivo será utilizado también para calcular las dependencias
+    (cual archivo necesita de que otro). Los argumentos son opcionales,
+    y si el no _fichero_ no se encuentra, el programa sale con error.
+    Ejemplos:
+      <!include cabecera.htex>
+      <!include pie.htex es AR>
+
+  <!macro nombre [ valor ]>
+    Crea y/o modifica una macro con el _nombre_ y el _valor_ especificado.
+    Si el _valor_ no se indica, la macro será eliminada de la memoria.
+    La utilidad principal de las macros, es reemplazar un determinado
+    texto (su _nombre_) por otro determinado texto (su _valor_).
+    Ejemplo:
+      <!macro hola chau>
+      hola -> chau
+      <!macro hola>
+      hola -> hola
+
+  <!macro-reset>
+    Borra de la memoria cualquier macro que se haya creado con anterioridad
+    a esta etiqueta.
+    Ejemplo:
+      <!macro a b>a<!macro-reset>a -> ba
+
+  <!notdir fichero>
+    Devuelve el nombre del _fichero_ a secas, es decir, le saca el directorio.
+    Ejemplos:
+      <!notdir src/foo.c> -> foo.c
+      <!notdir a/b/foo.h> -> foo.h
+      <!notdir hacks>     -> hacks
+
+  <!shift palabra>
+    Le quita el primer carácter a la _palabra_.
+    Ejemplos:
+      <!shift hola> -> ola
+      <!shift .txt> -> txt
+
+  <!suffix fichero>
+    Devuelve el sufijo del _fichero_, es decir, su extensión.
+    Ejemplos:
+      <!suffix "src/foo.c">   -> .c
+      <!suffix "src-1.0/bar"> ->
+      <!suffix "hacks">       ->
+
+  <!tolower palabra [ comienzo [ final ] ]>
+    Ver <!toupper>.
+
+  <!toupper palabra [ comienzo [ final ] ]>
+    Pasa parcial o completamente la _palabra_ a minúsculas o mayúsculas
+    respectivamente dependiendo si especifica o no el _comienzo_ y/o
+    el _final_. Si indica solamente el _comienzo_, el mismo deberá ser
+    un índice (con base cero, es decir, 0 es la primer letra) del caracter
+    que quiere convertir, mientras que si también indica el _final_, está
+    diciendo que quiere convertir todo un rango. Nota: valores negativos
+    para _final_ indican valores desde el mismo final de la _palabra_.
+    Ejemplos:
+      <!tolower HOLA>      -> hola
+      <!tolower HOLA 0>    -> hOLA
+      <!toupper hola 1 2>  -> hOLa
+      <!toupper hola 0 -2> -> HOLa
+
+  <!version>
+    Muestra la versión del programa con la que se está procesando el fichero.
+    Ejemplo:
+      Está página fue creada con htmlex <!version>.
+
+FALLOS
+======
+
+  Comunicar `bugs' a <dacap@users.sourceforge.net>.
+  Hoy en día no tengo conocimiento sobre algún error.
+
+TRABAJO POR HACER
+=================
+
+  Nada.
+
+ACTUALIZACIONES
+===============
+
+  Para obtener la última información sobre htmlex, puede dirigirse a:
+
+    http://htmlex.sourceforge.net
+
+AUTOR
+=====
+
+  David A. Capello <dacap@users.sourceforge.net>.
+
+  Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
+  será bien recibida. Puede visitar http://www.davidcapello.com.ar para
+  mayor información.
+
