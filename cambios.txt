@@ -1,3 +1,11 @@
+2002-12-16  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Arreglado el funcionamiento al utilizar argumentos como:
+	  htmlex -a hola -- file.htex chau
+	  Ahora se le pasan ambos argumentos:
+	  <!arg1> = hola
+	  <!arg2> = chau
+
 2002-10-13  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Arreglado el comportamiento general del <!if>: ahora,

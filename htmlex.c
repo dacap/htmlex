@@ -567,8 +567,7 @@ int main(int argc, char *argv[])
         else
           out = stfile(stdout);
 
-        /* all next arguments for the file */
-        nargs = 0;
+        /* all next arguments for the file too */
         for (i++; i<argc; i++)
           args[nargs++] = argv[i];
       }

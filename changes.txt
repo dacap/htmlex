@@ -1,3 +1,11 @@
+2002-12-16  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Fixed the behavior to use arguments like:
+	  htmlex -a hello -- file.htex bye
+	  Now both arguments are passed:
+	  <!arg1> = hello
+	  <!arg2> = bye
+
 2002-10-13  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Fixed the general <!if> behavior: now, the tags
