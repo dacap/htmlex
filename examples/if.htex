@@ -1,7 +1,7 @@
 <!if <!arg1> == es>
-  Español <!if <!arg2> == ar><!uc <!arg2>><!else>(desconocido)<!fi>
+  Español <!if <!arg2> == ar><!toupper <!arg2>><!else>(desconocido)<!fi>
 <!elif <!arg1> == en>
-  English <!if <!arg2> == uk><!uc <!arg2>><!else>(unknow)<!fi>
+  English <!if <!arg2> == uk><!toupper <!arg2>><!else>(unknow)<!fi>
 <!elif <!arg1> == --help>
   Usage:
     if.htex [ es [ ar ] | en [ uk ] ]

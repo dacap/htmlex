@@ -1,2 +1,3 @@
 dir src/foo.c = <!dir src/foo.c>
+dir a/b/foo.h = <!dir a/b/foo.h>
 dir hacks     = <!dir hacks>

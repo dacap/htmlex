@@ -1,2 +1,3 @@
 notdir src/foo.c = <!notdir src/foo.c>
+notdir a/b/foo.h = <!notdir a/b/foo.h>
 notdir hacks     = <!notdir hacks>

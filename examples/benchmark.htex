@@ -1,6 +1,6 @@
 <!macro-reset>
 
-<!macro $MENSAJE "Presione cualquier tecla para continuar...">
+<!macro $MENSAJE "'Presione cualquier tecla para continuar...'">
 
 <!exec clear>
 
@@ -60,6 +60,10 @@ Listo:
 <!macro $SUFFIX <!suffix $TEMP_FILENAME>>
 <!macro $FILENAME $BASENAME$SUFFIX>
 
+$TEMP_FILENAME
+$BASENAME
+$SUFFIX
+$FILENAME
 Contenido del fichero `$FILENAME':
 <!include $FILENAME>
 
@@ -76,91 +80,49 @@ Cuatro números:
 <!if $VAR1 == 0>
   <!if $VAR2 == 0>
     cero - cero
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 1>
     cero - uno
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 2>
     cero - dos
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 3>
     cero - tres
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!fi>
 <!elif $VAR1 == 1>
   <!if $VAR2 == 0>
     uno - cero
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 1>
     uno - uno
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 2>
     uno - dos
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 3>
     uno - tres
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!fi>
 <!elif $VAR1 == 2>
   <!if $VAR2 == 0>
     dos - cero
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 1>
     dos - uno
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 2>
     dos - dos
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 3>
     dos - tres
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!fi>
 <!elif $VAR1 == 3>
   <!if $VAR2 == 0>
     tres - cero
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 1>
     tres - uno
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 2>
     tres - dos
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!elif $VAR2 == 3>
     tres - tres
-    <!if $VAR3 == 0>cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!else>    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
-    <!fi>
   <!fi>
+<!fi>
+
+<!if $VAR3 == 0>
+    cero - <!if $VAR4 == 0>cero<!else>uno<!fi>
+<!else>
+    uno - <!if $VAR4 == 0>cero<!else>uno<!fi>
 <!fi>
 
 <!exec read -p $MENSAJE -n 1>
