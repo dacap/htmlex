@@ -58,12 +58,12 @@ struct _IO_STREAM *try_sopen(const char *filename, const char *mode)
 {
   STREAM *stream;
   strcpy(success_path, filename);
-  stream = sopen(success_path, mode);
+  stream = stopen(success_path, mode);
   if (!stream) {
     int c;
     for (c=0; c<npaths; c++) {
       sprintf(success_path, "%s/%s", paths[c], filename);
-      stream = sopen(success_path, mode);
+      stream = stopen(success_path, mode);
       if (stream)
         break;
     }
@@ -180,7 +180,7 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
   new_ifs(IF_SPACE);
   update_ifs();
 
-  while (sgets(buf, sizeof(buf), in)) {
+  while (stgets(buf, sizeof(buf), in)) {
     for (s=buf; *s; s++) {
       /* tag beginning */
       if ((*s == '<') && (s[1] == '!')) {
@@ -196,7 +196,7 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
               break;
             }
             else if (*s == 0) {
-              if (!sgets(buf, sizeof(buf), in))
+              if (!stgets(buf, sizeof(buf), in))
                 break;
               s = buf;
             }
@@ -217,7 +217,7 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
               break;
           }
           else if (*s == 0) {
-            if (!sgets(buf+strlen(buf), sizeof(buf)-strlen(buf), in))
+            if (!stgets(buf+strlen(buf), sizeof(buf)-strlen(buf), in))
               break;
             s--;
           }
@@ -231,12 +231,12 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
             if (tag[4] == 's') {
               char temp[32];
               sprintf(temp, "%d", nargs);
-              sputs(temp, out);
+              stputs(temp, out);
             }
             else {
               int arg = strtol(tag+4, NULL, 10);
               if ((arg > 0) && (arg <= nargs))
-                sputs(args[arg-1], out);
+                stputs(args[arg-1], out);
             }
           }
           used = TRUE;
@@ -259,7 +259,7 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
                 toreplace = tags[i].proc(argc, argv);
                 if (toreplace) {
                   if (can_attach)
-                    sputs(toreplace, out);
+                    stputs(toreplace, out);
                   free(toreplace);
                 }
                 used = TRUE;
@@ -270,9 +270,9 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
         if (!used) {
           char *ptag = process_text(tag);
           if (can_attach) {
-            sputc('<', out);
-            sputs(ptag, out);
-            sputc('>', out);
+            stputc('<', out);
+            stputs(ptag, out);
+            stputc('>', out);
           }
           if (ptag) free(ptag);
         }
@@ -291,14 +291,14 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
             if (*s == *macros[c].name)
               if (strncmp(s, macros[c].name, strlen(macros[c].name)) == 0) {
                 if (macros[c].value)
-                  sputs(macros[c].value, out);
+                  stputs(macros[c].value, out);
                 s += strlen(macros[c].name) - 1;
                 break;
               }
         }
 
         if (c == nmacros)
-          sputc(*s, out);
+          stputc(*s, out);
       }
     }
   }
@@ -314,13 +314,13 @@ char *process_text(const char *s)
 {
   STREAM *in, *out;
   char *r;
-  in = sopen(NULL, NULL);
-  out = sopen(NULL, NULL);
-  sputs(s, in);
-  sseek(in, 0, SEEK_SET);
+  in = stopen(NULL, NULL);
+  out = stopen(NULL, NULL);
+  stputs(s, in);
+  stseek(in, 0, SEEK_SET);
   process_file(in, out);
-  sclose(in);
-  r = sbuffer(out);
+  stclose(in);
+  r = stbuffer(out);
   return (r)? r: strdup("");
 }
 
@@ -359,10 +359,10 @@ void add_deps(const char *s)
 {
   if (calculating_deps) {
     if (!depstream)
-      depstream = sopen(NULL, NULL);
+      depstream = stopen(NULL, NULL);
 
-    sputs(s, depstream);
-    sputc('\n', depstream);
+    stputs(s, depstream);
+    stputc('\n', depstream);
   }
 }
 
@@ -371,13 +371,13 @@ void out_deps(void)
   if (calculating_deps) {
     char buf[256];
     int x;
-    sseek(depstream, 0, SEEK_SET);
+    stseek(depstream, 0, SEEK_SET);
     /* file name */
-    sgets(buf, sizeof(buf), depstream);
+    stgets(buf, sizeof(buf), depstream);
     buf[strlen(buf)-1] = 0;
     x = printf("%s:", buf);
     /* dependencies */
-    while (sgets(buf, sizeof(buf), depstream)) {
+    while (stgets(buf, sizeof(buf), depstream)) {
       buf[strlen(buf)-1] = 0;
 
       x += strlen(buf);
@@ -391,7 +391,7 @@ void out_deps(void)
       printf(buf);
     }
     printf("\n");
-    sclose(depstream);
+    stclose(depstream);
     depstream = NULL;
   }
 }
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
         if (calculating_deps)
           out = NULL;
         else
-          out = sfile(stdout);
+          out = stfile(stdout);
 
         /* all next arguments for the file */
         nargs = 0;
@@ -537,8 +537,8 @@ int main(int argc, char *argv[])
       process_file(in, out);
 
       /* close the files */
-      sclose(in);
-      sclose(out);
+      stclose(in);
+      stclose(out);
 
       out_deps();
 
@@ -550,7 +550,7 @@ int main(int argc, char *argv[])
   if ((process_stdin) && (!calculating_deps)) {
     STREAM *in, *out;
 
-    in = sfile(stdin);
+    in = stfile(stdin);
 
     if (nfiles > 0) {
       out = try_sopen(files[0], "w");
@@ -560,11 +560,11 @@ int main(int argc, char *argv[])
       }
     }
     else
-      out = sfile(stdout);
+      out = stfile(stdout);
 
     process_file(in, out);
-    sclose(in);
-    sclose(out);
+    stclose(in);
+    stclose(out);
   }
 
   return 0;

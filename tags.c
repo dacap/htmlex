@@ -147,10 +147,10 @@ static char *tag_exec(int argc, char *argv[])
     /* read the redirected output from the file and put it
        to the active output stream */
     if (can_attach) {
-      in = sopen(filename, "r");
-      while (sgets(buf, sizeof(buf), in))
-        sputs(buf, _o_stream);
-      sclose(in);
+      in = stopen(filename, "r");
+      while (stgets(buf, sizeof(buf), in))
+        stputs(buf, _o_stream);
+      stclose(in);
     }
     /* close*/
     remove(filename);
@@ -188,9 +188,9 @@ static char *tag_exec_proc(int argc, char *argv[])
     /* process the redirected output from the file and put it
        to the active output stream */
     if (can_attach) {
-      in = sopen(filename, "r");
+      in = stopen(filename, "r");
       process_file(in, _o_stream);
-      sclose(in);
+      stclose(in);
     }
     /* close*/
     remove(filename);
@@ -214,11 +214,13 @@ static char *tag_file_size(int argc, char *argv[])
     if (size < 0)
       sprintf(format, "%d", size);
     else if (size < 1024)
-      sprintf(format, "%db", size);
-    else if (size < 1024 * 1000)
-      sprintf(format, "%0.1fk", (float)size / 1024.0);
+      sprintf(format, "%d byte%c", size, size == 1 ? 0 : 's');
+    else if (size < 1024 * 1024)
+      sprintf(format, "%0.1f KB", (float)size / 1024.0);
+    else if (size < 1024 * 1024 * 1024)
+      sprintf(format, "%0.2f MB", (float)size / 1024.0 / 1024.0);
     else
-      sprintf(format, "%0.2fM", (float)size / 1024.0 / 1024.0);
+      sprintf(format, "%0.2f GB", (float)size / 1024.0 / 1024.0 / 1024.0);
     free(filename);
     return strdup(format);
   }
@@ -233,7 +235,7 @@ static char *tag_find(int argc, char *argv[])
     STREAM *s = try_sopen(filename, "r");
     free(filename);
     if (s) {
-      sclose(s);
+      stclose(s);
       return strdup(success_path);
     }
   }
@@ -280,7 +282,7 @@ static char *tag_include(int argc, char *argv[])
     /* process the file and close it, the output directly
        to the active file */
     process_file(in, _o_stream);
-    sclose(in);
+    stclose(in);
     /* restore the arguments by the old ones */
     nargs = old_nargs;
     for (c=0; c<nargs; c++)

@@ -1,3 +1,10 @@
+2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Patch from Robert J Ohannessian: Renamed the prefix of all streams
+	  stuff, from `s*' to `st*' (with this htmlex can be compiled with
+	  Mingw without problems). Also, he makes some aesthetics changes
+	  to the <!file-size> tag.
+
 2002-01-03  David A. Capello  <dacap@users.sourceforge.net>
 
 	* I write the rest of the readme.txt file.

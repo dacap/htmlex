@@ -1,3 +1,10 @@
+2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Parche de Robert J Ohannessian: Renombrado el prefijo de todo
+	  lo referido a los `streams', desde `s*' a `st*' (con esto htmlex
+	  se puede compilar con Mingw sin problemas). También, hizo
+	  algunas modificaciones estéticas a la etiqueta <!file-size>.
+
 2002-01-03  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Escribí el resto del fichero readme.txt.

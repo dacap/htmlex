@@ -6,7 +6,7 @@ VERSION = 0.3
 ifdef DJDIR
   EXE = .exe
   ZIP = .zip
-  TAR = tar -9
+  TAR = zip -9
 else
   EXE =
   ZIP = .tar.gz

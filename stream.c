@@ -31,7 +31,7 @@ struct _IO_STREAM_MEMORY
   int pos;        /* the position for read data */
 };
 
-STREAM *sopen(const char *filename, const char *mode)
+STREAM *stopen(const char *filename, const char *mode)
 {
   STREAM *stream = malloc(sizeof(STREAM));
   if (stream) {
@@ -61,7 +61,7 @@ STREAM *sopen(const char *filename, const char *mode)
   return stream;
 }
 
-STREAM *sfile(void *file)
+STREAM *stfile(void *file)
 {
   STREAM *stream = malloc(sizeof(STREAM));
   if (stream) {
@@ -71,7 +71,7 @@ STREAM *sfile(void *file)
   return stream;
 }
 
-char *sbuffer(STREAM *stream)
+char *stbuffer(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_MEMORY) {
@@ -86,7 +86,7 @@ char *sbuffer(STREAM *stream)
   return NULL;
 }
 
-int sclose(STREAM *stream)
+int stclose(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE) {
@@ -113,7 +113,7 @@ int sclose(STREAM *stream)
   return EOF;
 }
 
-int seof(STREAM *stream)
+int steof(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -124,7 +124,7 @@ int seof(STREAM *stream)
   return 1;
 }
 
-int sflush(STREAM *stream)
+int stflush(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -135,7 +135,7 @@ int sflush(STREAM *stream)
   return EOF;
 }
 
-int sgetc(STREAM *stream)
+int stgetc(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -148,7 +148,7 @@ int sgetc(STREAM *stream)
   return EOF;
 }
 
-char *sgets(char *s, int size, STREAM *stream)
+char *stgets(char *s, int size, STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -177,7 +177,7 @@ char *sgets(char *s, int size, STREAM *stream)
   return NULL;
 }
 
-int sputc(int c, STREAM *stream)
+int stputc(int c, STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -207,14 +207,14 @@ int sputc(int c, STREAM *stream)
   return EOF;
 }
 
-int sputs(const char *s, STREAM *stream)
+int stputs(const char *s, STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
       return fputs(s, stream->data);
     else if (stream->type == _IO_STREAM_TYPE_MEMORY) {
       for (; *s; s++)
-        if (sputc(*s, stream) == EOF)
+        if (stputc(*s, stream) == EOF)
           return EOF;
       return 0;
     }
@@ -222,7 +222,7 @@ int sputs(const char *s, STREAM *stream)
   return EOF;
 }
 
-int sseek(STREAM *stream, int offset, int whence)
+int stseek(STREAM *stream, int offset, int whence)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)
@@ -251,7 +251,7 @@ int sseek(STREAM *stream, int offset, int whence)
   return -1;
 }
 
-int stell(STREAM *stream)
+int sttell(STREAM *stream)
 {
   if (stream) {
     if (stream->type == _IO_STREAM_TYPE_FILE)

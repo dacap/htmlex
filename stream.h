@@ -30,18 +30,18 @@ struct _IO_STREAM
   void *data;
 };
 
-STREAM *sopen(const char *filename, const char *mode);
-STREAM *sfile(void *file);
-char *sbuffer(STREAM *stream);
-int sclose(STREAM *stream);
-int seof(STREAM *stream);
-int sflush(STREAM *stream);
-int sgetc(STREAM *stream);
-char *sgets(char *s, int size, STREAM *stream);
-int sputc(int c, STREAM *stream);
-int sputs(const char *s, STREAM *stream);
-int sseek(STREAM *stream, int offset, int whence);
-int stell(STREAM *stream);
+STREAM *stopen(const char *filename, const char *mode);
+STREAM *stfile(void *file);
+char *stbuffer(STREAM *stream);
+int stclose(STREAM *stream);
+int steof(STREAM *stream);
+int stflush(STREAM *stream);
+int stgetc(STREAM *stream);
+char *stgets(char *s, int size, STREAM *stream);
+int stputc(int c, STREAM *stream);
+int stputs(const char *s, STREAM *stream);
+int stseek(STREAM *stream, int offset, int whence);
+int sttell(STREAM *stream);
 
 #endif /* __STREAM_H__ */
 
