@@ -161,8 +161,8 @@ FEATURES
     Adds as dependency the `file'. This tag has effect just in the dependency
     generation process.
     Example:
-      sound.wav (<!file-size sound.wav>)
-      <!dep sound.wav>
+      <!exec ./script.sh>
+      <!dep script.sh>
 
   <!dir file>
     Returns the directory of the _file_, in other words, deletes the name.

@@ -75,7 +75,7 @@ struct _IO_STREAM *try_sopen(const char *filename, const char *mode)
 int get_filesize(const char *filename)
 {
   FILE *f;
-  int size = -1;
+  int size = 0;
   f = fopen(filename, "rb");
   if (f) {
     fseek(f, 0, SEEK_END);

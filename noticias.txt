@@ -1,3 +1,9 @@
+[-- htmlex 0.3 release --]
+
+* Fixed some errors.
+* The <!file-size> tag generates dependencies.
+* New <!dep> tag.
+
 [-- htmlex 0.2 pre-release --]
 
 * Mayores facilidades para las comparaciones <!if>.

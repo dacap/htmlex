@@ -166,8 +166,8 @@ CARACTERÍSTICAS
     Agrega como dependencia el `fichero'. Como es de esperarce, esta etiqueta
     tiene efecto sólo en el proceso de generación de dependencias.
     Ejemplo:
-      sonido.wav (<!file-size sonido.wav>)
-      <!dep sonido.wav>
+      <!exec ./script.sh>
+      <!dep script.sh>
 
   <!dir fichero>
     Devuelve el directorio del _fichero_, es decir, le saca nombre.

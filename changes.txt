@@ -1,3 +1,8 @@
+2001-12-04  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Fixed some bugs with <!file-size> tag:
+	  The buffer for the format was very-small.
+
 2001-12-03  David A. Capello  <dacap@users.sourceforge.net>
 
 	* New tag <!dep file>.
