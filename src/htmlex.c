@@ -629,7 +629,8 @@ static void process_char(STREAM *src, STREAM *dest, STREAM *stream, int argc, ch
     c = stream_getc(stream);
 
     /* ver si se trata de la apertura de un comentario */
-    if (c == '!') {
+    if ((c == '!') &&
+        (strn2cmp_ex(stream_buffer(stream) + stream_tell(stream), "--") == 0)) {
       char buf[4] = { 0, 0, 0, 0 };
 
       /* leer todo hasta llegar al final del comentario o
@@ -743,11 +744,7 @@ static void process_char(STREAM *src, STREAM *dest, STREAM *stream, int argc, ch
     }
   }
   else if (c != 0) {
-    /* si se est  dentro de un <if> y la £ltima comparaci¢n no di¢
-       verdadero, hay que saltear todo el texto hasta el cierre </if> */
-//    if ((if_status[if_count] != IF_STATUS_NULL) &&
-//        (if_status[if_count] != IF_STATUS_TRUE))
-//      return;
+    /* est  permitido imprimir caracteres? */
     if (!print_allowed())
       return;
 
@@ -812,57 +809,34 @@ static void process_char(STREAM *src, STREAM *dest, STREAM *stream, int argc, ch
 
 
 
-/* procesa un fichero:
-   - crea el buffer principal para alojar las l¡neas;
+/* procesa un fichero (src: flujo de entrada, dest: flujo de salida):
+   - crea el flujo principal para alojar las l¡neas;
    - lee l¡nea por l¡nea hasta que se llegue al final del fichero;
-   - si la primer l¡nea comienza con "#!", saltearla;
-   - procesar el buffer caracter por caracter (ver `process_char');
-   - se resetea el buffer para poder utilizarlo en la leida
-     de otra l¡nea (ver `read_line' e `insert_string' que en realidad
-     lo que hacen es insertar l¡neas al *FINAL* del buffer);
-   - se borra el buffer;
+   - procesar el flujo caracter por caracter (ver `process_char');
+   - se resetea el flujo para poder utilizarlo en la leida
+     de otra nueva l¡nea;
+   - se borra el flujo temporal;
 */
 static void process_file(STREAM *src, STREAM *dest, int argc, char **argv)
 {
   STREAM *stream;
-  char buf[4];
-  int first_line;
 
-  first_line = TRUE;
-
-  /* crear un buffer */
+  /* crear un flujo de caracteres para alojar una l¡nea */
   stream = stream_open(NULL);
 
   /* leer l¡nea por l¡nea */
   while (read_line(src, stream)) {
-    /* si es la primer l¡nea... */
-    if (first_line) {
-      first_line = FALSE;
-
-      stream_gets(stream, buf, sizeof(buf));
-
-      /* ...y comienza con #! */
-      if (strncmp_ex(buf, "#!", 2) == 0) {
-        /* borrarla y a leer la pr¢xima */
-        stream_close(stream);
-        stream = stream_open(NULL);
-        continue;
-      }
-      else {
-        stream_seek(stream, 0, STREAM_SEEK_SET);
-      }
-    }
-
     /* procesar la l¡nea de texto */
     while (!stream_eof(stream))
       /* procesar un caracter */
       process_char(src, dest, stream, argc, argv);
 
-    /* resetear el buffer para leer una nueva l¡nea desde cero */
+    /* resetear el flujo para leer una nueva l¡nea desde cero */
     stream_close(stream);
     stream = stream_open(NULL);
   }
 
+  /* borrar el flujo */
   stream_close(stream);
 }
 

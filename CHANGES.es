@@ -1,3 +1,8 @@
+2001-08-11  David A. Capello
+
+	* Se elimin¢ la posibilidad del fichero ejecutable en la
+	  primer l¡nea (ya no m s "#!").
+
 2001-07-30  David A. Capello
 
 	* Arreglado un error con los <if>, ahora s¡ funcionan :-)
