@@ -149,15 +149,18 @@ static char *tag_exec(int argc, char *argv[])
 static char *tag_exec_proc(int argc, char *argv[])
 {
   if (argc >= 1) {
-    char *filename = temp_filename();
+    char *s, *filename = temp_filename();
     int outbak = dup(1);
     int outdsc = open(filename, O_WRONLY|O_CREAT|O_TRUNC, S_IREAD|S_IWRITE);
     char buf[4096] = "";
     STREAM *in;
     int c;
     /* make the command to run */
-    for (c=0; c<argc; c++)
-      sprintf(buf+strlen(buf), "%s ", argv[c]);
+    for (c=0; c<argc; c++) {
+      s = process_text(argv[c]);
+      sprintf(buf+strlen(buf), "%s ", s);
+      free(s);
+    }
     /* redirect the stdout */
     fflush(stdout);
     dup2(outdsc, 1);
@@ -169,9 +172,11 @@ static char *tag_exec_proc(int argc, char *argv[])
     close(outbak);
     /* process the redirected output from the file and put it
        to the active output stream */
-    in = sopen(filename, "r");
-    process_file(in, _o_stream);
-    sclose(in);
+    if (can_attach) {
+      in = sopen(filename, "r");
+      process_file(in, _o_stream);
+      sclose(in);
+    }
     /* close*/
     remove(filename);
     free(filename);
@@ -216,6 +221,9 @@ static char *tag_find(int argc, char *argv[])
 
 static char *tag_include(int argc, char *argv[])
 {
+  /* if we can't put text, why we need to include the file? */
+  if (!can_attach)
+    return NULL;
   /* at least one argument: the file name */
   if (argc >= 1) {
     char *old_args[MAX_ARGS];
@@ -274,6 +282,9 @@ static char *tag_macro(int argc, char *argv[])
 {
   int c;
 
+  if (!can_attach)
+    return NULL;
+
   if (argc >= 1) {
     for (c=0; c<nmacros; c++)
       if (strcmp(argv[0], macros[c].name) == 0) {
@@ -310,7 +321,9 @@ static char *tag_macro(int argc, char *argv[])
 
 static char *tag_macro_reset(int argc, char *argv[])
 {
-  remove_macros();
+  if (can_attach)
+    remove_macros();
+
   return NULL;
 }
 
