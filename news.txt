@@ -1,3 +1,11 @@
+[-- htmlex 0.4.1 release --]
+
+* Fixed a couple of bugs in dependencies generation.
+* New default behavior for comments: Now are preserved, and a new
+  parameter (-k) was added to "kill" them.
+* Optimized dependencies generation: Now <!include> and <!dep> tags
+  inside false <!if...> expressions, aren't processed.
+
 [-- htmlex 0.4 release --]
 
 * New htmlex-filter.pl script to "clean" the htmlex output. 

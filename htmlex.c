@@ -47,8 +47,12 @@ char success_path[256];
 char token[MAX_TOKENS];
 int ntoken = 0;
 
+/* does user want comments? */
+int kill_comments = FALSE;
+
 /* we can can attach text in the output */
 static int can_attach;
+static int can_dep;
 
 /* name of the executable */
 static char *name = NULL;
@@ -228,7 +232,7 @@ void process_file (STREAM * in, STREAM * out)
   old_current_col = current_col;
 
   new_token (TOK_SPACE);
-  update_tokens ();
+  update_state ();
 
   while (stgets (buf, MAX_BYTES, in)) {
     for (s = buf; *s; s++) {
@@ -240,9 +244,13 @@ void process_file (STREAM * in, STREAM * out)
 
 	/* jump the comment? */
 	if ((s[2] == '-') && (s[3] == '-')) {
+	  if (!kill_comments)
+	    stputs ("<!", out);
 	  s += 2;
 	  for (;;) {
 	    if (strncmp (s, "-->", 3) == 0) {
+	      if (!kill_comments)
+		stputs ("-->", out);
 	      s += 2;
 	      break;
 	    }
@@ -252,6 +260,8 @@ void process_file (STREAM * in, STREAM * out)
 	      s = buf;
 	    }
 	    else {
+	      if (!kill_comments)
+		stputc (*s, out);
 	      s++;
 	    }
 	  }
@@ -409,7 +419,7 @@ void process_file (STREAM * in, STREAM * out)
   }
 
   delete_token ();
-  update_tokens ();
+  update_state ();
 
   _i_stream = old_i_stream;
   _o_stream = old_o_stream;
@@ -450,9 +460,10 @@ void delete_token (void)
   ntoken--;
 }
 
-void update_tokens (void)
+void update_state (void)
 {
   int c;
+
   can_attach = TRUE;
   for (c = 0; c < ntoken; c++) {
     if (token[c] == TOK_SPACE)
@@ -462,11 +473,21 @@ void update_tokens (void)
       break;
     }
   }
+
+  can_dep = TRUE;
+  for (c = 0; c < ntoken; c++) {
+    if (token[c] == TOK_SPACE)
+      continue;
+    if (token[c] != TOK_IF_INSIDE) {
+      can_dep = FALSE;
+      break;
+    }
+  }
 }
 
 void add_deps (const char *s)
 {
-  if (calculating_deps) {
+  if (calculating_deps && can_dep) {
     PRINTF (1, "new dependency: \"%s\"\n", s);
 
     if (!depstream)
@@ -479,7 +500,7 @@ void add_deps (const char *s)
 
 void out_deps (void)
 {
-  if (calculating_deps) {
+  if (calculating_deps && depstream) {
     char buf[256];
     int x;
     stseek (depstream, 0, SEEK_SET);
@@ -537,6 +558,7 @@ Options:\n\
   -o   adds output files (note: must be used before the `-c')\n\
   -a   adds arguments for the input files (note: must be used before the `-c')\n\
   -i   adds all subsequent arguments to search include paths\n\
+  -k   kill comments (old htmlex behavior)\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
   -v   activates the verbose mode (to see what htmlex does)\n\
   -V   very verbose mode\n\
@@ -595,6 +617,9 @@ int main (int argc, char *argv[])
 	    break;
 	  case 'i':
 	    include_next = TRUE;
+	    break;
+	  case 'k':
+	    kill_comments = TRUE;
 	    break;
 	  case 'd':
 	    calculating_deps = TRUE;
@@ -663,6 +688,8 @@ int main (int argc, char *argv[])
 
 	PRINTF (1, "output to \"%s\" file\n", buf);
 
+	update_state ();
+
 	if (calculating_deps) {
 	  add_deps (buf);
 	  add_deps (argv[i]);
@@ -682,6 +709,8 @@ int main (int argc, char *argv[])
       /* output to STDOUT */
       else {
 	PRINTF (1, "output to STDOUT\n");
+
+	update_state ();
 
 	add_deps (argv[i]);
 

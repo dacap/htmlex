@@ -69,6 +69,9 @@ enum {
 extern char token[MAX_TOKENS];
 extern int ntoken;
 
+/* does user want comments? */
+extern int kill_comments;
+
 /* some functions */
 struct STREAM *try_sopen (const char *filename, const char *mode);
 int get_filesize (const char *filename);
@@ -78,7 +81,7 @@ void process_file (struct STREAM *in, struct STREAM *out);
 char *process_text (const char *s);
 void new_token (int type);
 void delete_token (void);
-void update_tokens (void);
+void update_state (void);
 void add_deps (const char *s);
 void PRINTF (int level, const char *format, ...);
 

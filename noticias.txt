@@ -1,3 +1,13 @@
+[-- htmlex 0.4.1 release --]
+
+* Arreglados un par de errores en la generación de dependencias.
+* Nueva conducta por defecto para los comentarios: Ahora son
+  preservados, y un nuevo parámetro (-k) fue agregado para
+  eliminarlos.
+* Optimizada la generación de dependencias: Ahora las etiquetas
+  <!include> y <!dep> dentro de una expresión <!if...> falsa, no son
+  procesadas.
+
 [-- htmlex 0.4 release --]
 
 * Nuevo script htmlex-filter.pl para "limpiar" la salida de htmlex. 

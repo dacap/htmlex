@@ -1,3 +1,18 @@
+2003-02-17  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (main): Arreglada la generación de dependencias.
+
+	* htmlex.c (out_deps): Arreglado un pequeño error con "depstream".
+
+	* htmlex.c, tags.c: Agregada la variable "kill_comments" y el
+	argumento opcional -k para activar el viejo comportamiento de
+	htmlex (gracias a Zaripov Michail por reportar que los comentarios
+	son necesarios en algunos casos como los javascripts).
+
+2003-02-16  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c: Agregado "can_dep" para hacer menos dependencias.
+
 2003-02-10  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex-filter.pl: Agregado este script para optimizar los

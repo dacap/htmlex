@@ -438,9 +438,13 @@ static void read_function_body (STREAM * in, STREAM * out)
 
 	/* jump the comment? */
 	if ((s[2] == '-') && (s[3] == '-')) {
+	  if (!kill_comments)
+	    stputs ("<!", out);
 	  s += 2;
 	  for (;;) {
 	    if (strncmp (s, "-->", 3) == 0) {
+	      if (!kill_comments)
+		stputs ("-->", out);
 	      s += 2;
 	      break;
 	    }
@@ -450,6 +454,8 @@ static void read_function_body (STREAM * in, STREAM * out)
 	      s = buf;
 	    }
 	    else {
+	      if (!kill_comments)
+		stputc (*s, out);
 	      s++;
 	    }
 	  }
@@ -658,7 +664,7 @@ static char *iftag_if (int argc, char *argv[])
     /* the evaluation give false: don't enter in this if-block */
     new_token (TOK_IF_NOTYET);
   /* update parser state */
-  update_tokens ();
+  update_state ();
   /* free all arguments */
   for (c = 0; c < argc; c++)
     free (new_argv[c]);
@@ -690,7 +696,7 @@ static char *iftag_elif (int argc, char *argv[])
       token[0] = TOK_IF_OUTSIDE;
   }
   /* update parser state */
-  update_tokens ();
+  update_state ();
   /* free all arguments */
   for (c = 0; c < argc; c++)
     free (new_argv[c]);
@@ -712,7 +718,7 @@ static char *iftag_else (int argc, char *argv[])
       token[0] = TOK_IF_OUTSIDE;
   }
   /* update parser state */
-  update_tokens ();
+  update_state ();
   return NULL;
 }
 
@@ -721,7 +727,7 @@ static char *iftag_fi (int argc, char *argv[])
   /* back to the old if's state */
   delete_token ();
   /* update the if's states */
-  update_tokens ();
+  update_state ();
   return NULL;
 }
 
