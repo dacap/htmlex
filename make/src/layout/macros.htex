@@ -1,0 +1,46 @@
+<!macro $LANG <!arg1>>
+<!macro $FILE <!arg2>>
+<!macro $NAME <!arg3>>
+
+<!if $NAME == "index">
+  <!macro $INDEX 1>
+<!else>
+  <!macro $INDEX "">
+<!fi>
+
+<!if $LANG == "en">
+  <!macro _HTML ".html">
+  <!macro $BY "by">
+  <!macro $SECTION "section">
+  <!macro $INDEX_NAME "index">
+<!else>
+  <!macro _HTML ".es.html">
+  <!macro $BY "por">
+  <!macro $SECTION "sección">
+  <!macro $INDEX_NAME "índice">
+<!fi>
+
+<!macro ¡ &iexcl;>
+<!macro ¿ &iquest;>
+<!macro Á &Aacute;>
+<!macro Ä &Auml;>
+<!macro É &Eacute;>
+<!macro Ë &Euml;>
+<!macro Í &Iacute;>
+<!macro Ï &Iuml;>
+<!macro Ñ &Ntilde;>
+<!macro Ó &Oacute;>
+<!macro Ö &Ouml;>
+<!macro Ú &Uacute;>
+<!macro Ü &Uuml;>
+<!macro á &aacute;>
+<!macro ä &auml;>
+<!macro é &eacute;>
+<!macro ë &euml;>
+<!macro í &iacute;>
+<!macro ï &iuml;>
+<!macro ñ &ntilde;>
+<!macro ó &oacute;>
+<!macro ö &ouml;>
+<!macro ú &uacute;>
+<!macro ü &uuml;>

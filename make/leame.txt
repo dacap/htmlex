@@ -1,0 +1,9 @@
+Esto demuestra cómo usar la utilidad "make" junto con "htmlex".
+
+Para generar las dependencias, utilice:
+
+  make depend
+
+Y luego para crear los archivos HTML:
+
+  make

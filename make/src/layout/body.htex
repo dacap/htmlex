@@ -1,0 +1,48 @@
+<!--
+Usage:
+  body.htex <lang_code> <file_name> <section_name>
+-->
+<!include "src/layout/macros.htex" <!arg1> <!arg2> <!arg3>>
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+
+<html>
+<head><title><!include data/title.$LANG></title></head>
+
+<body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#00007f">
+
+<div align="center">
+	<p><font size="+4"><!include data/title.$LANG></font><br>
+<!if $INDEX>
+	<font size="+2">$INDEX_NAME</font></p>
+<!else>
+	<font size="+2">$SECTION: <!include data/$NAME.$LANG></font></p>
+<!fi>
+
+<!if $LANG == "en">
+	<a href="$FILE.es.html">(español)</a>
+<!else>
+	<a href="$FILE.html">(english)</a>
+<!fi>
+</div>
+
+<hr>
+
+<!if $INDEX>
+	<!function goto file name><li><a href="file_HTML">name</a></li><!end>
+	<ul>
+	<!goto other <!include data/other.$LANG>>
+	<!goto sub/index <!include data/sub.$LANG>>
+	</ul>
+<!else>
+	<p><!include data/msg.$LANG></p>
+<!fi>
+
+<hr>
+
+Copyright (C) 2003 $BY
+<a href="http://www.davidcapello.com.ar/">David A. Capello</a><br>
+<a href="http://htmlex.sourceforge.net/">htmlex <!version></a>
+
+</body>
+</html>

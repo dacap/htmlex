@@ -1,0 +1,15 @@
+HTEX_FILES = \
+	src/index.htex \
+	src/index.es.htex \
+	src/other.htex \
+	src/other.es.htex \
+	src/sub/index.htex \
+	src/sub/index.es.htex
+
+HTML_FILES = \
+	out/index.html \
+	out/index.es.html \
+	out/other.html \
+	out/other.es.html \
+	out/sub/index.html \
+	out/sub/index.es.html
