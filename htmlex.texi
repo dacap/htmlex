@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename htmlex.info
-@settitle a powerful html preprocessor
+@settitle a powerful hypertext markup language preprocessor
 @finalout
 @setchapternewpage odd
 @c %**end of header
@@ -9,7 +9,8 @@
 @set VERSION 0.1.0
 
 @ifinfo
-This file documents the @code{htmlex} command which a powerful html preprocessor
+This file documents the @code{htmlex} command which
+a powerful hypertext markup language preprocessor
 
 Copyright (C) 2001 David A. Capello
 
@@ -37,7 +38,7 @@ by the Foundation.
 
 @titlepage
 @title htmlex
-@subtitle a powerful html preprocessor
+@subtitle a powerful hypertext markup language preprocessor
 @subtitle for htmlex Version @value{VERSION}
 @author by David A. capello
 
@@ -65,7 +66,7 @@ by the Foundation.
 @node Top, Instructions, (dir), (dir)
 
 @ifinfo
-This file documents the @code{htmlex} command to a powerful html preprocessor.
+This file documents the @code{htmlex} command to a powerful hypertext markup language preprocessor
 @end ifinfo
 
 @c All the menus can be updated with the EMACS command
@@ -123,7 +124,7 @@ hello, world!
 This is the output of the command @samp{htmlex --help}:
 
 @example
-a powerful html preprocessor
+a powerful hypertext markup language preprocessor
 Usage: htmlex [options]
   -h, --help                    Print a summary of the options
   -v, --version                 Print the version number

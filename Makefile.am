@@ -12,8 +12,14 @@ EXTRA_DIST = \
 	BUGS \
 	NOTE.macro \
 	TODO \
-	es/ \
-	examples/ \
+	es/BUGS \
+	es/ChangeLog \
+	es/htmlex.1.in \
+	es/NEWS \
+	es/README \
+	es/TODO \
+	examples/*.sh \
+	examples/*.htex \
 	htmlex-site.in \
 	htmlex.1.in \
 	htmlex.in \

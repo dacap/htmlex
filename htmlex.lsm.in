@@ -2,7 +2,7 @@ Begin3
 Title:		@PACKAGE@
 Version:	@VERSION@
 Entered-date:	@ISODATE@
-Description:	a powerful html preprocessor
+Description:	a powerful hypertext markup language preprocessor
 		@configure_input@
 		Please edit htmlex.lsm.in to fix the Keywords and
 		Primary-site entries, add several more lines of

@@ -1,6 +1,6 @@
 .TH HTMLEX 1 "21 Agoust, 2001"
 .SH NAME
-htmlex \- a powerful html preprocessor
+htmlex \- a powerful hypertext markup language preprocessor
 .SH SYNOPSIS
 .B htmlex
 .RI [ options ]

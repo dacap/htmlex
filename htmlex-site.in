@@ -23,7 +23,7 @@ if test ! "$author" ; then author=$USER ; fi
 echo -n "Author address [$USER@$HOSTNAME]: " ; read address
 if test ! "$address" ; then address="$USER@$HOSTNAME" ; fi
 
-echo -n "Year name [`date +%Y`]: " ; read date
+echo -n "Copyright year [`date +%Y`]: " ; read date
 if test ! "$date" ; then date=`date +%Y` ; fi
 
 # make root directory
@@ -116,7 +116,7 @@ file="$dir/src/index.en.htex"
 if [ ! -f "$file" ] ; then
   echo "Building "$file" file..."
   cat > "$file" <<EOF
-<INCLUDE src="src/layout/body.htex" arg1="index.en">
+<!include src/layout/body.htex index.en>
 EOF
 fi
 
@@ -124,7 +124,7 @@ file="$dir/src/index.es.htex"
 if [ ! -f "$file" ] ; then
   echo "Building "$file" file..."
   cat > "$file" <<EOF
-<INCLUDE src="src/layout/body.htex" arg1="index.es"> 
+<!include src/layout/body.htex index.es>
 EOF
 fi
 
@@ -148,9 +148,9 @@ file="$dir/src/layout/macros.htex"
 if [ ! -f "$file" ] ; then
   echo "Building "$file" file..."
   cat > "$file" <<EOF
-<MACRO name=\$AUTHOR value="$author">
-<MACRO name=\$ADDRESS value="$address">
-<MACRO name=\$DATE value="$date">
+<!macro \$AUTHOR  "$author">
+<!macro \$ADDRESS "$address">
+<!macro \$DATE    "$date">
 EOF
 fi
 
@@ -164,7 +164,7 @@ if [ ! -f "$file" ] ; then
 <TITLE>$site</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="$title">
-<META name="keyword" content="$title, $author">
+<META name="keyword" content="$title, $author">
 </HEAD>
 <BODY>
 
@@ -185,7 +185,7 @@ if [ ! -f "$file" ] ; then
 <TITLE>$site</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <META name="description" content="$title">
-<META name="keyword" content="$title, $author">
+<META name="keyword" content="$title, $author">
 </HEAD>
 <BODY>
 
@@ -232,12 +232,12 @@ file="$dir/src/layout/body.htex"
 if [ ! -f "$file" ] ; then
   echo "Building "$file" file..."
   cat > "$file" <<EOF
-<MACRO name=\$LANG value="<*substr arg1='<*suffix arg1=<ARG1>>' arg2=1>">
-<MACRO name=\$NAME value="<*basename arg1='<ARG1>'>">
+<!macro \$LANG <!shift <!suffix <!arg1>>>>
+<!macro \$NAME <!basename <!arg1>>>
 
-<INCLUDE src="src/layout/macros.htex"> 
-<INCLUDE src="src/layout/head.\$LANG.htex"> 
-<INCLUDE src="src/bodies/\$NAME.\$LANG.htex">
-<INCLUDE src="src/layout/foot.\$LANG.htex"> 
+<!include src/layout/macros.htex>
+<!include src/layout/head.\$LANG.htex>
+<!include src/bodies/\$NAME.\$LANG.htex>
+<!include src/layout/foot.\$LANG.htex>
 EOF
 fi
