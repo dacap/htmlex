@@ -191,7 +191,7 @@ CARACTERÍSTICAS
     Ejemplos:
       <!exec-proc cat cabecera.htex>
       <!exec-proc cat "pie de pagina.htex">
-      <!exec-proc cat <!include-path macros.htex>>
+      <!exec-proc cat <!find macros.htex>>
 
   <!fi>
     Ver <!if>.
@@ -267,6 +267,7 @@ CARACTERÍSTICAS
       <!if <!tolower HOLA> == <!tolower Hola>>
         funciona
       <!fi>
+      <!if>Por acá nunca pasará<!fi>
 
   <!include fichero { argumentos }>
     Incluye el _fichero_ para que sea procesado como un archivo .htex.

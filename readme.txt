@@ -91,19 +91,19 @@ EXECUTION
     ./htmlex -i examples -c src.htex
 
   ./htmlex src.htex -i dir
-  Aquí src.htex se buscará solamente en el directorio actual,
-  ya que dir/ se agrega una vez que orig.htex ya es procesado.
+  Here src.htex will be search just in the active directory,
+  because dir/ is added once that orig.htex already is processed.
   Solution:
     ./htmlex -i dir -- src.htex
     ./htmlex dir/src.htex
 
-  ./htmlex -c index.htex es Español
-  Aquí se intentará compilar los ficheros `index.htex', `es' y
-  `Español', en vez de pasarle los argumentos al fichero `index.htex'.
+  ./htmlex -c index.htex en English
+  Here will be try of compile the files `index.htex', `en' and
+  `English', instead of pass the arguments to `index.htex'.
   Solution:
-    ./htmlex index.htex es Español > index.html
-    ./htmlex -a es Español -- index.htex > index.html
-    ./htmlex -a es Español -c index.htex
+    ./htmlex index.htex en English > index.html
+    ./htmlex -a en English -- index.htex > index.html
+    ./htmlex -a en English -c index.htex
 
 FEATURES
 ========
@@ -111,19 +111,19 @@ FEATURES
   References
   ----------
 
-  Esta notación se usará a lo largo de las definiciones:
-    expresión             La _expresión_ es obligatoria.
-    [ expresión ]         La _expresión_ es opcional, puede o no estar.
-    { expresión }         La _expresión_ puede no estar o puede repetirse
-                          una o más veces.
-    origen -> resultado   Indica que _resultado_ será obtenido al procesar
-                          mediante el programa el texto de _origen_.
+  This notation will be used along of the definitions:
+    expression            The _expression_ is obligatory.
+    [ expression ]        The _expression_ is optional, could or not to be.
+    { expression }        The _expression_ could not be or it could be repeat
+                          one or more times.
+    source -> result      Indicates that _results_ will be obtained
+                          when the program will process the _source_ text.
 
   Tags
   ----
 
-  Lista de las etiquetas extras que puede utilizar en los ficheros
-  (por orden alfabético):
+  Lists of extra tags which you can use in the files (by alphabetical
+  sorting):
 
   <!args>
     Devuelve la cantidad de argumentos que se le pasaron al fichero de
@@ -138,39 +138,39 @@ FEATURES
     Ejemplo:
        2do argumento = <!arg2>.
 
-  <!basename fichero>
+  <!basename file>
     Devuelve el nombre base del _fichero_, es decir, le saca la extensión.
     Ejemplos:
       <!basename src/foo.c>    -> src/foo
       <!basename src-1.0/bar>  -> src-1.0/bar
       <!basename hacks>        -> hacks
 
-  <!chop palabra>
-    Le quita el último carácter a la _palabra_.
-    Ejemplos:
-      <!chop hola>        -> hol
+  <!chop word>
+    Removes the last character of the _word_.
+    Examples:
+      <!chop hello>       -> hell
       <!chop directorio/> -> directorio
 
-  <!clean palabra>
+  <!clean word>
     Limpia la _palabra_ quitándole los espacios (tabuladores y retornos
     de líneas) que tenga al inicio y al final.
     Ejemplo:
       *<!clean " hola ">* -> *hola*
 
-  <!dir fichero>
+  <!dir file>
     Devuelve el directorio del _fichero_, es decir, le saca nombre.
     Ejemplos:
       <!dir src/foo.c> -> src/
       <!dir a/b/foo.h> -> a/b/
       <!dir hacks>     -> ./
 
-  <!elif expresión>
-    Ver <!if>.
+  <!elif expression>
+    See <!if>.
 
   <!else>
-    Ver <!if>.
+    See <!if>.
 
-  <!exec fichero { argumentos }>
+  <!exec file { arguments }>
     Ejecuta el _fichero_ indicado pasándole los _argumentos_. Lo que el
     comando imprima por la salida estandard (STDOUT), será insertado tal
     cual en el resultado. Algo a tomar en cuenta, es que todos los
@@ -180,16 +180,16 @@ FEATURES
       <!exec date>
       <!exec gcc --version>
 
-  <!exec-proc fichero { argumentos }>
+  <!exec-proc file { arguments }>
     Igual que <!exec ...> solamente que éste procesará los resultados
     como a otro fichero htmlex.
     Ejemplos:
-      <!exec-proc cat cabecera.htex>
-      <!exec-proc cat "pie de pagina.htex">
-      <!exec-proc cat <!include-path macros.htex>>
+      <!exec-proc cat header.htex>
+      <!exec-proc cat "a footer.htex">
+      <!exec-proc cat <!find macros.htex>>
 
   <!fi>
-    Ver <!if>.
+    See <!if>.
 
   <!file-size fichero>
     Devuelve el tamaño del _fichero_ en bytes, kilo-bytes (k) o mega-bytes (M)
@@ -197,17 +197,17 @@ FEATURES
     Ejemplo:
       imagen <!file-size imagen.jpg>
 
-  <!find fichero>
+  <!find file>
     Intentará encontrar el _fichero_ en todas las ubicaciones posibles
     (en el directorio actual y en los directorios indicados con -i), y
     devolverá el nombre del mismo con la ruta de acceso correspondiente,
     en caso de que el _fichero_ no se pueda encontrar, no devuelve nada.
-    Ejemplos:
-      <!if <!find index.es.html>>
-        español
+    Examples:
+      <!if <!find index.en.html>>
+        english
       </!if>
 
-  <!if expresión>
+  <!if expression>
     Una de las más poderosas características que tiene htmlex con respecto
     al HTML convencional, es la posibilidad de controlar bloques de
     condiciones.
@@ -253,7 +253,7 @@ FEATURES
       0x[0-9a-fA-F]*   un hexadecimal
       0[0-7]           un octal
 
-    Ejemplos:
+    Examples:
       <!if <!arg1> == --help>
         ¿Necesita ayuda?
       <!else>
@@ -262,57 +262,59 @@ FEATURES
       <!if <!tolower HOLA> == <!tolower Hola>>
         funciona
       <!fi>
+      <!if>Por acá nunca pasará<!fi>
 
-  <!include fichero { argumentos }>
+  <!include file { arguments }>
     Incluye el _fichero_ para que sea procesado como un archivo .htex.
     Dicho archivo será utilizado también para calcular las dependencias
     (cual archivo necesita de que otro). Los argumentos son opcionales,
     y si el no _fichero_ no se encuentra, el programa sale con error.
-    Ejemplos:
+    Examples:
       <!include cabecera.htex>
       <!include pie.htex es AR>
 
-  <!macro nombre [ valor ]>
+  <!macro name [ value ]>
     Crea y/o modifica una macro con el _nombre_ y el _valor_ especificado.
     Si el _valor_ no se indica, la macro será eliminada de la memoria.
     La utilidad principal de las macros, es reemplazar un determinado
     texto (su _nombre_) por otro determinado texto (su _valor_).
     Ejemplo:
-      <!macro hola chau>
-      hola -> chau
-      <!macro hola>
-      hola -> hola
+      <!macro hi bye>
+      hi -> bye
+      <!macro hi>
+      hi -> hi
 
   <!macro-reset>
     Borra de la memoria cualquier macro que se haya creado con anterioridad
     a esta etiqueta.
-    Ejemplo:
+    Example:
       <!macro a b>a<!macro-reset>a -> ba
 
-  <!notdir fichero>
-    Devuelve el nombre del _fichero_ a secas, es decir, le saca el directorio.
-    Ejemplos:
+  <!notdir file>
+    Returns just the name of the _file_, in other words, removes its
+    directory.
+    Examples:
       <!notdir src/foo.c> -> foo.c
       <!notdir a/b/foo.h> -> foo.h
       <!notdir hacks>     -> hacks
 
-  <!shift palabra>
-    Le quita el primer carácter a la _palabra_.
-    Ejemplos:
-      <!shift hola> -> ola
+  <!shift word>
+    Removes the first character of the _word_.
+    Examples:
+      <!shift hello> -> ello
       <!shift .txt> -> txt
 
-  <!suffix fichero>
-    Devuelve el sufijo del _fichero_, es decir, su extensión.
-    Ejemplos:
+  <!suffix file>
+    Returns the suffix of the _file_, in other words, its extension.
+    Examples:
       <!suffix "src/foo.c">   -> .c
       <!suffix "src-1.0/bar"> ->
       <!suffix "hacks">       ->
 
-  <!tolower palabra [ comienzo [ final ] ]>
-    Ver <!toupper>.
+  <!tolower word [ beginning [ final ] ]>
+    See <!toupper>.
 
-  <!toupper palabra [ comienzo [ final ] ]>
+  <!toupper word [ beginning [ final ] ]>
     Pasa parcial o completamente la _palabra_ a minúsculas o mayúsculas
     respectivamente dependiendo si especifica o no el _comienzo_ y/o
     el _final_. Si indica solamente el _comienzo_, el mismo deberá ser
@@ -320,16 +322,16 @@ FEATURES
     que quiere convertir, mientras que si también indica el _final_, está
     diciendo que quiere convertir todo un rango. Nota: valores negativos
     para _final_ indican valores desde el mismo final de la _palabra_.
-    Ejemplos:
-      <!tolower HOLA>      -> hola
-      <!tolower HOLA 0>    -> hOLA
-      <!toupper hola 1 2>  -> hOLa
-      <!toupper hola 0 -2> -> HOLa
+    Examples:
+      <!tolower HELLO>      -> hello
+      <!tolower HELLO 0>    -> hELLO
+      <!toupper hello 1 2>  -> hELlo
+      <!toupper hello 0 -2> -> HELLo
 
   <!version>
-    Muestra la versión del programa con la que se está procesando el fichero.
-    Ejemplo:
-      Está página fue creada con htmlex <!version>.
+    Shows the program version which is processing the file.
+    Example:
+      This page was created with htmlex <!version>.
 
 BUGS
 ====
@@ -341,6 +343,8 @@ WORK TO DO
 ==========
 
   - Tranlate the file `cambios.txt' to `changes.txt'.
+  - Improve this `readme.txt' file, the english isn't understandable
+    and some parts are in spanish yet.
 
 UPDATES
 =======
@@ -357,4 +361,4 @@ AUTHOR
   Any suggestion, thankfulness, and, with preference, donation ;-),
   will be welcome. You can visit http://www.davidcapello.com.ar for
   more information.
-  
+

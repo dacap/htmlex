@@ -264,6 +264,12 @@ static char *tag_include(int argc, char *argv[])
   return NULL;
 }
 
+static int sort_macros(const void *e1, const void *e2)
+{
+  return strlen(((struct _macros *)e2)->name) -
+         strlen(((struct _macros *)e1)->name);
+}
+
 static char *tag_macro(int argc, char *argv[])
 {
   int c;
@@ -273,8 +279,9 @@ static char *tag_macro(int argc, char *argv[])
       if (strcmp(argv[0], macros[c].name) == 0) {
         /* modify macro */
         if (argc >= 2) {
+          char *value = process_text(argv[1]);
           if (macros[c].value) free(macros[c].value);
-          macros[c].value = process_text(argv[1]);
+          macros[c].value = value;
         }
         /* remove macro */
         else {
@@ -293,6 +300,8 @@ static char *tag_macro(int argc, char *argv[])
       macros[c].name = strdup(argv[0]);
       macros[c].value = process_text(argv[1]);
       nmacros++;
+
+      qsort(macros, nmacros, sizeof(struct _macros), sort_macros);
     }
   }
 

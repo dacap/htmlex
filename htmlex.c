@@ -173,7 +173,7 @@ static char *own_strtok(char *s)
 void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
 {
   struct _IO_STREAM *old_o_stream = _o_stream;
-  char *s, buf[256];
+  char *s, buf[1024];
 
   _o_stream = out;
 
@@ -187,6 +187,27 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
         char *tag = s+1;
         int c, i, used = FALSE;
 
+        /* jump the comment? */
+        if ((s[2] == '-') && (s[3] == '-')) {
+          s += 2;
+          for (;;) {
+            if (strncmp(s, "-->", 3) == 0) {
+              s += 2;
+              break;
+            }
+            else if (*s == 0) {
+              if (!sgets(buf, sizeof(buf), in))
+                break;
+              s = buf;
+            }
+            else {
+              s++;
+            }
+          }
+          continue;
+        }
+
+        /* normal tag */
         for (c=0; ; s++) {
           if (*s == '<')
             c++;

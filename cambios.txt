@@ -1,3 +1,9 @@
+2001-11-03  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Agregado sort_macros: Ahora las macros con nombres más largos
+	  son las que se encuentran más al inicio de `macros[]'.
+	* Ya se saltean los comentarios.
+
 2001-11-01  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Nueva versión 0.2 release.

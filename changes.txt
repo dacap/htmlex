@@ -1,12 +1,44 @@
+2001-11-03  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Already the comments are skip.
+
 2001-11-01  David A. Capello  <dacap@users.sourceforge.net>
 
 	* New version 0.2 release.
 	* Ready, in 5 days I make a program much better of which I make in
 	  two months, and though the code is a complete mess, I love it :-)
 
+2001-10-31  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Improved the dependencies generation.
+	* Optimized some expressions.
+	* Ready the conditionals blocks: <!if><!elif><!else><!fi>.
+
+2001-10-30  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Tags: <!clean>, <!chop>, <!shift>, <!tolower> and <!toupper>.
+	* Ready: <!file-size>, <!exec>, <!exec-proc> and <!find>.
+	* Changed: <!htmlex-version> to <!version>.
+	* Added: <!basename>, <!dir>, <!notdir>, <!suffix>.
+	* Ready the <!include> tag.
+
+2001-10-29  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Ready the arguments: <arg*>.
+	* Ya se aceptan macros: también se aceptan macros dentro de otras,
+	  por lo que los argumentos pueden tener etiquetas y macros.
+
+2001-10-27  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Ya se leen ficheros y se pueden llamar diferentes funciones.
+	* El procesador de argumentos está listo.
+	* Comenzando desde cero una nueva versión de htmlex en C:
+	  ya que quiero velocidad, y que se puedan compilar varios ficheros
+	  a la vez (al estilo `gcc').
+
 ...
 
 2001-07-17  David A. Capello  <dacap@users.sourceforge.net>
 
-	* Inicial version: htmlex 0.1
+	* Initial version: htmlex 0.1
 
