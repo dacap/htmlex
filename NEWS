@@ -1,5 +1,13 @@
-[-- htmlex 0.1.2 release --]
+[-- htmlex 0.1.3 beta --]
 
+* New tag <!file-size>.
+
+[-- htmlex 0.1.2 beta --]
+
+* New tag <!clean>.
+* Enhanced the htmlex-site utility.
+* New tag <!exists> to know if a file exist or not.
+* Improve the process speed.
 * <!htmlex-version> to print the htmlex version.
 * A poor (and bad) english documentation.
 * Optimized htmlex-site to create the "skeleton" of a new site.

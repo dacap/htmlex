@@ -173,14 +173,15 @@ cat > "$dir/compress.sh" <<EOF
 
 tempfile=\`tempfile\`
 
-for filename in dest/*.$html ; do
-  cat "\$filename" \\
+for file in dest/*.$html ; do
+  cat "\$file" \\
 	| expand \\
 	| tr -s '\n' \\
 	| sed -e 's/^[ ]*//g' \\
 	| tr -d '\r' \\
 	> "\$tempfile"
-   mv "\$tempfile" "\$filename"
+   touch -r "\$file" "\$tempfile"
+   mv "\$tempfile" "\$file"
 done
 EOF
 
