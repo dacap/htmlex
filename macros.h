@@ -19,10 +19,6 @@
 #ifndef __MACROS_H__
 #define __MACROS_H__
 
-struct MACRO;
-struct MACRO_FUNC;
-struct MACRO_LIST;
-
 enum {
   NORMAL_MACRO,			/* normal macro */
   FUNCTIONAL_MACRO,		/* accessible functional macro */
@@ -44,9 +40,8 @@ typedef struct MACRO_LIST {
 
 #define MAX_MACRO_SPACES 1024
 
-extern struct MACRO_LIST *global_macros;
-extern struct MACRO_LIST *function_macros[MAX_MACRO_SPACES];
-extern int nfunction_macros;
+extern MACRO_LIST *macros_space[MAX_MACRO_SPACES];
+extern int nmacros_space;
 
 MACRO *new_macro (int type, char *name, char *value);
 MACRO_LIST *new_macro_list (void);

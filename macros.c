@@ -21,15 +21,14 @@
 #include "htmlex.h"
 #include "macros.h"
 
-MACRO_LIST *global_macros = NULL;
-MACRO_LIST *function_macros[MAX_MACRO_SPACES];
-int nfunction_macros = 0;
+MACRO_LIST *macros_space[MAX_MACRO_SPACES];
+int nmacros_space = 0;
 
 static unsigned int macros_table[256];
 static unsigned int funcs_table[256];
 
-static void push_function_space (void);
-static void pop_function_space (void);
+static void push_space (void);
+static void pop_space (void);
 
 static void destroy_macro_data (MACRO * macro)
 {
@@ -95,14 +94,11 @@ static int sort_macros (const void *e1, const void *e2)
 
 void add_macro (MACRO_LIST * list, MACRO * macro, int sort)
 {
-  int c;
-
-  c = list->num_macros++;
+  int c = list->num_macros++;
 
   if (list->num_macros > list->max_macros) {
     list->max_macros++;
-    list->macros =
-	realloc (list->macros, sizeof (MACRO) * list->max_macros);
+    list->macros = realloc (list->macros, sizeof (MACRO) * list->max_macros);
   }
 
   if (macro->type == NORMAL_MACRO)
@@ -110,8 +106,7 @@ void add_macro (MACRO_LIST * list, MACRO * macro, int sort)
   else
     funcs_table[(unsigned char)*macro->name]++;
 
-  list->macros[c] = *macro;
-
+  memcpy (list->macros+c, macro, sizeof (MACRO));
   free (macro);
 
   if (sort)
@@ -202,6 +197,7 @@ char *function_macro (MACRO_LIST * list, char *tag)
 	  int x = tag[1 + strlen (list->macros[c].name)];
 	  if (IS_BLANK (x) || (!x)) {
 	    MACRO_LIST *arg_list = list->macros[c].data;
+	    MACRO_LIST *sub_macros = new_macro_list ();
 	    char *replacement, *tok;
 	    char *holder = NULL;
 	    MACRO *macro;
@@ -212,21 +208,30 @@ char *function_macro (MACRO_LIST * list, char *tag)
 	    for (tok = own_strtok (tag + 2, &holder),
 		 tok = own_strtok (NULL, &holder); tok;
 		 tok = own_strtok (NULL, &holder)) {
-	      if (argc < arg_list->num_macros)
-		modify_macro (arg_list->macros+argc, process_text (tok));
+	      if (argc < arg_list->num_macros) {
+		macro = new_macro (NORMAL_MACRO,
+				   strdup (arg_list->macros[argc].name),
+				   process_text (tok));
 
+		add_macro (sub_macros, macro, TRUE);
+	      }
 	      argc++;
 	    }
 
-	    for (; argc < arg_list->num_macros; argc++)
-	      modify_macro (arg_list->macros+argc, strdup (""));
+	    for (; argc < arg_list->num_macros; argc++) {
+	      macro = new_macro (NORMAL_MACRO,
+				 strdup (arg_list->macros[argc].name),
+				 strdup (""));
 
-	    push_function_space ();
-	    function_macros[0] = list->macros[c].data;
+	      add_macro (sub_macros, macro, TRUE);
+	    }
 
+	    push_space ();
+	    macros_space[0] = sub_macros;
 	    replacement = process_text (list->macros[c].value);
+	    pop_space ();
 
-	    pop_function_space ();
+	    free_macro_list (sub_macros);
 
 	    list->macros[c].type = FUNCTIONAL_MACRO;
 
@@ -240,20 +245,14 @@ char *function_macro (MACRO_LIST * list, char *tag)
   return NULL;
 }
 
-static void push_function_space (void)
+static void push_space (void)
 {
-  if (nfunction_macros > 0)
-    memmove (function_macros + 1, function_macros,
-	     sizeof (MACRO_LIST *) * nfunction_macros);
-
-  nfunction_macros++;
+  memmove (macros_space + 1, macros_space, sizeof (MACRO_LIST *) * nmacros_space);
+  nmacros_space++;
 }
 
-static void pop_function_space (void)
+static void pop_space (void)
 {
-  nfunction_macros--;
-
-  if (nfunction_macros > 0)
-    memmove (function_macros, function_macros + 1,
-	     sizeof (MACRO_LIST *) * nfunction_macros);
+  nmacros_space--;
+  memmove (macros_space, macros_space + 1, sizeof (MACRO_LIST *) * nmacros_space);
 }

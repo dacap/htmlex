@@ -296,7 +296,7 @@ static char *tag_macro (int argc, char *argv[])
   if (argc >= 1) {
     if (argc >= 2) {
       char *value = process_text (argv[1]);
-      MACRO *macro = get_macro (global_macros, argv[0]);
+      MACRO *macro = get_macro (macros_space[0], argv[0]);
 
       /* modify macro */
       if (macro) {
@@ -305,12 +305,12 @@ static char *tag_macro (int argc, char *argv[])
       /* new macro */
       else {
 	macro = new_macro (NORMAL_MACRO, strdup (argv[0]), value);
-	add_macro (global_macros, macro, TRUE);
+	add_macro (macros_space[0], macro, TRUE);
       }
     }
     else {
       /* remove macro */
-      remove_macro (global_macros, argv[0]);
+      remove_macro (macros_space[0], argv[0]);
     }
   }
 
@@ -319,8 +319,8 @@ static char *tag_macro (int argc, char *argv[])
 
 static char *tag_macro_reset (int argc, char *argv[])
 {
-  free_macro_list (global_macros);
-  global_macros = new_macro_list ();
+  free_macro_list (macros_space[0]);
+  macros_space[0] = new_macro_list ();
   return NULL;
 }
 
@@ -520,7 +520,7 @@ static char *tag_function (int argc, char *argv[])
     int c;
 
     /* remove the macro */
-    remove_macro (global_macros, argv[0]);
+    remove_macro (macros_space[nmacros_space-1], argv[0]);
 
     /* create the new functional macro */
     macro = new_macro (FUNCTIONAL_MACRO, strdup (argv[0]), NULL);
@@ -541,7 +541,7 @@ static char *tag_function (int argc, char *argv[])
     if (!macro->value)
       macro->value = strdup ("");
 
-    add_macro (global_macros, macro, TRUE);
+    add_macro (macros_space[nmacros_space-1], macro, TRUE);
   }
   return NULL;
 }

@@ -20,10 +20,9 @@
 #define __HTMLEX_H__
 
 struct STREAM;
-struct MACRO_LIST;
 
 /* version of the program */
-#define VERSION "0.4.3"
+#define VERSION "0.4.4"
 
 /* classic macros */
 #ifndef NULL

@@ -360,7 +360,8 @@ void process_file (STREAM * in, STREAM * out)
 	}
 	/* check for user functional macros <!...> */
 	if (!used && can_attach) {
-	  char *replacement = function_macro (global_macros, tag);
+	  char *replacement = function_macro (macros_space[nmacros_space-1],
+					      tag);
 	  if (replacement) {
 	    stputs (replacement, out);
 	    free (replacement);
@@ -397,18 +398,12 @@ void process_file (STREAM * in, STREAM * out)
 	char *replacement = NULL;
 	int c, length = 0;
 
-	/* check for function macros */
-	for (c = 0; c < nfunction_macros; c++)
-	  if (function_macros[c]) {
-	    replacement =
-		replace_by_macro (function_macros[c], s, &length);
-	    if (replacement)
-	      break;
-	  }
-
-	/* check for global macros */
-	if (!replacement)
-	  replacement = replace_by_macro (global_macros, s, &length);
+	/* check for macros */
+	for (c = 0; c < nmacros_space; c++) {
+	  replacement = replace_by_macro (macros_space[c], s, &length);
+	  if (replacement)
+	    break;
+	}
 
 	/* just put the character */
 	if (!replacement) {
@@ -576,13 +571,14 @@ Report bugs and patches to <dacap@users.sourceforge.net>\n\
 
 static void prepare_processing (void)
 {
-  global_macros = new_macro_list ();
-  function_macros[0] = NULL;
+  nmacros_space = 1;
+  macros_space[0] = new_macro_list ();
 }
 
 static void release_processing (void)
 {
-  free_macro_list (global_macros);
+  free_macro_list (macros_space[0]);
+  nmacros_space = 0;
 }
 
 /* main function */

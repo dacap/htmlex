@@ -1,3 +1,7 @@
+[-- htmlex 0.4.4 release --]
+
+* Arreglado un error cuando se definen macros dentro de una functión.
+
 [-- htmlex 0.4.3 release --]
 
 * Corregida la explicación del argumento -a.

@@ -10,8 +10,8 @@ endif
 
 GCC = gcc
 
-CFLAGS = -s -W -Wall -Wno-unused
-LFLAGS = -s
+CFLAGS = -g -W -Wall -Wno-unused
+LFLAGS = -g
 
 FILES = htmlex macros stream tags
 

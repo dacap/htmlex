@@ -1,4 +1,10 @@
+2003-07-11  David A. Capello  <dacap@users.sourceforge.net>
+
+	* macros.c: Fixed a bug when define macros inside functions.
+
 2003-06-27  David A. Capello  <dacap@users.sourceforge.net>
+
+	* COPYING: Added.
 
 	* htmlex.c (usage): Added some "\n\" (by Andreas Kraft).
 	(log_printf): Renamed PRINTF (Andreas Kraft idea).
