@@ -1,8 +1,8 @@
-<MACRO name=á value=&aacute;>
-<MACRO name=é value=&eacute;>
-<MACRO name=í value=&iacute;>
-<MACRO name=ó value=&oacute;>
-<MACRO name=ú value=&uacute;>
-<MACRO name=¿ value=&iquest;>
+<!macro á &aacute;>
+<!macro é &eacute;>
+<!macro í &iacute;>
+<!macro ó &oacute;>
+<!macro ú &uacute;>
+<!macro ¿ &iquest;>
 
 ¿Cómo le vá?

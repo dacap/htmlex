@@ -1,0 +1,7 @@
+<!if <!arg1> == es>
+  Españõl
+<!elif <!arg1> == en>
+  English
+<!else>
+  Unknow (use `if.htex [es|en]')
+<!fi>

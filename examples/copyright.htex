@@ -1,5 +1,5 @@
-<MACRO name=$AUTHOR_NAME value="David A. Capello">
-<MACRO name=$AUTHOR_ADDRESS value="dacap@users.sourceforge.net">
+<!macro $AUTHOR_NAME "David A. Capello">
+<!macro $AUTHOR_ADDRESS dacap@users.sourceforge.net>
 
-Copyright (C) $AUTHOR_NAME<BR>
+Copyright (C) $AUTHOR_NAME
 $AUTHOR_ADDRESS

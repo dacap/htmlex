@@ -1,5 +1,5 @@
-<MACRO name=hi value=bye>
-<MACRO name=bye value=hello>
+<!macro hi bye>
+<!macro bye hello>
 
 hi
 bye
