@@ -82,6 +82,20 @@ static char *tag_clean(int argc, char *argv[])
     return NULL;
 }
 
+/* adds a dependency */
+static char *tag_dep(int argc, char *argv[])
+{
+  /* at least one argument: the file name */
+  if (argc >= 1) {
+    char *filename = process_text(argv[0]);
+    /* add a dependency */
+    add_deps(filename);
+    free(filename);
+  }
+  /* nothing to add */
+  return NULL;
+}
+
 /* returns the directory */
 static char *tag_dir(int argc, char *argv[])
 {
@@ -192,8 +206,14 @@ static char *tag_file_size(int argc, char *argv[])
   if (argc >= 1) {
     char *filename = process_text(argv[0]);
     int size = get_filesize(filename);
-    char format[32];
-    if (size < 1024)
+    char format[256];
+    /* add a dependency */
+    if (size >= 0)
+      add_deps(filename);
+    /* make the file size in a human-readable format */
+    if (size < 0)
+      sprintf(format, "%d", size);
+    else if (size < 1024)
       sprintf(format, "%db", size);
     else if (size < 1024 * 1000)
       sprintf(format, "%0.1fk", (float)size / 1024.0);
@@ -609,6 +629,7 @@ static struct _tags all_tags[] =
   { "basename",       tag_basename        },
   { "chop",           tag_chop            },
   { "clean",          tag_clean           },
+  { "dep",            tag_dep             },
   { "dir",            tag_dir             },
   { "exec",           tag_exec            },
   { "exec-proc",      tag_exec_proc       },

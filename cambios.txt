@@ -1,3 +1,12 @@
+2001-12-04  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Arreglados algunos errores con la etiqueta <!file-size>:
+	  El buffer para el formato era muy pequeño.
+
+2001-12-03  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Nueva etiqueta <!dep archivo>.
+
 2001-11-03  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Agregado sort_macros: Ahora las macros con nombres más largos
