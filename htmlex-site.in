@@ -9,6 +9,10 @@
 
 echo "htmlex-site @VERSION@"
 
+# get the user name
+
+username=`cat /etc/passwd | sed -e "/^$USER\:/p;D" | cut -d: -f5 | cut -d, -f1`
+
 # obtains a line of text from the user
 
 get_option() {
@@ -32,10 +36,10 @@ make_dir() {
 
 # get main site information
 
-dir=`get_option "Directory name" $HOSTNAME`
-author=`get_option "Author name" $USER`
-address=`get_option "Author address" $USER@$HOSTNAME`
-date=`get_option "Copyright year" \`date +%Y\``
+dir=`get_option "Directory name" "$HOSTNAME"`
+author=`get_option "Author name" "$username"`
+address=`get_option "Author address" "$USER@$HOSTNAME"`
+date=`get_option "Copyright year" "\`date +%Y\`"`
 
 # get system configuration
 
@@ -146,11 +150,11 @@ cat > "$dir/compress.sh" <<EOF
 tempfile=\`tempfile\`
 
 for filename in dest/*.$html ; do
-  cat "\$filename" \
-	| expand \
-	| tr -s '\n' \
-	| sed -e 's/^[ ]*//g' \
-	| tr -d '\r' \
+  cat "\$filename" \\
+	| expand \\
+	| tr -s '\n' \\
+	| sed -e 's/^[ ]*//g' \\
+	| tr -d '\r' \\
 	> "\$tempfile"
    mv "\$tempfile" "\$filename"
 done
@@ -201,8 +205,8 @@ chmod 700 "$dir/upload.sh"
 
 # make data files
 
-echo -n "Index"     > "$dir/data/index/en/title"
-echo -n "Índice"    > "$dir/data/index/es/title"
+echo "Index"        > "$dir/data/index/en/title"
+echo "Índice"       > "$dir/data/index/es/title"
 echo "Index text"   > "$dir/data/index/en/text"
 echo "Texto índice" > "$dir/data/index/es/text"
 
