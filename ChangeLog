@@ -1,3 +1,8 @@
+2003-06-27  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (usage): Added some "\n\" (by Andreas Kraft).
+	(log_printf): Renamed PRINTF (Andreas Kraft idea).
+
 2003-05-14  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex.c (usage): Fixed a stupid and incorrect comment about the

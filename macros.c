@@ -170,8 +170,8 @@ char *replace_by_macro (MACRO_LIST * list, char *buf, int *length)
 	if (strncmp (buf,
 		     list->macros[c].name,
 		     strlen (list->macros[c].name)) == 0) {
-	  PRINTF (2, "macro found: \"%s\" -> \"%s\"\n",
-		  list->macros[c].name, list->macros[c].value);
+	  log_printf (2, "macro found: \"%s\" -> \"%s\"\n",
+		      list->macros[c].name, list->macros[c].value);
 	  *length = strlen (list->macros[c].name);
 	  return strdup (list->macros[c].value);
 	}

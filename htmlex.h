@@ -89,6 +89,6 @@ void new_token (int type);
 void delete_token (void);
 void update_state (void);
 void add_deps (const char *s);
-void PRINTF (int level, const char *format, ...);
+void log_printf (int level, const char *format, ...);
 
 #endif				/* __HTMLEX_H__ */

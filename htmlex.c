@@ -292,7 +292,7 @@ void process_file (STREAM * in, STREAM * out)
 	c = *s;
 	*s = 0;
 
-	PRINTF (2, "tag found: \"%s\"\n", tag + 1);
+	log_printf (2, "tag found: \"%s\"\n", tag + 1);
 
 	/* check for <!arg...> */
 	if (strncmp (tag + 1, "arg", 3) == 0) {
@@ -346,11 +346,11 @@ void process_file (STREAM * in, STREAM * out)
 		    free (replacement);
 		  }
 
-		  PRINTF (2, "tag \"%s\" was processed\n", tags[i].name);
+		  log_printf (2, "tag \"%s\" was processed\n", tags[i].name);
 		}
 		else
-		  PRINTF (2, "tag \"%s\" wasn't processed\n",
-			  tags[i].name);
+		  log_printf (2, "tag \"%s\" wasn't processed\n",
+			      tags[i].name);
 
 		used = TRUE;
 		break;
@@ -494,7 +494,7 @@ void update_state (void)
 void add_deps (const char *s)
 {
   if (calculating_deps && can_dep) {
-    PRINTF (1, "new dependency: \"%s\"\n", s);
+    log_printf (1, "new dependency: \"%s\"\n", s);
 
     if (!depstream)
       depstream = stopen (NULL, NULL);
@@ -534,7 +534,7 @@ void out_deps (void)
   }
 }
 
-void PRINTF (int level, const char *format, ...)
+void log_printf (int level, const char *format, ...)
 {
   if (level <= verbose_level) {
     char buf[1024];
@@ -550,8 +550,8 @@ void PRINTF (int level, const char *format, ...)
 static void usage (void)
 {
   printf ("\
-htmlex %s - a powerful hypertext markup language preprocessor
-Copyright (C) 2001, 2002, 2003 by David A. Capello
+htmlex %s - a powerful hypertext markup language preprocessor\n\
+Copyright (C) 2001, 2002, 2003 by David A. Capello\n\
 \n\
 Usage:\n\
   htmlex [ OPTIONS ] [ FILES... ]\n\
@@ -562,7 +562,7 @@ Options:\n\
   -o   adds output files\n\
   -a   adds arguments for the input files\n\
   -I   adds search include paths (you can use old '-i' parameter)\n\
-  -E   changes the HTML extension used by -c option (.html by default)
+  -E   changes the HTML extension used by -c option (.html by default)\n\
   -k   kills comments (old htmlex behavior)\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
   -v   activates the verbose mode (to see what htmlex does)\n\
@@ -652,7 +652,7 @@ int main (int argc, char *argv[])
 	  case '-':
 	    break;
 	  default:
-	    PRINTF (0, "in \"%s\", unknown option '%c'\n", argv[i], argv[i][j]);
+	    log_printf (0, "in \"%s\", unknown option '%c'\n", argv[i], argv[i][j]);
 	    quit = 1;
 	    break;
 	}
@@ -664,19 +664,19 @@ int main (int argc, char *argv[])
     if (!quit)
       usage ();
     else
-      PRINTF (0, "try \"htmlex -h\"\n");
+      log_printf (0, "try \"htmlex -h\"\n");
 
     exit (quit);
   }
 
   if (verbose_level > 0)
-    PRINTF (verbose_level, "verbose level: %d\n", verbose_level);
+    log_printf (verbose_level, "verbose level: %d\n", verbose_level);
 
   /**********************************************************************
    * Process arguments
    **********************************************************************/
 
-  PRINTF (1, "processing arguments ---\n");
+  log_printf (1, "processing arguments ---\n");
 
   for (i = 1; i < argc; i++) {
     if (argv[i][0] == '-') {
@@ -712,60 +712,60 @@ int main (int argc, char *argv[])
     /* new input file */
     else if (compile_next) {
       in_files[in_nfiles++] = argv[i];
-      PRINTF (1, "new input: \"%s\"\n", argv[i]);
+      log_printf (1, "new input: \"%s\"\n", argv[i]);
     }
     /* new output file */
     else if (output_next) {
       out_files[out_nfiles++] = argv[i];
-      PRINTF (1, "new output: \"%s\"\n", argv[i]);
+      log_printf (1, "new output: \"%s\"\n", argv[i]);
     }
     /* new arguments for the input files */
     else if (argument_next) {
       args[nargs++] = argv[i];
-      PRINTF (1, "new argument: \"%s\"\n", argv[i]);
+      log_printf (1, "new argument: \"%s\"\n", argv[i]);
     }
     /* new path for inclusion of files */
     else if (include_next) {
       paths[npaths++] = argv[i];
-      PRINTF (1, "new include: \"%s\"\n", argv[i]);
+      log_printf (1, "new include: \"%s\"\n", argv[i]);
     }
     /* new path for inclusion of files */
     else if (html_extension_next) {
       html_extension = argv[i];
-      PRINTF (1, "html extension: \"%s\"\n", argv[i]);
+      log_printf (1, "html extension: \"%s\"\n", argv[i]);
     }
     /* default source file to put in STDOUT */
     else {
       stdout_source = argv[i];
       argument_next = TRUE;
-      PRINTF (1, "main input file: \"%s\"\n", stdout_source);
+      log_printf (1, "main input file: \"%s\"\n", stdout_source);
     }
   }
 
-  PRINTF (1, "arguments processed ---\n");
+  log_printf (1, "arguments processed ---\n");
 
   /**********************************************************************
    * Process STDIN
    **********************************************************************/
 
   if ((in_nfiles == 0) && (!stdout_source) && (!calculating_deps)) {
-    PRINTF (1, "STDIN: compiling\n");
+    log_printf (1, "STDIN: compiling\n");
 
     /* open stdin */
     in = stfile (stdin);
 
     /* get output file */
     if (out_nfiles > 0) {
-      PRINTF (1, "STDIN: output to %s\n", out_files[0]);
+      log_printf (1, "STDIN: output to %s\n", out_files[0]);
 
       out = try_sopen (out_files[0], "w");
       if (!out) {
-	PRINTF (0, "%s: can't create file\n", out_files[0]);
+	log_printf (0, "%s: can't create file\n", out_files[0]);
 	exit (1);
       }
     }
     else {
-      PRINTF (1, "STDIN: output to STDOUT\n");
+      log_printf (1, "STDIN: output to STDOUT\n");
 
       out = stfile (stdout);
     }
@@ -777,7 +777,7 @@ int main (int argc, char *argv[])
     stclose (in);
     stclose (out);
 
-    PRINTF (1, "STDIN: done\n");
+    log_printf (1, "STDIN: done\n");
   }
 
   /**********************************************************************
@@ -785,12 +785,12 @@ int main (int argc, char *argv[])
    **********************************************************************/
 
   else if (stdout_source) {
-    PRINTF (1, "%s: compiling\n", stdout_source);
+    log_printf (1, "%s: compiling\n", stdout_source);
 
     /* open the input file */
     in = try_sopen (stdout_source, "r");
     if (!in) {
-      PRINTF (0, "%s: file not found\n", stdout_source);
+      log_printf (0, "%s: file not found\n", stdout_source);
       exit (1);
     }
 
@@ -800,16 +800,16 @@ int main (int argc, char *argv[])
     }
     else {
       if (out_nfiles > 0) {
-	PRINTF (1, "%s: output to %s\n", stdout_source, out_files[0]);
+	log_printf (1, "%s: output to %s\n", stdout_source, out_files[0]);
 
 	out = try_sopen (out_files[0], "w");
 	if (!out) {
-	  PRINTF (0, "%s: can't create file\n", out_files[0]);
+	  log_printf (0, "%s: can't create file\n", out_files[0]);
 	  exit (1);
 	}
       }
       else {
-	PRINTF (1, "%s: output to STDOUT\n", stdout_source, stdout_source);
+	log_printf (1, "%s: output to STDOUT\n", stdout_source, stdout_source);
 
 	out = stfile (stdout);
       }
@@ -834,12 +834,12 @@ int main (int argc, char *argv[])
 
   else {
     for (i=0; i<in_nfiles; i++) {
-      PRINTF (1, "%s: compiling\n", in_files[i]);
+      log_printf (1, "%s: compiling\n", in_files[i]);
 
       /* open the input file */
       in = try_sopen (in_files[i], "r");
       if (!in) {
-	PRINTF (0, "%s: file not found\n", in_files[i]);
+	log_printf (0, "%s: file not found\n", in_files[i]);
 	exit (1);
       }
 
@@ -857,7 +857,7 @@ int main (int argc, char *argv[])
 	  replace_extension (buf, success_path, "");
       }
 
-      PRINTF (1, "%s: output to %s\n", in_files[i], buf);
+      log_printf (1, "%s: output to %s\n", in_files[i], buf);
 
       if (calculating_deps) {
 	out = NULL;
@@ -865,7 +865,7 @@ int main (int argc, char *argv[])
       else {
 	out = try_sopen (buf, "w");
 	if (!out) {
-	  PRINTF (0, "%s: can't create file\n", buf);
+	  log_printf (0, "%s: can't create file\n", buf);
 	  exit (1);
 	}
       }
@@ -885,7 +885,7 @@ int main (int argc, char *argv[])
     }
   }
 
-  PRINTF (1, "all done\n");
+  log_printf (1, "all done\n");
 
   return 0;
 }

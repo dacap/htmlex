@@ -550,7 +550,7 @@ static char *tag_end (int argc, char *argv[])
 {
   /* this tag must be used inside <!function> */
 
-  PRINTF (0, "you use <!end> outside a <!function>\n");
+  log_printf (0, "you use <!end> outside a <!function>\n");
   return NULL;
 }
 
