@@ -406,15 +406,15 @@ Usage:\n\
 \n\
 Options:\n\
 \n\
-  -c   compiles all next files (use the active output file names\n\
-       or generate they as `file.htex' to `file.html')\n\
-  -o   adds output files (use it before the `-c')\n\
-  -a   adds arguments for the input files (use it before the `-c')\n\
-  -i   adds all next arguments to inclusion paths (for search files)\n\
+  -c   compiles all subsequent files (use the active output file names\n\
+       or defaults to converting from `file.htex' to `file.html')\n\
+  -o   adds output files (note: must be used before the `-c')\n\
+  -a   adds arguments for the input files (note: must be used before the `-c')\n\
+  -i   adds all subsequent arguments to search include paths\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
-  -h   shows this help and exit\n\
-  -v   shows the htmlex version and exit\n\
-  --   stops the -c, -o and -i arguments\n\
+  -h   displays help screen and exit\n\
+  -v   displays the htmlex version and exit\n\
+  --   terminates a -c, -o, -a or -i list\n\
 \n\
 Report bugs and patches to <dacap@users.sourceforge.net>\n\
 ");

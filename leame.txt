@@ -347,11 +347,6 @@ FALLOS
   Comunicar `bugs' a <dacap@users.sourceforge.net>.
   Hoy en día no tengo conocimiento sobre algún error.
 
-TRABAJO POR HACER
-=================
-
-  Nada.
-
 ACTUALIZACIONES
 ===============
 

@@ -21,25 +21,26 @@ LICENSE
 INTRODUCTION
 ============
 
-  htmlex is a small but powerful HTML preprocesor, which you can have some
-  advantages relative to the conventional format of the .html files. Besides,
-  as htmlex is fully compatible with the standard HTML syntax, you can use
-  any HTML file that you have, and rename it to .htex.
+  htmlex is a small but powerful HTML preprocesor, which has numerous
+  advantages compared to conventional HTML files. On top of that, htmlex
+  is fully compatible with the standard HTML syntax. This means that you
+  can use any HTML file that you have previously made, rename it to .htex,
+  and start using htmlex.
 
 OPTIONS
 =======
 
-  htmlex interpret the following options in the command line:
+  htmlex interprets the following options from the command line:
 
-    -c   compiles all next files (use the active output file names
-         or generate they as `file.htex' to `file.html')
-    -o   adds output files (use it before the `-c')
-    -a   adds arguments for the input files (use it before the `-c')
-    -i   adds all next arguments to inclusion paths (for search files)
+    -c   compiles all subsequent files (use the active output file names
+         or defaults to converting from `file.htex' to `file.html')
+    -o   adds output files (note: must be used before the `-c')
+    -a   adds arguments for the input files (note: must be used before the `-c')
+    -i   adds all subsequent arguments to search include paths
     -d   calculates dependencies of the input files (output to STDOUT)
-    -h   shows this help and exit
-    -v   shows the htmlex version and exit
-    --   stops the -c, -o and -i arguments
+    -h   displays help screen and exit
+    -v   displays the htmlex version and exit
+    --   terminates a -c, -o, -a or -i list
 
 EXECUTION
 =========
@@ -58,16 +59,16 @@ EXECUTION
   Process STDIN and leave the results in STDOUT.
 
   ./htmlex file arguments...
-  Process the `file' and leave the results in STDOUT.
+  Process `file' and leave the results in STDOUT.
 
   ./htmlex -c files...
-  Process the `files' and leave the results in `files.html'.
+  Process `files' and leave the results in `files.html'.
 
   ./htmlex -o destinations... -c files...
   Process the `files' and leave the results in the `destinations'.
 
-  Some examples of equivalence
-  ----------------------------
+  Some equivalent examples
+  ------------------------
 
   ./htmlex file.htex arg1 arg2 > file.html
   ./htmlex -a arg1 arg2 -c file.htex
@@ -75,31 +76,31 @@ EXECUTION
   ./htmlex -a arg1 arg2 < file.htex > file.html
   ./htmlex -a arg1 arg2 -o file.html < file.htex
 
-  Common errors
-  -------------
+  Common mistakes
+  ---------------
 
   ./htmlex -c src.htex -o dest.html
-  Here the result remain in src.html, and not in dest.html.
+  Here the result will be outputted to src.html, and not to dest.html.
   Solution:
     ./htmlex -o dest.html -c src.htex
 
   ./htmlex -i examples src.htex > src.html
-  Here the program wait the input from STDIN, because src.htex
-  count as other path for -i.
+  Here the program waits for input from STDIN, because src.htex
+  counts as another path for -i.
   Solution:
     ./htmlex -i examples -- src.htex > src.html
     ./htmlex -i examples -c src.htex
 
   ./htmlex src.htex -i dir
-  Here src.htex will be search just in the active directory,
-  because dir/ is added once that orig.htex already is processed.
+  Here src.htex will be looked for only in the active directory,
+  because dir/ is added only after orig.htex is processed.
   Solution:
     ./htmlex -i dir -- src.htex
     ./htmlex dir/src.htex
 
   ./htmlex -c index.htex en English
-  Here will be try of compile the files `index.htex', `en' and
-  `English', instead of pass the arguments to `index.htex'.
+  Here, htmlex will try to compile the files `index.htex', `en' and
+  `English', instead of passing the arguments to `index.htex'.
   Solution:
     ./htmlex index.htex en English > index.html
     ./htmlex -a en English -- index.htex > index.html
@@ -108,14 +109,13 @@ EXECUTION
 FEATURES
 ========
 
-  References
-  ----------
+  Reference
+  ---------
 
   This notation will be used along of the definitions:
-    expression            The _expression_ is obligatory.
-    [ expression ]        The _expression_ is optional, could or not to be.
-    { expression }        The _expression_ could not be or it could be repeat
-                          one or more times.
+    expression            The _expression_ is mandatory.
+    [ expression ]        The _expression_ is optional.
+    { expression }        The _expression_ is optional and repeatable.
     source -> result      Indicates that _results_ will be obtained
                           when the program will process the _source_ text.
 
@@ -126,19 +126,19 @@ FEATURES
   sorting):
 
   <!args>
-    Returns the quantity of arguments which was passed to the input file.
+    Returns the number of arguments which was passed to the input file.
     Example:
       You input <!args> argument(s).
 
   <!arg1> ... <!argN>
     Returns the argument's value. The arguments are passed to the files
-    athwart the command line with the -a option or for the <!include file
+    via the command line's -a option, or from the <!include file
     arg1 ... argN> tag.
     Example:
        2nd argument = <!arg2>.
 
   <!basename file>
-    Returns the base name of the _file_, in other words, removes its
+    Returns the base name of the _file_. In other words, removes its
     extension.
     Examples:
       <!basename src/foo.c>    -> src/foo
@@ -146,26 +146,26 @@ FEATURES
       <!basename hacks>        -> hacks
 
   <!chop word>
-    Removes the last character of the _word_.
+    Removes the last character of _word_.
     Examples:
       <!chop hello>       -> hell
       <!chop directorio/> -> directorio
 
   <!clean word>
-    Clean the _word_ removing the blank spaces (tabulators and line breaks)
-    which it has in the beginning and end.
+    Cleans _word_ removing blank space (tabulators and line breaks)
+    around it.
     Example:
       *<!clean " hola ">* -> *hola*
 
   <!dep file>
-    Adds as dependency the `file'. This tag has effect just in the dependency
+    Adds 'file' as a dependency. This tag takes effect only in the dependency
     generation process.
     Example:
       <!exec ./script.sh>
       <!dep script.sh>
 
   <!dir file>
-    Returns the directory of the _file_, in other words, deletes the name.
+    Returns the directory part of _file_. In other words, deletes the file name.
     Examples:
       <!dir src/foo.c> -> src/
       <!dir a/b/foo.h> -> a/b/
@@ -177,16 +177,16 @@ FEATURES
   <!else>
     See <!if>.
 
-  <!exec file { arguments }>
-    Executes the indicated _file_ passing the _arguments_ to it. That the
-    command prints for the standard output (STDOUT), will be inserted
-    such in the result.
+  <!exec command { arguments }>
+    Executes the indicated _command_ passing the _arguments_ to it. Whatever
+    the command prints to the standard output (STDOUT) will be inserted at
+    this position in the file.
     Examples:
       <!exec date>
       <!exec gcc --version>
 
   <!exec-proc file { arguments }>
-    Equal to <!exec ...> just this will process the results as other
+    Equal to <!exec ...> except that it will process the results as other
     htmlex file.
     Examples:
       <!exec-proc cat header.htex>
@@ -197,42 +197,41 @@ FEATURES
     See <!if>.
 
   <!file-size file>
-    Returns the size of the _file_ in bytes, kilo-bytes (k) or mega-bytes (M)
-    depending which is the better for the "human sight".
+    Returns the size of _file_ in a format that's more human-readable
+    (bytes, KB, MB or GB).
     Example:
       image <!file-size image.jpg>
 
   <!find file>
-    Will try find the _file_ in all the possibles paths (the active
-    directory and all directories in -i), and will return the name
-    of the _file_ with the matching path, in the case that it can't
-    be founded, doesn't return anything.
+    Tries to find _file_ in the search path (the active directory and
+    all directories added with the -i option), and will return the name
+    of the _file_ with the matching path. In the case that the file isn't
+    found, nothing is returned.
     Examples:
       <!if <!find index.en.html>>
         english
       </!if>
 
   <!if expression>
-    One of the more powerful features which htmlex has with respect of the
-    conventional HTML, are the conditional-blocks.
+    One of the more powerful features of htmlex relative to
+    conventional HTML is the conditional-blocks.
 
-    Through four tags you can do the majority of the conditional operations
-    of whatever programming's language. Although nowadays, htmlex has a
-    poor handle of operations, in the future maybe will attempt improve
-    this aspect.
+    Through four tags you can do some of the conditional operations
+    of "normal" programming languages. Although nowadays, htmlex has a
+    poor handling of operations, improvements to this construct will
+    made.
 
-    The general syntaxis is the following:
+    The general syntax is the following:
 
       <!if [ expression ]> block
       { <!elif [ expression ]> block }
       [ <!else> block ]
       <!fi>
 
-    The _block_ can be any text (or just nothing), can has others tags,
-    and consequential, can has more nested <!if> tags.
+    The _block_ can be any text (or just nothing), can have other tags,
+    and consequentialy, can have more nested <!if> tags.
 
-    The _expression_ for make comparations, can has this formats (in other
-    case this always will give false):
+    The _expression_ to be evaluated can have any of the formats below:
 
       FORMAT               TRUE IF...
       -------              ----------
@@ -248,13 +247,16 @@ FEATURES
       number1 != number2   _number1_ is different than _number2_
       word1 == word2       _word1_ is identical than _word2_
       word1 != word2       _word1_ differs in just one character than _word2_
+      
+    If the expression format cannot be resolved to the table above, then false
+    is returned.
 
-    The _numbers_ are distinguished of the _words_ when have some of these
+    _numbers_ are distinguished from _words_ when they have some of these
     formats:
 
-      [1-9][0-9]*      a decimal
-      0x[0-9a-fA-F]*   a hexadecimal
-      0[0-7]           an octal
+      [1-9][0-9]*      decimals
+      0x[0-9a-fA-F]*   hexadecimals
+      0[0-7]           octals
 
     Examples:
       <!if <!arg1> == --help>
@@ -269,44 +271,43 @@ FEATURES
 
   <!include file { arguments }>
     Includes the _file_ to be processed like an normal .htex file. This file
-    will be used also for calculate dependencies (which file need what other).
+    will also be used for calculating dependencies. This is equivalent to
+    C's #include.
     Examples:
       <!include header.htex>
       <!include footer.htex en UK>
 
   <!macro name [ value ]>
-    Creates and/or modifies an macro with the specify _name_ and _value_.
-    If the _value_ is not indicated, the macro will be eliminated from the
-    memory. The main utility of the macros, is replace a determined text
-    (its _name_) for other determined text (its _value_).
+    Creates or modifies a macro with the specified _name_ and _value_.
+    If _value_ is not specified, the macro will be eliminated from
+    memory. The main use of macros is to replace a certain keyword
+    (its _name_) for some predetermined text (its _value_).
     Example:
       <!macro hi bye>
-      hi -> bye
+      hi -> bye   <!-- "hi" replaced by "bye" -->
       <!macro hi>
-      hi -> hi
+      hi -> hi    <!-- "hi" macro is deleted -->
 
   <!macro-reset>
-    Removes from the memory any macro which was created previously to this
-    tag.
+    Removes any macro which was created before this tag.
     Example:
       <!macro a b>a<!macro-reset>a -> ba
 
   <!notdir file>
-    Returns just the name of the _file_, in other words, removes its
-    directory.
+    Returns the name of the _file_ without the directory.
     Examples:
       <!notdir src/foo.c> -> foo.c
       <!notdir a/b/foo.h> -> foo.h
       <!notdir hacks>     -> hacks
 
   <!shift word>
-    Removes the first character of the _word_.
+    Removes the first character of _word_.
     Examples:
       <!shift your> -> our
       <!shift .txt> -> txt
 
   <!suffix file>
-    Returns the suffix of the _file_, in other words, its extension.
+    Returns the extension of _file_.
     Examples:
       <!suffix "src/foo.c">   -> .c
       <!suffix "src-1.0/bar"> ->
@@ -316,14 +317,15 @@ FEATURES
     See <!toupper>.
 
   <!toupper word [ beginning [ final ] ]>
-    Converts partial or completelly the _word_ to lower or upper case
-    depending if you specify or not the _beginning_ and/or the _final_.
-    If you indicate just the _beginning_, the same should be an index
-    (with zero base, in other words, 0 is the first letter) of that
-    character which you want convert, while if you also indicate the
-    _final_, you are saying which you want convert an entire range.
-    Note: negative values for the _final_ indicates values from the
-    end of the _word_.
+    Converts partially or completelly _word_ to lower or upper case
+    depending on if you specify or not the _beginning_ and/or the _final_
+    character index. Indecies start at 0.
+    If only _beginning_ is specified, then the range starting from
+    _beginning_ to the last character is converted.
+    If you also indicate _final_, you are specifying an upper bound
+    to the conversion range.
+    Note: negative values for _final_ indicates that values are to be taken
+    from the end of the _word_.
     Examples:
       <!tolower HELLO>      -> hello
       <!tolower HELLO 0>    -> hELLO
@@ -338,20 +340,13 @@ FEATURES
 BUGS
 ====
 
-  Report `bugs' to <dacap@users.sourceforge.net>.
-  Nowadays I don't have knowledge about some error.
-
-WORK TO DO
-==========
-
-  - Translate the file `cambios.txt' to `changes.txt'.
-  - Improve this `readme.txt' file, the english isn't understandable
-    and some parts are in spanish yet.
+  Report bugs to <dacap@users.sourceforge.net>.
+  I'm not aware of any bugs in my program.
 
 UPDATES
 =======
 
-  To obtain the last information about htmlex, you can go to:
+  To obtain the latest information about htmlex, go to:
 
     http://htmlex.sourceforge.net
 
@@ -360,7 +355,7 @@ AUTHOR
 
   David A. Capello <dacap@users.sourceforge.net>
 
-  Any suggestion, thankfulness, and, with preference, donation ;-),
-  will be welcome. You can visit http://www.davidcapello.com.ar for
-  more information.
+  Any suggestion, thank-you letters, or (preferably) donations ;-),
+  will be most welcomed.
+  You can visit http://www.davidcapello.com.ar for more information.
 

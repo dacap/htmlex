@@ -1,5 +1,7 @@
 2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
 
+	* Arreglado el `readme.txt' (a un inglés más entendible): Muchas
+	  gracias a Robert J Ohannessian por esto.
 	* Parche de Robert J Ohannessian: Renombrado el prefijo de todo
 	  lo referido a los `streams', desde `s*' a `st*' (con esto htmlex
 	  se puede compilar con Mingw sin problemas). También, hizo
