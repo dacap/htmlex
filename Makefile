@@ -1,22 +1,24 @@
 # Makefile for htmlex
 
 PACKAGE = htmlex
-VERSION = 0.3.2
+VERSION = 0.4
 
 ifdef DJDIR
   EXE = .exe
   ZIP = .zip
-  TAR = zip -9
+  TAR = zip -r -9
+  BINNAME = dos
 else
   EXE =
   ZIP = .tar.gz
   TAR = tar chozf
+  BINNAME = uni
 endif
 
 GCC = gcc
 
-CFLAGS = -s -W -Wall -Wno-unused
-LFLAGS = -s
+CFLAGS = -g -W -Wall -Wno-unused
+LFLAGS = -g
 
 FILES = htmlex macros stream tags
 
@@ -33,10 +35,12 @@ DOC_DISTFILES = \
 SRC_DISTFILES = \
 	$(addsuffix .c, $(FILES)) \
 	$(addsuffix .h, $(FILES)) \
-	Makefile
+	Makefile \
+	htmlex-filter.pl
 
 BIN_DISTFILES = \
-	$(PACKAGE)$(EXE)
+	$(PACKAGE)$(EXE) \
+	htmlex-filter.pl
 
 distdir = $(PACKAGE)-$(VERSION)
 
@@ -71,7 +75,7 @@ dist-bin:
 	mkdir $(distdir)
 	-chmod 777 $(distdir)
 	cp -Ppr $(DOC_DISTFILES) $(BIN_DISTFILES) $(distdir)
-	$(TAR) $(distdir)-bin$(ZIP) $(distdir)
+	$(TAR) $(distdir)-$(BINNAME)$(ZIP) $(distdir)
 	-rm -rf $(distdir)
 
 dtou:

@@ -1,3 +1,12 @@
+[-- htmlex 0.4 release --]
+
+* Nuevo script htmlex-filter.pl para "limpiar" la salida de htmlex. 
+* Nueva etiqueta "<!function nombre {argumentos}>cuerpo<!end>".
+  Para hacer macros como en C/C++.
+* Arreglado el funcionamiento de los argumentos con comillas (ahora
+  acepta \n \t \" etc.).
+* Arreglados algunos errores menores.
+
 [-- htmlex 0.3.2 release --]
 
 * Algunas notas sobre macros en leame.txt.

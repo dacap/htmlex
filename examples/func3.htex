@@ -1,0 +1,8 @@
+<!function section $NAME $TEXT>
+  <h1>$NAME</h1>
+  <p>$TEXT</p>
+<!end>
+
+<!section Tools "Here is the work">
+<!section Games "Here is the fun">
+<!section Help "Here is nobody">

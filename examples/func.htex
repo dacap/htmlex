@@ -1,0 +1,6 @@
+<!function a z>a. <!b z><!end>
+<!function b z>b. <!c z><!end>
+<!function c z>c. z<!end>
+<!macro z "Good Bye World!">
+<!a "Hello World!">
+z

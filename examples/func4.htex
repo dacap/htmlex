@@ -1,0 +1,3 @@
+<!function func1 param>FUNC1: param<!end>
+<!func1 "<!function func2 param>FUNC2: param<!end><!func2 \"message\">">
+<!func2 message2>

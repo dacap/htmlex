@@ -1,0 +1,13 @@
+<!function hi lang>
+  <!if lang == es>
+    Hola
+  <!elif lang == en>
+    Hello
+  <!else>
+    Adiós! (Good bye!)
+  <!fi>
+<!end>
+
+<!hi es>
+<!hi en>
+<!hi>

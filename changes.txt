@@ -1,3 +1,18 @@
+2003-02-10  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex-filter.pl: Added this script to optimize htmlex output.
+
+	* htmlex.c, macros.c: Functional macros works perfectly.
+
+2003-02-09  David A. Capello  <dacap@users.sourceforge.net>
+
+	* macros.c: Rewritten with a better API. Support for functional
+	macros, now you can make customized tags (like C/C++ macros).
+
+	* htmlex.c (own_strtok): Fixed the quotes inside quotes behavior
+	(<!macro a "my \"macro\"">).
+	(main): Fixed a little bug of illegal access to arguments.
+
 2002-12-16  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Fixed the behavior to use arguments like:

@@ -1,5 +1,5 @@
 /* htmlex - a powerful hypertext markup language preprocessor
- * Copyright (C) 2001, 2002 by David A. Capello
+ * Copyright (C) 2001, 2002, 2003 by David A. Capello
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,19 +19,44 @@
 #ifndef __MACROS_H__
 #define __MACROS_H__
 
-#define MAX_MACROS 1024
+struct MACRO;
+struct MACRO_FUNC;
+struct MACRO_LIST;
 
-struct _macros
-{
-  char *name;
-  char *value;
+enum {
+  NORMAL_MACRO,			/* normal macro */
+  FUNCTIONAL_MACRO,		/* accessible functional macro */
+  UNAVAILABLE_MACRO,		/* unavailable functional macro */
 };
 
-extern struct _macros macros[MAX_MACROS];
-extern int nmacros;
-extern unsigned char macros_table[256];
+typedef struct MACRO {
+  unsigned int type:2;
+  char *name;
+  char *value;
+  void *data;
+} MACRO;
 
-void remove_macros(void);
+typedef struct MACRO_LIST {
+  int max_macros;
+  int num_macros;
+  MACRO *macros;
+} MACRO_LIST;
 
-#endif /* __MACROS_H__ */
+#define MAX_MACRO_SPACES 1024
 
+extern struct MACRO_LIST *global_macros;
+extern struct MACRO_LIST *function_macros[MAX_MACRO_SPACES];
+extern int nfunction_macros;
+
+MACRO *new_macro (int type, char *name, char *value);
+MACRO_LIST *new_macro_list (void);
+void free_macro_list (MACRO_LIST * list);
+
+void add_macro (MACRO_LIST * list, MACRO * macro, int sort);
+int remove_macro (MACRO_LIST * list, const char *name);
+int modify_macro (MACRO_LIST * list, const char *name, char *value);
+
+char *replace_by_macro (MACRO_LIST * list, char *buf, int *length);
+char *function_macro (MACRO_LIST * list, char *tag);
+
+#endif				/* __MACROS_H__ */

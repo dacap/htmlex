@@ -1,5 +1,5 @@
 /* htmlex - a powerful hypertext markup language preprocessor
- * Copyright (C) 2001, 2002 by David A. Capello
+ * Copyright (C) 2001, 2002, 2003 by David A. Capello
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 #ifndef __HTMLEX_H__
 #define __HTMLEX_H__
 
-/* input/output stream */
-struct _IO_STREAM;
+struct STREAM;
+struct MACRO_LIST;
 
 /* version of the program */
-#define VERSION "0.3.2"
+#define VERSION "0.4"
 
 /* classic macros */
 #ifndef NULL
@@ -43,36 +43,43 @@ struct _IO_STREAM;
 extern char *args[MAX_ARGS];
 extern int nargs;
 
-/* the active output stream */
-extern struct _IO_STREAM *_o_stream;
+/* the current streams */
+extern struct STREAM *_i_stream;
+extern struct STREAM *_o_stream;
+
+/* current line */
+#define MAX_BYTES 4096
+
+extern char *current_line;
+extern char *current_col;
 
 /* last path utiliced by the `try_fopen' function */
 extern char success_path[256];
 
-/* states of the `if' comparations */
-#define IF_SPACE    -1 /* if-spaces separator (one space is an independent block of other) */
-#define IF_NOTYET    0 /* not yet enter in any if-block */
-#define IF_INSIDE    1 /* inside the if-block */
-#define IF_OUTSIDE   2 /* outside the if-block (but we already pass for an if-block) */
+/* states of the parser */
+enum {
+  TOK_SPACE,			/* independent block space */
+  TOK_IF_NOTYET,		/* not yet enter in any if-block */
+  TOK_IF_INSIDE,		/* inside the if-block */
+  TOK_IF_OUTSIDE,		/* outside the if-block (but we already pass for an if-block) */
+};
 
-/* `if' states */
-#define MAX_IFS 256
-extern char ifs[MAX_IFS];
-extern int nifs;
-
-extern int can_attach;
+/* parser tokens */
+#define MAX_TOKENS 256
+extern char token[MAX_TOKENS];
+extern int ntoken;
 
 /* some functions */
-struct _IO_STREAM *try_sopen(const char *filename, const char *mode);
-int get_filesize(const char *filename);
-char *temp_filename(void);
-void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out);
-char *process_text(const char *s);
-void new_ifs(int type);
-void delete_ifs(void);
-void update_ifs(void);
-void add_deps(const char *s);
-void PRINTF(int level, const char *format, ...);
+struct STREAM *try_sopen (const char *filename, const char *mode);
+int get_filesize (const char *filename);
+char *temp_filename (void);
+char *own_strtok (char *s);
+void process_file (struct STREAM *in, struct STREAM *out);
+char *process_text (const char *s);
+void new_token (int type);
+void delete_token (void);
+void update_tokens (void);
+void add_deps (const char *s);
+void PRINTF (int level, const char *format, ...);
 
-#endif /* __HTMLEX_H__ */
-
+#endif				/* __HTMLEX_H__ */

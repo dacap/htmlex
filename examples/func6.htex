@@ -1,0 +1,8 @@
+<!function item x y z>{ x, y, z }<!end>
+RGB primary[] =
+{
+  <!item 1 0 0>,
+  <!item 0 1 0>,
+  <!item 0 0 1>,
+};
+

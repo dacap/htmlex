@@ -1,3 +1,11 @@
+[-- htmlex 0.4 release --]
+
+* New htmlex-filter.pl script to "clean" the htmlex output. 
+* New "<!function name {args}>body<!end>" tag. To make macros
+  like C/C++.
+* Fixed the quoted arguments behavior (now accepts \n \t \" etc.).
+* Fixed some minor bugs.
+
 [-- htmlex 0.3.2 release --]
 
 * Some notes about macros in readme.txt.

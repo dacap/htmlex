@@ -1,5 +1,5 @@
 htmlex - a powerful hypertext markup language preprocessor (HTML)
-Copyright (C) 2001, 2002 by David A. Capello
+Copyright (C) 2001, 2002, 2003 by David A. Capello
 
 LICENSE
 =======
@@ -102,7 +102,7 @@ EXECUTION
   ./htmlex -c index.htex en English
   Here, htmlex will try to compile the files `index.htex', `en' and
   `English', instead of passing the arguments to `index.htex'.
-  Solution:
+  Possible options:
     ./htmlex index.htex en English > index.html
     ./htmlex -a en English -- index.htex > index.html
     ./htmlex -a en English -c index.htex
@@ -123,7 +123,7 @@ FEATURES
   Tags
   ----
 
-  Lists of extra tags which you can use in the files (by alphabetical
+  Lists of tags which you can use in the .htex files (by alphabetical
   sorting):
 
   <!args>
@@ -178,6 +178,9 @@ FEATURES
   <!else>
     See <!if>.
 
+  <!end>
+    See <!function>.
+
   <!exec command { arguments }>
     Executes the indicated _command_ passing the _arguments_ to it. Whatever
     the command prints to the standard output (STDOUT) will be inserted at
@@ -212,6 +215,17 @@ FEATURES
       <!if <!find index.en.html>>
         english
       <!fi>
+
+  <!function name { submacros }>
+    Creates a new functional macro like in C/C++. When the program see
+    this tag, it follows reading the file in "raw" mode until finds
+    <!end> tag. Then, the macro could be called like any other tag:
+    <!name {args}>
+    Example:
+      <!function my_macro a b c>a is b c<!end>
+      <!my_macro This my macro>.
+    Results:
+      This is my macro.
 
   <!if expression>
     One of the more powerful features of htmlex relative to
@@ -353,7 +367,6 @@ BUGS
 ====
 
   Report bugs to <dacap@users.sourceforge.net>.
-  I'm not aware of any bugs in my program.
 
 UPDATES
 =======
@@ -370,4 +383,3 @@ AUTHOR
   Any suggestion, thank-you letters, or (preferably) donations ;-),
   will be most welcomed.
   You can visit http://www.davidcapello.com.ar for more information.
-

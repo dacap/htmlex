@@ -1,5 +1,5 @@
 htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
-Copyright (C) 2001, 2002 por David A. Capello
+Copyright (C) 2001, 2002, 2003 por David A. Capello
 
 LICENCIA
 ========
@@ -106,7 +106,7 @@ EJECUCIÓN
   ./htmlex -c index.htex es Español
   Aquí se intentará compilar los ficheros `index.htex', `es' y
   `Español', en vez de pasarle los argumentos al fichero `index.htex'.
-  Solución:
+  Posibles opciones:
     ./htmlex index.htex es Español > index.html
     ./htmlex -a es Español -- index.htex > index.html
     ./htmlex -a es Español -c index.htex
@@ -128,8 +128,8 @@ CARACTERÍSTICAS
   Etiquetas
   ---------
 
-  Lista de las etiquetas extras que puede utilizar en los ficheros
-  (por orden alfabético):
+  Lista de las etiquetas que puede utilizar en los ficheros .htex (por
+  orden alfabético):
 
   <!args>
     Devuelve la cantidad de argumentos que se le pasaron al fichero de
@@ -183,6 +183,9 @@ CARACTERÍSTICAS
   <!else>
     Ver <!if>.
 
+  <!end>
+    Ver <!function>.
+
   <!exec fichero { argumentos }>
     Ejecuta el _fichero_ indicado pasándole los _argumentos_. Lo que el
     comando imprima por la salida estandard (STDOUT), será insertado tal
@@ -217,6 +220,17 @@ CARACTERÍSTICAS
       <!if <!find index.es.html>>
         español
       <!fi>
+
+  <!function nombre { submacros }>
+    Crea una nueva macro funcional al estilo C/C++. El programa al ver
+    esta etiqueta, sigue leyendo el archivo de forma "cruda" hasta
+    encontrar la etiqueta <!end>. Luego, la macro puede ser llamada
+    como cualquier otra etiqueta: <!nombre {args}>.
+    Ejemplo:
+      <!function mi_macro a b c>a es b c<!end>
+      <!mi_macro Esta mi macro>.
+    Resulta en:
+      Esta es mi macro.
 
   <!if expresión>
     Una de las más poderosas características que tiene htmlex con respecto
@@ -356,8 +370,7 @@ NOTAS IMPORTANTES
 FALLOS
 ======
 
-  Comunicar `bugs' a <dacap@users.sourceforge.net>.
-  Hoy en día no tengo conocimiento sobre algún error.
+  Comunicar `bugs' y errores a <dacap@users.sourceforge.net>.
 
 ACTUALIZACIONES
 ===============
@@ -374,4 +387,3 @@ AUTOR
   Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
   será bien recibida. Puede visitar http://www.davidcapello.com.ar para
   mayor información.
-

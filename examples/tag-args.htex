@@ -1,0 +1,8 @@
+{!function my_func a b}*a*b*{!end}
+<!function my_func a b>*a*b*<!end>
+Double Quotes:
+	{!my_func "\"First\"" "\"Second\""}
+	<!my_func "\"First\"" "\"Second\"">
+Single Quotes:
+	{!my_func '\"First\"' '\"Second\"'}
+	<!my_func '\"First\"' '\"Second\"'>

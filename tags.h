@@ -1,5 +1,5 @@
 /* htmlex - a powerful hypertext markup language preprocessor
- * Copyright (C) 2001, 2002 by David A. Capello
+ * Copyright (C) 2001, 2002, 2003 by David A. Capello
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,13 @@
 #ifndef __TAGS_H__
 #define __TAGS_H__
 
-struct _tags
-{
+typedef struct TAG {
   char *name;
-  char *(*proc)(int argc, char *argv[]);
-  int if_tag;
-};
+  char *(*proc) (int argc, char *argv[]);
+  int if_tag:1;
+} TAG;
 
-extern struct _tags *tags;
+extern TAG *tags;
 extern int ntags;
 
-#endif /* __TAGS_H__ */
-
+#endif				/* __TAGS_H__ */

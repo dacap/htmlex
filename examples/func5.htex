@@ -1,0 +1,14 @@
+<!function a z>a. <!b z><!end>
+<!function b z>b. <!c z><!end>
+<!function c z>c. <!d z><!end>
+<!function d z>d. <!e z><!end>
+<!function e z>e. <!f z><!end>
+<!function f z>f. <!g z><!end>
+<!function g z>g. z<!end>
+<!a LA>
+<!b SI>
+<!c DO>
+<!d RE>
+<!e MI>
+<!f FA>
+<!g SOL>
