@@ -36,10 +36,11 @@ FEATURES
     - <!macro> to create macros (a text that will be replaced with other);
     - <!exec> to execute extern programs and put its output;
     - <!if><!elif><!else><!fi> to control conditionals-blocks;
-    - <!lc>, <!lcfirst>, <!uc>, <!ucfirst>, <!chop>, <!shift>, <!basename>,
-      <!dir>, <!notdir>, <!suffix> to control text strings and file names.
-    - between others very useful like <!include-path> and <!macro-reset>
-      (see the man page for more information).
+    - <!lc>, <!lcfirst>, <!uc>, <!ucfirst>, <!chop>, <!clean>, <!shift>,
+      <!basename>, <!dir>, <!notdir>, <!suffix>, to control text strings
+      and file names.
+    - between others very useful like <!exists>, <!include-path> and
+      <!macro-reset> (see the man page for more information).
 
 INSTALLATION
 ============

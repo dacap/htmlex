@@ -27,10 +27,10 @@ make_dir() {
   if [ ! -d "$1" ] ; then
     mkdir "$1"
     echo "Building: $1/ ..."
-  else
-    echo "Warning: $1/ exists .."
-    read -p "Continue [y]/n?" value
-    if [ "$value" == "n" ] ; then exit 1 ; fi
+#  else
+#    echo "Warning: $1/ exists .."
+#    read -p "Continue [y]/n?" value
+#    if [ "$value" == "n" ] ; then exit 1 ; fi
   fi
 }
 
@@ -46,7 +46,12 @@ date=`get_option "Copyright year" "\`date +%Y\`"`
 html=`get_option "HTML extension" html`
 htex=`get_option "htmlex extension" htex`
 jpeg=`get_option "JPEG extension" jpg`
-xpm=`get_option "X11 pixmap extension" xpm`
+
+autoconv=`get_option "Automatic xpm -> $jpeg conversion?" n`
+
+if [ "$autoconv" == "y" ] ; then
+  xpm=`get_option "X11 pixmap extension" xpm`
+fi
 
 # make the directory struct
 
@@ -71,13 +76,36 @@ echo "$author <$address>" > "$dir/AUTHORS"
 
 # make Makefile
 
-cat > "$dir/Makefile" <<EOF
+if [ "$autoconv" == "y" ] ; then
+  Makefile_text1="\
+JPEG = .$jpeg
+XPM = .$xpm"
+  Makefile_text2="\
+JPEG_FILES = \\
+	\$(addprefix \$(DESTDIR)/images/, \$(addsuffix \$(JPEG), \\
+	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/images/*\$(XPM))))))"
+  Makefile_text3="\
+	\$(HTML_FILES) \\
+	\$(JPEG_FILES)"
+  Makefile_text4="all: \$(HTML_FILES) \$(JPEG_FILES)"
+  Makefile_text5="\
+\$(DESTDIR)/images/%\$(JPEG): \$(SRCDIR)/images/%\$(XPM)
+	xpmtoppm \$< | ppmtojpeg > \$@"
+else
+  Makefile_text1=""
+  Makefile_text2=""
+  Makefile_text3="\
+	\$(HTML_FILES)"
+  Makefile_text4="all: \$(HTML_FILES)"
+  Makefile_text5=""
+fi
+
+cat -s > "$dir/Makefile" <<EOF
 # Makefile for build the site
 
 HTEX = .$htex
 HTML = .$html
-JPEG = .$jpeg
-XPM  = .$xpm
+$Makefile_text1
 
 DESTDIR = dest
 SRCDIR = src
@@ -92,22 +120,19 @@ HTML_FILES = \\
 	\$(addprefix \$(DESTDIR)/, \$(addsuffix \$(HTML), \\
 	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/*\$(HTEX))))))
 
-JPEG_FILES = \\
-	\$(addprefix \$(DESTDIR)/images/, \$(addsuffix \$(JPEG), \\
-	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/images/*\$(XPM))))))
+$Makefile_text2
 
 CLEAN_FILES = \\
 	Makefile.dep
 
 DISTCLEAN_FILES = \\
-	\$(HTML_FILES) \\
-	\$(JPEG_FILES)
+$Makefile_text3
 
 .PHONY: default all clean distclean depend
 
 default: all
 
-all: \$(HTML_FILES) \$(JPEG_FILES)
+$Makefile_text4
 	@echo Done!
 
 clean:
@@ -138,8 +163,7 @@ else
 
 endif
 
-\$(DESTDIR)/images/%\$(JPEG): \$(SRCDIR)/images/%\$(XPM)
-	xpmtoppm \$< | ppmtojpeg > \$@
+$Makefile_text5
 EOF
 
 # compress site utility
@@ -257,9 +281,15 @@ cat > "$dir/src/layout/body.$htex" <<EOF
 <!include src/layout/foot.$htex>
 EOF
 
+if [ "$autoconv" == "y" ] ; then
+  text="<IMG src=\"images/logo.$jpeg\" alt=\"<!include data/index/\$LANG/title>\">"
+else
+  text="<!include data/index/\$LANG/title>"
+fi
+
 cat > "$dir/src/bodies/index.$htex" <<EOF
 <DIV align="center">
-<IMG src="images/logo.$jpeg" alt="<!include data/index/\$LANG/title>">
+$text
 </DIV>
 
 <P><!include data/index/\$LANG/text></P>
@@ -275,6 +305,7 @@ EOF
 
 # make a image
 
+if [ "$autoconv" == "y" ] ; then
 cat > "$dir/src/images/logo.$xpm" <<EOF
 /* XPM */
 static char * logo_xpm[] = {
@@ -299,3 +330,4 @@ static char * logo_xpm[] = {
 "   ............   ............   ............   ............    ",
 "                                                                "};
 EOF
+fi

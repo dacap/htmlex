@@ -1,2 +1,2 @@
-En el año <!chop <!exec date +%Y>> se ejecutó este
+En el año <!clean <!exec date +%Y>> se ejecutó este
 programa por el usuario `<!exec echo -n $USER>'

@@ -61,16 +61,12 @@ except that this permission notice may be stated in a translation approved
 by the Foundation.
 @end titlepage
 
-@c All the nodes can be updated using the EMACS command
-@c texinfo-every-node-update, which is normally bound to C-c C-u C-e.
 @node Top, Instructions, (dir), (dir)
 
 @ifinfo
 This file documents the @code{htmlex} command to a powerful hypertext markup language preprocessor
 @end ifinfo
 
-@c All the menus can be updated with the EMACS command
-@c texinfo-all-menus-update, which is normally bound to C-c C-u C-a.
 @menu
 * Instructions::                How to read this manual. 
 * Copying::                     How you can copy and share @code{htmlex}.
