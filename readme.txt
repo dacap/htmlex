@@ -1,5 +1,5 @@
 htmlex - a powerful hypertext markup language preprocessor (HTML)
-Copyright (C) 2001 by David A. Capello
+Copyright (C) 2001, 2002 by David A. Capello
 
 LICENSE
 =======
@@ -29,7 +29,7 @@ INTRODUCTION
 OPTIONS
 =======
 
-  htmlex interpreta las siguientes opciones en la línea de comandos:
+  htmlex interpret the following options in the command line:
 
     -c   compiles all next files (use the active output file names
          or generate they as `file.htex' to `file.html')
@@ -131,9 +131,9 @@ FEATURES
       You input <!args> argument(s).
 
   <!arg1> ... <!argN>
-    Retornan el valor del argumento indicado. Los argumentos se le pasan a
-    los ficheros a través de la línea de comandos con la opción -a o por
-    medio de la etiqueta <!include fichero arg1 ... argN>.
+    Returns the argument's value. The arguments are passed to the files
+    athwart the command line with the -a option or for the <!include file
+    arg1 ... argN> tag.
     Example:
        2nd argument = <!arg2>.
 
@@ -178,7 +178,7 @@ FEATURES
     See <!if>.
 
   <!exec file { arguments }>
-    Execute the indicated _file_ passing the _arguments_ to it. That the
+    Executes the indicated _file_ passing the _arguments_ to it. That the
     command prints for the standard output (STDOUT), will be inserted
     such in the result.
     Examples:
@@ -203,77 +203,73 @@ FEATURES
       image <!file-size image.jpg>
 
   <!find file>
-    Intentará encontrar el _fichero_ en todas las ubicaciones posibles
-    (en el directorio actual y en los directorios indicados con -i), y
-    devolverá el nombre del mismo con la ruta de acceso correspondiente,
-    en caso de que el _fichero_ no se pueda encontrar, no devuelve nada.
+    Will try find the _file_ in all the possibles paths (the active
+    directory and all directories in -i), and will return the name
+    of the _file_ with the matching path, in the case that it can't
+    be founded, doesn't return anything.
     Examples:
       <!if <!find index.en.html>>
         english
       </!if>
 
   <!if expression>
-    Una de las más poderosas características que tiene htmlex con respecto
-    al HTML convencional, es la posibilidad de controlar bloques de
-    condiciones.
+    One of the more powerful features which htmlex has with respect of the
+    conventional HTML, are the conditional-blocks.
 
-    Por medio de cuatro etiquetas podrá hacer la mayoría de operaciones de
-    condición de cualquier otro lenguaje de programación. Aunque hoy en día,
-    htmlex posee un pobre manejo de operaciones, en el futuro tal vez se
-    intente mejorar este aspecto.
+    Through four tags you can do the majority of the conditional operations
+    of whatever programming's language. Although nowadays, htmlex has a
+    poor handle of operations, in the future maybe will attempt improve
+    this aspect.
 
-    La sintaxis general es la siguiente:
+    The general syntaxis is the following:
 
-      <!if expresión> bloque
-      { <!elif expresión> bloque }
-      [ <!else> bloque ]
+      <!if [ expression ]> block
+      { <!elif [ expression ]> block }
+      [ <!else> block ]
       <!fi>
 
-    Los _bloques_ pueden ser cualquier texto (o simplemente nada), hasta
-    pueden tener otras etiquetas a su vez, y por consiguiente, puede tener
-    más etiquetas <!if> anidadas.
+    The _block_ can be any text (or just nothing), can has others tags,
+    and consequential, can has more nested <!if> tags.
 
-    En cuanto a las _expresiones_ para realizar las comparaciones, pueden
-    tener estos formatos (en caso contrario siempre dará falso):
+    The _expression_ for make comparations, can has this formats (in other
+    case this always will give false):
 
-      FORMATO                VERDADERO SI...
-      -------                ---------------
-      número                 _número_ es distinto a cero
-      ! número               _número_ es cero
-      palabra                _palabra_ tiene un caracter como mínimo
-      ! palabra              _palabra_ está vacía
-      número1 < número2      _numero1_ es menor a _número2_
-      número1 > número2      _numero1_ es mayor a _número2_
-      número1 <= número2     _numero1_ es menor o igual a _número2_
-      número1 >= número2     _numero1_ es mayor o igual a _número2_
-      número1 == número2     _numero1_ es igual a _número2_
-      número1 != número2     _numero1_ es diferente a _número2_
-      palabra1 == palabra2   _palabra1_ es idéntica a _palabra2_
-      palabra1 != palabra2   _palabra1_ difiere en un caracter a _palabra2_
+      FORMAT               TRUE IF...
+      -------              ----------
+      number               _number_ is not zero
+      ! number             _number_ is zero
+      word                 _word_ has one character as minimum
+      ! word               _word_ is empty
+      number1 < number2    _number1_ is less than _number2_
+      number1 > number2    _number1_ is greater than _number2_
+      number1 <= number2   _number1_ is less or equal than _number2_
+      number1 >= number2   _number1_ is greater or equal than _number2_
+      number1 == number2   _number1_ is equal than _number2_
+      number1 != number2   _number1_ is different than _number2_
+      word1 == word2       _word1_ is identical than _word2_
+      word1 != word2       _word1_ differs in just one character than _word2_
 
-    Los números se distinguen de las palabras cuando tiene alguno de
-    los siguientes formatos:
+    The _numbers_ are distinguished of the _words_ when have some of these
+    formats:
 
-      [1-9][0-9]*      un decimal
-      0x[0-9a-fA-F]*   un hexadecimal
-      0[0-7]           un octal
+      [1-9][0-9]*      a decimal
+      0x[0-9a-fA-F]*   a hexadecimal
+      0[0-7]           an octal
 
     Examples:
       <!if <!arg1> == --help>
-        ¿Necesita ayuda?
+        Do you need help?
       <!else>
-        Pruebe con --help.
+        Try with --help.
       <!fi>
-      <!if <!tolower HOLA> == <!tolower Hola>>
-        funciona
+      <!if <!tolower HELLO> == <!tolower Hello>>
+        works
       <!fi>
-      <!if>Por acá nunca pasará<!fi>
+      <!if>For here it won't never pass<!fi>
 
   <!include file { arguments }>
-    Incluye el _fichero_ para que sea procesado como un archivo .htex.
-    Dicho archivo será utilizado también para calcular las dependencias
-    (cual archivo necesita de que otro). Los argumentos son opcionales,
-    y si el no _fichero_ no se encuentra, el programa sale con error.
+    Includes the _file_ to be processed like an normal .htex file. This file
+    will be used also for calculate dependencies (which file need what other).
     Examples:
       <!include header.htex>
       <!include footer.htex en UK>
@@ -362,7 +358,7 @@ UPDATES
 AUTHOR
 ======
 
-  David A. Capello <dacap@users.sourceforge.net>.
+  David A. Capello <dacap@users.sourceforge.net>
 
   Any suggestion, thankfulness, and, with preference, donation ;-),
   will be welcome. You can visit http://www.davidcapello.com.ar for

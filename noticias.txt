@@ -1,8 +1,9 @@
 [-- htmlex 0.3 release --]
 
-* Fixed some errors.
-* The <!file-size> tag generates dependencies.
-* New <!dep> tag.
+* Completada la documentación en inglés.
+* Arreglados varios errores.
+* La etiqueta <!file-size> genera dependencias.
+* Nueva etiqueta <!dep>.
 
 [-- htmlex 0.2 pre-release --]
 

@@ -1,3 +1,14 @@
+2002-01-03  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Escribí el resto del fichero readme.txt.
+	* Eliminado un `warning' de gcc-3.0 en usage():
+	  "multi-line string literals are deprecated".
+
+2002-01-02  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Arreglado un estupido error en sseek(): se cambiaron los
+	  `return 0' por `break's (gracias a Jorge Ramírez Flores).
+
 2001-12-04  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Arreglados algunos errores con la etiqueta <!file-size>:

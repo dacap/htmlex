@@ -1,5 +1,5 @@
 /* htmlex - a powerful hypertext markup language preprocessor
- * Copyright (C) 2001 by David A. Capello
+ * Copyright (C) 2001, 2002 by David A. Capello
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,13 +231,13 @@ int sseek(STREAM *stream, int offset, int whence)
       switch (whence) {
         case SEEK_SET:
           _io_smemdata->pos = offset;
-          return 0;
+          break;
         case SEEK_CUR:
           _io_smemdata->pos += offset;
-          return 0;
+          break;
         case SEEK_END:
           _io_smemdata->pos = _io_smemdata->end + offset;
-          return 0;
+          break;
         default:
           return -1;
       }

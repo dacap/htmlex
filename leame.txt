@@ -1,5 +1,5 @@
 htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
-Copyright (C) 2001 por David A. Capello
+Copyright (C) 2001, 2002 por David A. Capello
 
 LICENCIA
 ========
@@ -247,16 +247,16 @@ CARACTERÍSTICAS
       ! número               _número_ es cero
       palabra                _palabra_ tiene un caracter como mínimo
       ! palabra              _palabra_ está vacía
-      número1 < número2      _numero1_ es menor a _número2_
-      número1 > número2      _numero1_ es mayor a _número2_
-      número1 <= número2     _numero1_ es menor o igual a _número2_
-      número1 >= número2     _numero1_ es mayor o igual a _número2_
-      número1 == número2     _numero1_ es igual a _número2_
-      número1 != número2     _numero1_ es diferente a _número2_
+      número1 < número2      _número1_ es menor a _número2_
+      número1 > número2      _número1_ es mayor a _número2_
+      número1 <= número2     _número1_ es menor o igual a _número2_
+      número1 >= número2     _número1_ es mayor o igual a _número2_
+      número1 == número2     _número1_ es igual a _número2_
+      número1 != número2     _número1_ es diferente a _número2_
       palabra1 == palabra2   _palabra1_ es idéntica a _palabra2_
       palabra1 != palabra2   _palabra1_ difiere en un caracter a _palabra2_
 
-    Los números se distinguen de las palabras cuando tiene alguno de
+    Los _números_ se distinguen de las _palabras_ cuando tiene alguno de
     los siguientes formatos:
 
       [1-9][0-9]*      un decimal
@@ -277,8 +277,7 @@ CARACTERÍSTICAS
   <!include fichero { argumentos }>
     Incluye el _fichero_ para que sea procesado como un archivo .htex.
     Dicho archivo será utilizado también para calcular las dependencias
-    (cual archivo necesita de que otro). Los argumentos son opcionales,
-    y si el no _fichero_ no se encuentra, el programa sale con error.
+    (cuál archivo necesita de qué otro).
     Ejemplos:
       <!include cabecera.htex>
       <!include pie.htex es AR>
@@ -363,7 +362,7 @@ ACTUALIZACIONES
 AUTOR
 =====
 
-  David A. Capello <dacap@users.sourceforge.net>.
+  David A. Capello <dacap@users.sourceforge.net>
 
   Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
   será bien recibida. Puede visitar http://www.davidcapello.com.ar para

@@ -1,5 +1,5 @@
 /* htmlex - a powerful hypertext markup language preprocessor
- * Copyright (C) 2001 by David A. Capello
+ * Copyright (C) 2001, 2002 by David A. Capello
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

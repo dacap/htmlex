@@ -1,7 +1,7 @@
 # Makefile for htmlex
 
 PACKAGE = htmlex
-VERSION = 0.2
+VERSION = 0.3
 
 ifdef DJDIR
   EXE = .exe
@@ -12,6 +12,8 @@ else
   ZIP = .tar.gz
   TAR = tar chozf
 endif
+
+GCC = gcc
 
 CFLAGS = -s -W -Wall -Wno-unused
 LFLAGS = -s
@@ -41,10 +43,10 @@ distdir = $(PACKAGE)-$(VERSION)
 all: $(PACKAGE)$(EXE)
 
 %.o: %.c
-	gcc $(CFLAGS) -o $@ -c $<
+	$(GCC) $(CFLAGS) -o $@ -c $<
 
 $(PACKAGE)$(EXE): $(addsuffix .o, $(FILES))
-	gcc $(LFLAGS) -o $@ $^
+	$(GCC) $(LFLAGS) -o $@ $^
 
 clean:
 	-rm -fv $(addsuffix .o, $(FILES)) Makefile.dep
@@ -53,7 +55,7 @@ distclean: clean
 	-rm -fv $(PACKAGE)$(EXE)
 
 depend:
-	gcc -MM $(addsuffix .c, $(FILES)) > Makefile.dep
+	$(GCC) -MM $(addsuffix .c, $(FILES)) > Makefile.dep
 
 dist: dist-src dist-bin
 
@@ -79,4 +81,3 @@ utod:
 	-utod $(DOC_DISTFILES) $(SRC_DISTFILES)
 
 -include Makefile.dep
-
