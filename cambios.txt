@@ -6,7 +6,6 @@
 
 2001-11-01  David A. Capello  <dacap@users.sourceforge.net>
 
-	* Nueva versión 0.2 release.
 	* Listo, en unos 5 días hice un programa mucho mejor de lo que
 	  hice en dos meses, y aunque el código es un completo desorden,
 	  lo amo :-)

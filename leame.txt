@@ -153,7 +153,7 @@ CARACTERÍSTICAS
   <!chop palabra>
     Le quita el último carácter a la _palabra_.
     Ejemplos:
-      <!chop hola>        -> hol
+      <!chop seco>        -> eco
       <!chop directorio/> -> directorio
 
   <!clean palabra>
@@ -178,9 +178,7 @@ CARACTERÍSTICAS
   <!exec fichero { argumentos }>
     Ejecuta el _fichero_ indicado pasándole los _argumentos_. Lo que el
     comando imprima por la salida estandard (STDOUT), será insertado tal
-    cual en el resultado. Algo a tomar en cuenta, es que todos los
-    argumentos (menos el fichero claro está), serán encerrados entre
-    comillas dobles antes de pasarle el comando a la shell.
+    cual en el resultado.
     Ejemplos:
       <!exec date>
       <!exec gcc --version>
@@ -320,12 +318,12 @@ CARACTERÍSTICAS
 
   <!toupper palabra [ comienzo [ final ] ]>
     Pasa parcial o completamente la _palabra_ a minúsculas o mayúsculas
-    respectivamente dependiendo si especifica o no el _comienzo_ y/o
-    el _final_. Si indica solamente el _comienzo_, el mismo deberá ser
-    un índice (con base cero, es decir, 0 es la primer letra) del caracter
-    que quiere convertir, mientras que si también indica el _final_, está
-    diciendo que quiere convertir todo un rango. Nota: valores negativos
-    para _final_ indican valores desde el mismo final de la _palabra_.
+    dependiendo si especifica o no el _comienzo_ y/o el _final_. Si indica
+    solamente el _comienzo_, el mismo deberá ser un índice (con base cero,
+    es decir, 0 es la primer letra) del caracter que quiere convertir,
+    mientras que si también indica el _final_, está diciendo que quiere
+    convertir todo un rango. Nota: valores negativos para _final_ indican
+    valores desde el mismo final de la _palabra_.
     Ejemplos:
       <!tolower HOLA>      -> hola
       <!tolower HOLA 0>    -> hOLA

@@ -54,8 +54,9 @@ static char *tag_basename(int argc, char *argv[])
 static char *tag_chop(int argc, char *argv[])
 {
   if (argc >= 1) {
-    char *s = strdup(argv[0]);
-    s[strlen(s)-1] = 0;
+    char *s = process_text(argv[0]);
+    if (*s)
+      s[strlen(s)-1] = 0;
     return s;
   }
   else
@@ -346,8 +347,13 @@ static char *tag_notdir(int argc, char *argv[])
 /* removes the first character */
 static char *tag_shift(int argc, char *argv[])
 {
-  if (argc >= 1)
-    return strdup(argv[0]+1);
+  if (argc >= 1) {
+    char *s = process_text(argv[0]);
+    int c;
+    for (c=0; s[c]; c++)
+      s[c] = s[c+1];
+    return s;
+  }
   else
     return NULL;
 }

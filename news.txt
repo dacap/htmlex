@@ -1,4 +1,4 @@
-[-- htmlex 0.2 release --]
+[-- htmlex 0.2 pre-release --]
 
 * More facilities for the <!if> comparations.
 * New operation for various tags, for more information see `readme.txt'.

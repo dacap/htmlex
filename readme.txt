@@ -126,21 +126,21 @@ FEATURES
   sorting):
 
   <!args>
-    Devuelve la cantidad de argumentos que se le pasaron al fichero de
-    entrada. Es igual a 0 si no se le pasó ningún parámetro.
-    Ejemplo:
-      A ingresado <!args> argumento(s).
+    Returns the quantity of arguments which was passed to the input file.
+    Example:
+      You input <!args> argument(s).
 
   <!arg1> ... <!argN>
     Retornan el valor del argumento indicado. Los argumentos se le pasan a
     los ficheros a través de la línea de comandos con la opción -a o por
     medio de la etiqueta <!include fichero arg1 ... argN>.
-    Ejemplo:
-       2do argumento = <!arg2>.
+    Example:
+       2nd argument = <!arg2>.
 
   <!basename file>
-    Devuelve el nombre base del _fichero_, es decir, le saca la extensión.
-    Ejemplos:
+    Returns the base name of the _file_, in other words, removes its
+    extension.
+    Examples:
       <!basename src/foo.c>    -> src/foo
       <!basename src-1.0/bar>  -> src-1.0/bar
       <!basename hacks>        -> hacks
@@ -152,14 +152,14 @@ FEATURES
       <!chop directorio/> -> directorio
 
   <!clean word>
-    Limpia la _palabra_ quitándole los espacios (tabuladores y retornos
-    de líneas) que tenga al inicio y al final.
-    Ejemplo:
+    Clean the _word_ removing the blank spaces (tabulators and line breaks)
+    which it has in the beginning and end.
+    Example:
       *<!clean " hola ">* -> *hola*
 
   <!dir file>
-    Devuelve el directorio del _fichero_, es decir, le saca nombre.
-    Ejemplos:
+    Returns the directory of the _file_, in other words, deletes the name.
+    Examples:
       <!dir src/foo.c> -> src/
       <!dir a/b/foo.h> -> a/b/
       <!dir hacks>     -> ./
@@ -171,19 +171,17 @@ FEATURES
     See <!if>.
 
   <!exec file { arguments }>
-    Ejecuta el _fichero_ indicado pasándole los _argumentos_. Lo que el
-    comando imprima por la salida estandard (STDOUT), será insertado tal
-    cual en el resultado. Algo a tomar en cuenta, es que todos los
-    argumentos (menos el fichero claro está), serán encerrados entre
-    comillas dobles antes de pasarle el comando a la shell.
-    Ejemplos:
+    Execute the indicated _file_ passing the _arguments_ to it. That the
+    command prints for the standard output (STDOUT), will be inserted
+    such in the result.
+    Examples:
       <!exec date>
       <!exec gcc --version>
 
   <!exec-proc file { arguments }>
-    Igual que <!exec ...> solamente que éste procesará los resultados
-    como a otro fichero htmlex.
-    Ejemplos:
+    Equal to <!exec ...> just this will process the results as other
+    htmlex file.
+    Examples:
       <!exec-proc cat header.htex>
       <!exec-proc cat "a footer.htex">
       <!exec-proc cat <!find macros.htex>>
@@ -191,11 +189,11 @@ FEATURES
   <!fi>
     See <!if>.
 
-  <!file-size fichero>
-    Devuelve el tamaño del _fichero_ en bytes, kilo-bytes (k) o mega-bytes (M)
-    dependiendo de cual sea mejor para la "vista humana".
-    Ejemplo:
-      imagen <!file-size imagen.jpg>
+  <!file-size file>
+    Returns the size of the _file_ in bytes, kilo-bytes (k) or mega-bytes (M)
+    depending which is the better for the "human sight".
+    Example:
+      image <!file-size image.jpg>
 
   <!find file>
     Intentará encontrar el _fichero_ en todas las ubicaciones posibles
@@ -270,23 +268,23 @@ FEATURES
     (cual archivo necesita de que otro). Los argumentos son opcionales,
     y si el no _fichero_ no se encuentra, el programa sale con error.
     Examples:
-      <!include cabecera.htex>
-      <!include pie.htex es AR>
+      <!include header.htex>
+      <!include footer.htex en UK>
 
   <!macro name [ value ]>
-    Crea y/o modifica una macro con el _nombre_ y el _valor_ especificado.
-    Si el _valor_ no se indica, la macro será eliminada de la memoria.
-    La utilidad principal de las macros, es reemplazar un determinado
-    texto (su _nombre_) por otro determinado texto (su _valor_).
-    Ejemplo:
+    Creates and/or modifies an macro with the specify _name_ and _value_.
+    If the _value_ is not indicated, the macro will be eliminated from the
+    memory. The main utility of the macros, is replace a determined text
+    (its _name_) for other determined text (its _value_).
+    Example:
       <!macro hi bye>
       hi -> bye
       <!macro hi>
       hi -> hi
 
   <!macro-reset>
-    Borra de la memoria cualquier macro que se haya creado con anterioridad
-    a esta etiqueta.
+    Removes from the memory any macro which was created previously to this
+    tag.
     Example:
       <!macro a b>a<!macro-reset>a -> ba
 
@@ -301,7 +299,7 @@ FEATURES
   <!shift word>
     Removes the first character of the _word_.
     Examples:
-      <!shift hello> -> ello
+      <!shift your> -> our
       <!shift .txt> -> txt
 
   <!suffix file>
@@ -315,13 +313,14 @@ FEATURES
     See <!toupper>.
 
   <!toupper word [ beginning [ final ] ]>
-    Pasa parcial o completamente la _palabra_ a minúsculas o mayúsculas
-    respectivamente dependiendo si especifica o no el _comienzo_ y/o
-    el _final_. Si indica solamente el _comienzo_, el mismo deberá ser
-    un índice (con base cero, es decir, 0 es la primer letra) del caracter
-    que quiere convertir, mientras que si también indica el _final_, está
-    diciendo que quiere convertir todo un rango. Nota: valores negativos
-    para _final_ indican valores desde el mismo final de la _palabra_.
+    Converts partial or completelly the _word_ to lower or upper case
+    depending if you specify or not the _beginning_ and/or the _final_.
+    If you indicate just the _beginning_, the same should be an index
+    (with zero base, in other words, 0 is the first letter) of that
+    character which you want convert, while if you also indicate the
+    _final_, you are saying which you want convert an entire range.
+    Note: negative values for the _final_ indicates values from the
+    end of the _word_.
     Examples:
       <!tolower HELLO>      -> hello
       <!tolower HELLO 0>    -> hELLO
@@ -342,7 +341,7 @@ BUGS
 WORK TO DO
 ==========
 
-  - Tranlate the file `cambios.txt' to `changes.txt'.
+  - Translate the file `cambios.txt' to `changes.txt'.
   - Improve this `readme.txt' file, the english isn't understandable
     and some parts are in spanish yet.
 

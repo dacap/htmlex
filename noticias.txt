@@ -1,4 +1,4 @@
-[-- htmlex 0.2 release --]
+[-- htmlex 0.2 pre-release --]
 
 * Mayores facilidades para las comparaciones <!if>.
 * Nuevo funcionamiento para varias etiquetas, para más información
