@@ -1,7 +1,7 @@
 # Makefile for htmlex
 
 PACKAGE = htmlex
-VERSION = 0.3.1
+VERSION = 0.3.2
 
 ifdef DJDIR
   EXE = .exe

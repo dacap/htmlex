@@ -38,8 +38,9 @@ OPTIONS
     -a   adds arguments for the input files (note: must be used before the `-c')
     -i   adds all subsequent arguments to search include paths
     -d   calculates dependencies of the input files (output to STDOUT)
+    -v   activates the verbose mode (to see what htmlex does)
+    -V   very verbose mode
     -h   displays help screen and exit
-    -v   displays the htmlex version and exit
     --   terminates a -c, -o, -a or -i list
 
 EXECUTION
@@ -336,6 +337,17 @@ FEATURES
     Shows the program version which is processing the file.
     Example:
       This page was created with htmlex <!version>.
+
+IMPORTANT NOTES
+===============
+
+  <!macro X> deletes the X macro, so if you use <!if X>
+  that expression will give you true (because the string "X"
+  will be used, and not the value of X).
+
+  <!macro X ""> assigns a null value to the X macro, this is
+  necessary for a false result in <!if X> (because in this case,
+  the X is replaced by its value).
 
 BUGS
 ====

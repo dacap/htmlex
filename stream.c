@@ -193,13 +193,13 @@ int stputc(int c, STREAM *stream)
           return EOF;
         }
       }
-  
+
       if (_io_smemdata->pos < _io_smemdata->end)
         memmove(
           _io_smemdata->buf + _io_smemdata->pos + 1,
           _io_smemdata->buf + _io_smemdata->pos,
           _io_smemdata->end - _io_smemdata->pos);
-  
+
       _io_smemdata->end++;
       return _io_smemdata->buf[_io_smemdata->pos++] = c;
     }

@@ -42,8 +42,9 @@ OPCIONES
          (para la búsqueda de ficheros)
     -d   calcula las dependencias de los ficheros de entrada (salida
          hacia STDOUT)
+    -v   activa el modo verboso (para ver que hace htmlex)
+    -V   modo muy verboso
     -h   muestra esta ayuda (en inglés) y sale
-    -v   muestra la versión de htmlex y sale
     --   frena los argumentos -c, -o y -i
 
 EJECUCIÓN
@@ -340,6 +341,17 @@ CARACTERÍSTICAS
     Muestra la versión del programa con la que se está procesando el fichero.
     Ejemplo:
       Está página fue creada con htmlex <!version>.
+
+NOTAS IMPORTANTES
+=================
+
+  <!macro X> borra la macro X, por lo que si utiliza <!if X>
+  la expresión dá verdadero (ya que se utiliza la cadena "X"
+  y no el valor de X).
+
+  <!macro $X ""> le asigna a la macro X un valor nulo, esto es
+  necesario para que <!if X> dé falso (ya que en este caso, X
+  sí es reemplazado por su valor).
 
 FALLOS
 ======

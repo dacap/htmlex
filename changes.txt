@@ -1,3 +1,13 @@
+2002-10-13  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Fixed the general <!if> behavior: now, the tags
+	  in a false-if-block, aren't processing.
+	* Fixed the <!elif ...> tag.
+	* Fixed a terrible free-memory error in tag_include() of the
+	  arguments which are passed to the included file. I can't
+	  believe how the program doesn't crash all the other times.
+	* Added -V and changed -v for two new verbose modes.
+
 2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Fixed the `readme.txt' (to more understandable English): Thanks a

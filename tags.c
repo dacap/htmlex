@@ -267,29 +267,30 @@ static char *tag_include(int argc, char *argv[])
     }
     /* add a dependency */
     add_deps(success_path);
-    /* new arguments for the input file */
-    new_nargs = argc-1;
-    for (c=0; c<new_nargs; c++)
-      new_args[c] = process_text(argv[c+1]);
     /* save the active arguments */
     old_nargs = nargs;
     for (c=0; c<old_nargs; c++)
       old_args[c] = args[c];
-    /* put the new arguments to the active */
-    nargs = new_nargs;
-    for (c=0; c<nargs; c++)
+    /* new arguments for the input file */
+    new_nargs = argc-1;
+    for (c=0; c<new_nargs; c++) {
+      new_args[c] = process_text(argv[c+1]);
+      /* put the new arguments to the active */
       args[c] = new_args[c];
+    }
+    nargs = new_nargs;
     /* process the file and close it, the output directly
        to the active file */
     process_file(in, _o_stream);
     stclose(in);
+    /* delete the new arguments */
+    for (c=0; c<new_nargs; c++)
+      if (new_args[c])
+        free(new_args[c]);
     /* restore the arguments by the old ones */
     nargs = old_nargs;
     for (c=0; c<nargs; c++)
       args[c] = old_args[c];
-    /* delete the new arguments */
-    for (c=0; c<new_nargs; c++)
-      free(new_args[new_nargs]);
   }
   /* nothing to add */
   return NULL;
@@ -580,6 +581,9 @@ static char *iftag_elif(int argc, char *argv[])
     if (ifs[0] == IF_NOTYET)
       /* enter in this block */
       ifs[0] = IF_INSIDE;
+    /* else, we must jump this block */
+    else
+      ifs[0] = IF_OUTSIDE;
   }
   else {
     /* the evaluation give false: if we are inside in previous if-block */
@@ -628,29 +632,29 @@ static char *iftag_fi(int argc, char *argv[])
 static struct _tags all_tags[] =
 {
   /* standard tags */
-  { "basename",       tag_basename        },
-  { "chop",           tag_chop            },
-  { "clean",          tag_clean           },
-  { "dep",            tag_dep             },
-  { "dir",            tag_dir             },
-  { "exec",           tag_exec            },
-  { "exec-proc",      tag_exec_proc       },
-  { "file-size",      tag_file_size       },
-  { "find",           tag_find            },
-  { "include",        tag_include         },
-  { "macro",          tag_macro           },
-  { "macro-reset",    tag_macro_reset     },
-  { "notdir",         tag_notdir          },
-  { "shift",          tag_shift           },
-  { "suffix",         tag_suffix          },
-  { "tolower",        tag_tolower         },
-  { "toupper",        tag_toupper         },
-  { "version",        tag_version         },
+  { "basename",       tag_basename,       FALSE },
+  { "chop",           tag_chop,           FALSE },
+  { "clean",          tag_clean,          FALSE },
+  { "dep",            tag_dep,            FALSE },
+  { "dir",            tag_dir,            FALSE },
+  { "exec",           tag_exec,           FALSE },
+  { "exec-proc",      tag_exec_proc,      FALSE },
+  { "file-size",      tag_file_size,      FALSE },
+  { "find",           tag_find,           FALSE },
+  { "include",        tag_include,        FALSE },
+  { "macro",          tag_macro,          FALSE },
+  { "macro-reset",    tag_macro_reset,    FALSE },
+  { "notdir",         tag_notdir,         FALSE },
+  { "shift",          tag_shift,          FALSE },
+  { "suffix",         tag_suffix,         FALSE },
+  { "tolower",        tag_tolower,        FALSE },
+  { "toupper",        tag_toupper,        FALSE },
+  { "version",        tag_version,        FALSE },
   /* special tags */
-  { "if",             iftag_if            },
-  { "elif",           iftag_elif          },
-  { "else",           iftag_else          },
-  { "fi",             iftag_fi            },
+  { "if",             iftag_if,           TRUE },
+  { "elif",           iftag_elif,         TRUE },
+  { "else",           iftag_else,         TRUE },
+  { "fi",             iftag_fi,           TRUE },
 };
 
 struct _tags *tags = all_tags;

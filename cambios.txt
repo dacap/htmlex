@@ -1,3 +1,15 @@
+2002-10-13  David A. Capello  <dacap@users.sourceforge.net>
+
+	* Arreglado el comportamiento general del <!if>: ahora,
+	  las etiquetas que se encuentren en un bloque `if' falso,
+	  no son procesadas.
+	* Arreglada la etiqueta <!elif ...>.
+	* Arreglado un error terrible de liberación de memoria
+	  en tag_include() de los argumentos que son pasados al
+	  archivo que se incluye. Todavía no puedo creer como
+	  el programa no falló todas las otras veces.
+	* Agregado -V y cambiado -v para dos nuevos modos verbosos.
+
 2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
 
 	* Arreglado el `readme.txt' (a un inglés más entendible): Muchas
@@ -37,7 +49,7 @@
 
 	* Listo, en unos 5 días hice un programa mucho mejor de lo que
 	  hice en dos meses, y aunque el código es un completo desorden,
-	  lo amo :-)
+	  me encanta :-)
 
 2001-10-31  David A. Capello  <dacap@users.sourceforge.net>
 

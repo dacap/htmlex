@@ -23,6 +23,7 @@ struct _tags
 {
   char *name;
   char *(*proc)(int argc, char *argv[]);
+  int if_tag;
 };
 
 extern struct _tags *tags;

@@ -1,3 +1,10 @@
+[-- htmlex 0.3.2 release --]
+
+* Some notes about macros in readme.txt.
+* Fixed the <!elif...> tag and the general <!if> behavior.
+* Fixed a free memory error.
+* Added verbose mode.
+
 [-- htmlex 0.3.1 release --]
 
 By Robert J Ohannessian:

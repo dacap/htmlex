@@ -23,7 +23,7 @@
 struct _IO_STREAM;
 
 /* version of the program */
-#define VERSION "0.3.1"
+#define VERSION "0.3.2"
 
 /* classic macros */
 #ifndef NULL
@@ -50,10 +50,10 @@ extern struct _IO_STREAM *_o_stream;
 extern char success_path[256];
 
 /* states of the `if' comparations */
-#define IF_SPACE    -1 /* if-spaces separator (one space is a independent block of other) */
+#define IF_SPACE    -1 /* if-spaces separator (one space is an independent block of other) */
 #define IF_NOTYET    0 /* not yet enter in any if-block */
 #define IF_INSIDE    1 /* inside the if-block */
-#define IF_OUTSIDE   2 /* outside the if-block (but we already pass for a if-block) */
+#define IF_OUTSIDE   2 /* outside the if-block (but we already pass for an if-block) */
 
 /* `if' states */
 #define MAX_IFS 256
@@ -72,6 +72,7 @@ void new_ifs(int type);
 void delete_ifs(void);
 void update_ifs(void);
 void add_deps(const char *s);
+void PRINTF(int level, const char *format, ...);
 
 #endif /* __HTMLEX_H__ */
 

@@ -17,6 +17,7 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include "htmlex.h"
@@ -27,6 +28,9 @@
 /* arguments for the input file */
 char *args[MAX_ARGS];
 int nargs = 0;
+
+/* verbose mode stuff */
+int verbose_level = 0;
 
 /* the active output stream */
 struct _IO_STREAM *_o_stream = NULL;
@@ -207,7 +211,7 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
           continue;
         }
 
-        /* normal tag */
+        /* jump nested tags */
         for (c=0; ; s++) {
           if (*s == '<')
             c++;
@@ -226,21 +230,27 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
         c = *s;
         *s = 0;
 
+        PRINTF(2, "tag found: \"%s\"\n", tag+1);
+
+        /* check for <!arg...> */
         if (strncmp(tag+1, "arg", 3) == 0) {
           if (can_attach) {
+            /* <!args...> */
             if (tag[4] == 's') {
               char temp[32];
               sprintf(temp, "%d", nargs);
               stputs(temp, out);
             }
+            /* <!arg[1-9][0-9]*...> */
             else {
               int arg = strtol(tag+4, NULL, 10);
-              if ((arg > 0) && (arg <= nargs))
+              if ((arg > 0) && (arg <= nargs) && (args[arg-1]))
                 stputs(args[arg-1], out);
             }
           }
           used = TRUE;
         }
+        /* check for <!...> */
         if (!used) {
           for (i=0; i<ntags; i++)
             if (strncmp(tag+1, tags[i].name, strlen(tags[i].name)) == 0) {
@@ -256,17 +266,23 @@ void process_file(struct _IO_STREAM *in, struct _IO_STREAM *out)
                      tok=own_strtok(NULL))
                   argv[argc++] = tok;
 
-                toreplace = tags[i].proc(argc, argv);
-                if (toreplace) {
-                  if (can_attach)
+                if ((tags[i].if_tag) || (can_attach)) {
+                  toreplace = tags[i].proc(argc, argv);
+                  if (toreplace) {
                     stputs(toreplace, out);
-                  free(toreplace);
+                    free(toreplace);
+                  }
+                  PRINTF(2, "tag was processed\n");
                 }
+                else
+                  PRINTF(2, "tag wasn't processed\n");
+
                 used = TRUE;
                 break;
               }
             }
         }
+        /* well, this is an unknown tag */
         if (!used) {
           char *ptag = process_text(tag);
           if (can_attach) {
@@ -358,6 +374,8 @@ void update_ifs(void)
 void add_deps(const char *s)
 {
   if (calculating_deps) {
+    PRINTF(1, "new dependency: \"%s\"\n", s);
+
     if (!depstream)
       depstream = stopen(NULL, NULL);
 
@@ -396,6 +414,18 @@ void out_deps(void)
   }
 }
 
+void PRINTF(int level, const char *format, ...)
+{
+  if (level <= verbose_level) {
+    char buf[1024];
+    va_list ap;
+    va_start(ap, format);
+    vsprintf(buf, format, ap);
+    va_end(ap);
+    fprintf(stderr, "%s: %s", name, buf);
+  }
+}
+
 /* shows the program usage information */
 static void usage(void)
 {
@@ -412,8 +442,9 @@ Options:\n\
   -a   adds arguments for the input files (note: must be used before the `-c')\n\
   -i   adds all subsequent arguments to search include paths\n\
   -d   calculates dependencies of the input files (output to STDOUT)\n\
+  -v   activates the verbose mode (to see what htmlex does)\n\
+  -V   very verbose mode\n\
   -h   displays help screen and exit\n\
-  -v   displays the htmlex version and exit\n\
   --   terminates a -c, -o, -a or -i list\n\
 \n\
 Report bugs and patches to <dacap@users.sourceforge.net>\n\
@@ -437,6 +468,8 @@ int main(int argc, char *argv[])
 
   name = argv[0];
 
+  PRINTF(1, "processing arguments...\n");
+
   for (i=1; i<argc; i++) {
     if (argv[i][0] == '-') {
       compile_next = FALSE;
@@ -451,17 +484,15 @@ int main(int argc, char *argv[])
           case 'a': argument_next = TRUE; break;
           case 'i': include_next = TRUE; break;
           case 'd': calculating_deps = TRUE; break;
+          case 'v': verbose_level = 1; break;
+          case 'V': verbose_level = 2; break;
           case 'h':
             usage();
             exit(0);
             break;
-          case 'v':
-            printf("htmlex %s\n", VERSION);
-            exit(0);
-            break;
           case '-': break;
           default:
-            fprintf(stderr, "%s: %s: unknow option\n", name, argv[i]);
+            PRINTF(0, "%s: unknow option\n", argv[i]);
             exit(1);
             break;
         }
@@ -470,23 +501,28 @@ int main(int argc, char *argv[])
     /* new output file */
     else if (output_next) {
       files[nfiles++] = argv[i];
+      PRINTF(1, "new output file: \"%s\"\n", argv[i]);
     }
     /* new arguments for the input files */
     else if (argument_next) {
       args[nargs++] = argv[i];
+      PRINTF(1, "new argument: \"%s\"\n", argv[i]);
     }
     /* new path for inclusion of files */
     else if (include_next) {
       paths[npaths++] = argv[i];
+      PRINTF(1, "new path: \"%s\"\n", argv[i]);
     }
     else {
       STREAM *in, *out;
       char buf[256];
 
+      PRINTF(1, "processing \"%s\" file\n", argv[i]);
+
       /* open the input file */
       in = try_sopen(argv[i], "r");
       if (!in) {
-        fprintf(stderr, "%s: %s: file not found\n", name, argv[i]);
+        PRINTF(0, "%s: file not found\n", argv[i]);
         exit(1);
       }
 
@@ -505,6 +541,8 @@ int main(int argc, char *argv[])
           replace_extension(buf, success_path, ".html");
         }
 
+        PRINTF(1, "output to \"%s\" file\n", buf);
+
         if (calculating_deps) {
           add_deps(buf);
           add_deps(argv[i]);
@@ -513,13 +551,15 @@ int main(int argc, char *argv[])
         else {
           out = try_sopen(buf, "w");
           if (!out) {
-            fprintf(stderr, "%s: %s: can't create file\n", name, buf);
+            PRINTF(0, "%s: can't create file\n", buf);
             exit(1);
           }
         }
       }
       /* output to STDOUT */
       else {
+        PRINTF(1, "output to STDOUT\n");
+
         add_deps(argv[i]);
 
         if (calculating_deps)
@@ -540,6 +580,8 @@ int main(int argc, char *argv[])
       stclose(in);
       stclose(out);
 
+      PRINTF(1, "done with \"%s\" file\n", argv[i]);
+
       out_deps();
 
       process_stdin = FALSE;
@@ -550,12 +592,14 @@ int main(int argc, char *argv[])
   if ((process_stdin) && (!calculating_deps)) {
     STREAM *in, *out;
 
+    PRINTF(1, "processing STDIN\n");
+
     in = stfile(stdin);
 
     if (nfiles > 0) {
       out = try_sopen(files[0], "w");
       if (!out) {
-        fprintf(stderr, "%s: %s: can't create file\n", name, files[0]);
+        PRINTF(0, "%s: can't create file\n", files[0]);
         exit(1);
       }
     }
@@ -565,7 +609,11 @@ int main(int argc, char *argv[])
     process_file(in, out);
     stclose(in);
     stclose(out);
+
+    PRINTF(1, "done with STDIN\n");
   }
+
+  PRINTF(1, "all done\n");
 
   return 0;
 }
