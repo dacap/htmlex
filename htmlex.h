@@ -23,7 +23,7 @@ struct STREAM;
 struct MACRO_LIST;
 
 /* version of the program */
-#define VERSION "0.4.2"
+#define VERSION "0.4.3"
 
 /* classic macros */
 #ifndef NULL
@@ -82,7 +82,7 @@ extern int kill_comments;
 struct STREAM *try_sopen (const char *filename, const char *mode);
 int get_filesize (const char *filename);
 char *temp_filename (void);
-char *own_strtok (char *s);
+char *own_strtok (char *s, char **holder);
 void process_file (struct STREAM *in, struct STREAM *out);
 char *process_text (const char *s);
 void new_token (int type);

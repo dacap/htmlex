@@ -135,9 +135,9 @@ static char *replace_extension (char *dest, const char *path,
      tok=<hi bye>
      tok=-"good bye"-
 */
-char *own_strtok (char *s)
+char *own_strtok (char *s, char **holder)
 {
-  static char *d = NULL;
+  char *d = *holder;
   char *r;
 
   if (s)
@@ -215,6 +215,8 @@ char *own_strtok (char *s)
     if (!*d)
       d = NULL;
   }
+
+  *holder = d;
 
   return r;
 }
@@ -318,10 +320,12 @@ void process_file (STREAM * in, STREAM * out)
 	      if (IS_BLANK (x) || (!x)) {
 		char *tok, *argv[MAX_ARGS];
 		char *replacement;
+		char *holder = NULL;
 		int argc = 0;
 
-		for (tok = own_strtok (tag + 2),
-		     tok = own_strtok (NULL); tok; tok = own_strtok (NULL))
+		for (tok = own_strtok (tag + 2, &holder),
+		     tok = own_strtok (NULL, &holder); tok;
+		     tok = own_strtok (NULL, &holder))
 		  argv[argc++] = tok;
 
 		if ((tags[i].if_tag) || (can_attach)) {
@@ -556,7 +560,7 @@ Options:\n\
   -c   compiles all subsequent files (gets an output file name\n\
        from '-o' or generates a name with .html extension, see -E)\n\
   -o   adds output files\n\
-  -a   adds input files\n\
+  -a   adds arguments for the input files\n\
   -I   adds search include paths (you can use old '-i' parameter)\n\
   -E   changes the HTML extension used by -c option (.html by default)
   -k   kills comments (old htmlex behavior)\n\

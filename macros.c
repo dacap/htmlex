@@ -140,19 +140,21 @@ int remove_macro (MACRO_LIST * list, const char *name)
   return -1;
 }
 
-int modify_macro (MACRO_LIST * list, const char *name, char *value)
+MACRO *get_macro (MACRO_LIST * list, const char *name)
 {
   int c;
 
-  for (c = 0; c < list->num_macros; c++) {
-    if (strcmp (name, list->macros[c].name) == 0) {
-      free (list->macros[c].value);
-      list->macros[c].value = value;
-      return 0;
-    }
-  }
+  for (c = 0; c < list->num_macros; c++)
+    if (strcmp (name, list->macros[c].name) == 0)
+      return list->macros+c;
 
-  return -1;
+  return NULL;
+}
+
+void modify_macro (MACRO * macro, char *value)
+{
+  free (macro->value);
+  macro->value = value;
 }
 
 char *replace_by_macro (MACRO_LIST * list, char *buf, int *length)
@@ -189,8 +191,11 @@ char *function_macro (MACRO_LIST * list, char *tag)
   if (funcs_table[(unsigned char)tag[1]]) {
     /* search to see if really it is a macro */
     for (c = 0; c < list->num_macros; c++) {
+      /* functional macro and the first character of the function is
+	 the same */
       if ((list->macros[c].type == FUNCTIONAL_MACRO) &&
 	  (tag[1] == *list->macros[c].name)) {
+	/* compare the entire names */
 	if (strncmp (tag+1,
 		     list->macros[c].name,
 		     strlen (list->macros[c].name)) == 0) {
@@ -198,25 +203,23 @@ char *function_macro (MACRO_LIST * list, char *tag)
 	  if (IS_BLANK (x) || (!x)) {
 	    MACRO_LIST *arg_list = list->macros[c].data;
 	    char *replacement, *tok;
+	    char *holder = NULL;
 	    MACRO *macro;
 	    int argc = 0;
 
 	    list->macros[c].type = UNAVAILABLE_MACRO;
 
-	    for (tok = own_strtok (tag + 2),
-		   tok = own_strtok (NULL); tok; tok = own_strtok (NULL)) {
+	    for (tok = own_strtok (tag + 2, &holder),
+		 tok = own_strtok (NULL, &holder); tok;
+		 tok = own_strtok (NULL, &holder)) {
 	      if (argc < arg_list->num_macros)
-		modify_macro (arg_list,
-			      arg_list->macros[argc].name,
-			      process_text (tok));
+		modify_macro (arg_list->macros+argc, process_text (tok));
 
 	      argc++;
 	    }
 
 	    for (; argc < arg_list->num_macros; argc++)
-	      modify_macro (arg_list,
-			    arg_list->macros[argc].name,
-			    strdup (""));
+	      modify_macro (arg_list->macros+argc, strdup (""));
 
 	    push_function_space ();
 	    function_macros[0] = list->macros[c].data;

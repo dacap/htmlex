@@ -1,3 +1,9 @@
+[-- htmlex 0.4.3 release --]
+
+* Corregida la explicación del argumento -a.
+* Arreglado un error al llamar macros funcionales donde uno de sus
+  argumentos utilizase <!include>.
+
 [-- htmlex 0.4.2 release --]
 
 * Nueva opción -E para cambiar la extensión por defecto .html
@@ -31,7 +37,7 @@
 [-- htmlex 0.3.1 release --]
 
 Por Robert J Ohannessian:
-  * El archivo de texto `readme.txt' está en un inglés más entendible.
+  * El archivo de texto `readme.txt' está en un inglés más claro.
   * <!file-size> presenta el tamaño del fichero de una mejor forma.
   * El programa compila en MinGW sin problemas.
 

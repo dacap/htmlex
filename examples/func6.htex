@@ -1,8 +1,8 @@
 <!function item x y z>{ x, y, z }<!end>
-RGB primary[] =
+VECTOR identity[3] =
 {
   <!item 1 0 0>,
   <!item 0 1 0>,
-  <!item 0 0 1>,
+  <!item 0 0 1>
 };
 

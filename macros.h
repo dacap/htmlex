@@ -54,7 +54,8 @@ void free_macro_list (MACRO_LIST * list);
 
 void add_macro (MACRO_LIST * list, MACRO * macro, int sort);
 int remove_macro (MACRO_LIST * list, const char *name);
-int modify_macro (MACRO_LIST * list, const char *name, char *value);
+MACRO *get_macro (MACRO_LIST * list, const char *name);
+void modify_macro (MACRO * macro, char *value);
 
 char *replace_by_macro (MACRO_LIST * list, char *buf, int *length);
 char *function_macro (MACRO_LIST * list, char *tag);

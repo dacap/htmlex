@@ -36,7 +36,7 @@ OPCIONES
     -c   compila todos los próximos ficheros (obtiene un archivo de salida
 	 desde "-o" o genera un nombre con extension .html, mire -E)
     -o   agrega ficheros de salida
-    -a   agrega ficheros de entrada
+    -a   agrega argumentos a los archivos de entrada
     -I   agrega rutas de inclusión para búscar ficheros
     -E   cambia la extensión HTML utilizada por la opción -c (.html por
          defecto)

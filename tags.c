@@ -296,15 +296,15 @@ static char *tag_macro (int argc, char *argv[])
   if (argc >= 1) {
     if (argc >= 2) {
       char *value = process_text (argv[1]);
+      MACRO *macro = get_macro (global_macros, argv[0]);
+
       /* modify macro */
-      if (modify_macro (global_macros, argv[0], value) == 0)
-	return NULL;
+      if (macro) {
+	modify_macro (macro, value);
+      }
       /* new macro */
       else {
-	MACRO *macro = new_macro (NORMAL_MACRO,
-				  strdup (argv[0]),
-				  value);
-
+	macro = new_macro (NORMAL_MACRO, strdup (argv[0]), value);
 	add_macro (global_macros, macro, TRUE);
       }
     }
@@ -481,12 +481,13 @@ static void read_function_body (STREAM * in, STREAM * out)
 	c = *s;
 	*s = 0;
 
-	/* check for <!arg...> */
+	/* check for <!end...> */
 	if (strncmp (tag + 1, "end", 3) == 0) {
 	  current_col = s + 1;
 	  done = TRUE;
 	  break;
 	}
+	/* all other tags go to function */
 	else {
 	  stputc ('<', out);
 	  stputs (tag, out);

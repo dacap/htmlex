@@ -1,3 +1,15 @@
+2003-05-14  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (usage): Fixed a stupid and incorrect comment about the
+	"-a" parameter.
+
+2003-05-13  David A. Capello  <dacap@users.sourceforge.net>
+
+	* htmlex.c (own_strtok): Fixed for nestle usage.
+
+	* macros.c (get_macro): Added.
+	(modify_macro): Optimized (doesn't make search anymore).
+
 2003-03-03  David A. Capello  <dacap@users.sourceforge.net>
 
 	* htmlex 0.4.2 released.

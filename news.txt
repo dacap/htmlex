@@ -1,3 +1,9 @@
+[-- htmlex 0.4.3 release --]
+
+* Corrected the -a argument explanation.
+* Fixed an error in functional macros when you called them with
+  arguments that had <!include>.
+
 [-- htmlex 0.4.2 release --]
 
 * Added -E option to change the default .html extension used by -c.
