@@ -1,0 +1,243 @@
+#! /bin/sh
+# @configure_input@
+#
+# htmlex-site - a helper utility for make a site that will use htmlex
+# Copyright (C) 2001 David A. Capello
+#
+# http://htmlex.sourceforge.net
+#
+
+echo "htmlex-site @VERSION@"
+
+# get main site information
+
+echo -n "Directory name [$HOSTNAME]: " ; read dir
+if test ! "$dir" ; then dir=$HOSTNAME ; fi
+
+echo -n "Site name [$dir]: " ; read site
+if test ! "$site" ; then site=$dir ; fi
+
+echo -n "Author name [$USER]: " ; read author
+if test ! "$author" ; then author=$USER ; fi
+
+echo -n "Author address [$USER@$HOSTNAME]: " ; read address
+if test ! "$address" ; then address="$USER@$HOSTNAME" ; fi
+
+echo -n "Year name [`date +%Y`]: " ; read date
+if test ! "$date" ; then date=`date +%Y` ; fi
+
+# make root directory
+
+if [ ! -d "$dir" ] ; then
+  mkdir "$dir"
+fi
+
+# make the directory struct
+
+for dirname in dest dest/images src src/bodies src/images src/layout ; do
+  if [ ! -d "$dir/$dirname/" ] ; then
+    echo "Building $dir/$dirname/ directory..."
+    mkdir "$dir/$dirname/"
+  fi
+done
+
+# make AUTHORS
+
+if [ ! -f "$dir/AUTHORS" ] ; then
+  echo "Building $dir/AUTHORS file..."
+  echo "$author <$address>" > "$dir/AUTHORS"
+fi
+
+# make Makefile
+
+if [ ! -f "$dir/Makefile" ] ; then
+  echo "Building $dir/Makefile file..."
+  cat > "$dir/Makefile" <<EOF
+# Makefile for build the \`$site' site
+
+DESTDIR = dest
+SRCDIR = src
+
+HTMLEX = htmlex -I \$(SRCDIR)
+
+ifdef DEPEND
+  HTMLEX += -M
+endif
+
+HTML_FILES = \\
+	\$(addprefix \$(DESTDIR)/, \$(notdir \$(addsuffix .html, \$(basename \$(wildcard \$(SRCDIR)/*.htex)))))
+
+CLEAN_FILES = \\
+	Makefile.dep
+
+DISTCLEAN_FILES = \\
+	\$(HTML_FILES)
+
+.PHONY: default all clean distclean depend
+
+default: \$(HTML_FILES)
+	@echo Done!
+
+all: default
+
+clean:
+	-rm -fv \$(CLEAN_FILES)
+
+distclean: clean
+	-rm -fv \$(DISTCLEAN_FILES)
+
+depend:
+	-rm -f Makefile.dep
+	make \$(HTML_FILES) DEPEND=1
+	cat Makefile.dep | sed -e 's/^\(.*\)\.htex:/\$(DESTDIR)\/\1\.html:/g' > _depend.tmp
+	mv _depend.tmp Makefile.dep
+
+ifdef DEPEND
+
+dummy_rule:
+
+\$(DESTDIR)/%.html: dummy_rule
+	\$(HTMLEX) \$(notdir \$(basename \$@)).htex >> Makefile.dep
+
+else
+
+\$(DESTDIR)/%.html: \$(SRCDIR)/%.htex
+	\$(HTMLEX) \$(notdir \$<) > \$@
+
+-include Makefile.dep
+
+endif
+EOF
+fi
+
+# make some .htex files
+
+file="$dir/src/index.en.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<INCLUDE src="src/layout/body.htex" arg1="index.en">
+EOF
+fi
+
+file="$dir/src/index.es.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<INCLUDE src="src/layout/body.htex" arg1="index.es"> 
+EOF
+fi
+
+file="$dir/src/bodies/index.en.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<P align="center">Welcome to $site</P>
+EOF
+fi
+
+file="$dir/src/bodies/index.es.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<P align="center">Bienvenido a $site</P>
+EOF
+fi
+
+file="$dir/src/layout/macros.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<MACRO name=\$AUTHOR value="$author">
+<MACRO name=\$ADDRESS value="$address">
+<MACRO name=\$DATE value="$date">
+EOF
+fi
+
+file="$dir/src/layout/head.en.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>$site</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META name="description" content="$title">
+<META name="keyword" content="$title, $author">
+</HEAD>
+<BODY>
+
+<H1>$site</H1>
+<H3>(english)</H3>
+
+<HR>
+EOF
+fi
+
+file="$dir/src/layout/head.es.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>$site</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META name="description" content="$title">
+<META name="keyword" content="$title, $author">
+</HEAD>
+<BODY>
+
+<H1>$site</H1>
+<H3>(espa&ntilde;ol)</H3>
+
+<HR>
+EOF
+fi
+
+file="$dir/src/layout/foot.en.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<HR>
+
+<DIV align="left"><ADDRESS>
+Copyright (C) \$DATE by \$AUTHOR<BR>
+<A href="mailto:\$ADDRESS">\$ADDRESS</A>
+</ADDRESS></DIV>
+
+</BODY>
+</HTML>
+EOF
+fi
+
+file="$dir/src/layout/foot.es.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<HR>
+
+<DIV align="left"><ADDRESS>
+Copyright (C) \$DATE por \$AUTHOR<BR>
+<A href="mailto:\$ADDRESS">\$ADDRESS</A>
+</ADDRESS></DIV>
+
+</BODY>
+</HTML>
+EOF
+fi
+
+file="$dir/src/layout/body.htex"
+if [ ! -f "$file" ] ; then
+  echo "Building "$file" file..."
+  cat > "$file" <<EOF
+<MACRO name=\$LANG value="<*substr arg1='<*suffix arg1=<ARG1>>' arg2=1>">
+<MACRO name=\$NAME value="<*basename arg1='<ARG1>'>">
+
+<INCLUDE src="src/layout/macros.htex"> 
+<INCLUDE src="src/layout/head.\$LANG.htex"> 
+<INCLUDE src="src/bodies/\$NAME.\$LANG.htex">
+<INCLUDE src="src/layout/foot.\$LANG.htex"> 
+EOF
+fi
