@@ -980,8 +980,8 @@ sub htmlex_extag (*$$\$)
       # convert the size to a human-readable format
       my $format;
 
-      if ($size < 1024 * 2) {
-        $format = sprintf ("%d", $size);
+      if ($size < 1024) {
+        $format = sprintf ("%db", $size);
       }
       elsif ($size < 1024 * 1000) {
         $format = sprintf ("%0.1fk", $size / 1024);
