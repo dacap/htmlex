@@ -1,5 +1,0 @@
-MACRO:   <MACRO name=año value=anio>
-INCLUDE: <INCLUDE src="exec.htex">
-EXECPROC:<EXEC process src="cat exec.htex">
-EXEC:    <EXEC src="cat exec.htex">
-EOF:

@@ -1,2 +1,0 @@
-Presione `Ctrl+C' para detener la ejecución:
-<!exec "while true ; do date ; sleep 1 ; done ; echo">
