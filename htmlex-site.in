@@ -63,8 +63,8 @@ make_dir $dir/data/index/es
 make_dir $dir/data/misc
 make_dir $dir/data/misc/en
 make_dir $dir/data/misc/es
-make_dir $dir/dest
-make_dir $dir/dest/images
+make_dir $dir/out
+make_dir $dir/out/images
 make_dir $dir/src
 make_dir $dir/src/bodies
 make_dir $dir/src/images
@@ -82,14 +82,14 @@ JPEG = .$jpeg
 XPM = .$xpm"
   Makefile_text2="\
 JPEG_FILES = \\
-	\$(addprefix \$(DESTDIR)/images/, \$(addsuffix \$(JPEG), \\
+	\$(addprefix \$(OUTDIR)/images/, \$(addsuffix \$(JPEG), \\
 	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/images/*\$(XPM))))))"
   Makefile_text3="\
 	\$(HTML_FILES) \\
 	\$(JPEG_FILES)"
   Makefile_text4="all: \$(HTML_FILES) \$(JPEG_FILES)"
   Makefile_text5="\
-\$(DESTDIR)/images/%\$(JPEG): \$(SRCDIR)/images/%\$(XPM)
+\$(OUTDIR)/images/%\$(JPEG): \$(SRCDIR)/images/%\$(XPM)
 	xpmtoppm \$< | ppmtojpeg > \$@"
 else
   Makefile_text1=""
@@ -107,7 +107,7 @@ HTEX = .$htex
 HTML = .$html
 $Makefile_text1
 
-DESTDIR = dest
+OUTDIR = out
 SRCDIR = src
 
 HTMLEX = htmlex
@@ -117,7 +117,7 @@ ifdef DEPEND
 endif
 
 HTML_FILES = \\
-	\$(addprefix \$(DESTDIR)/, \$(addsuffix \$(HTML), \\
+	\$(addprefix \$(OUTDIR)/, \$(addsuffix \$(HTML), \\
 	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/*\$(HTEX))))))
 
 $Makefile_text2
@@ -144,19 +144,19 @@ distclean:
 depend:
 	-rm -f Makefile.dep
 	make \$(HTML_FILES) DEPEND=1
-	cat Makefile.dep | sed -e 's/^\$(SRCDIR)\/\(.*\)\$(HTEX):/\$(DESTDIR)\/\1\$(HTML):/g' > _depend.tmp
+	cat Makefile.dep | sed -e 's/^\$(SRCDIR)\/\(.*\)\$(HTEX):/\$(OUTDIR)\/\1\$(HTML):/g' > _depend.tmp
 	mv _depend.tmp Makefile.dep
 
 ifdef DEPEND
 
 dummy_rule:
 
-\$(DESTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX) dummy_rule
+\$(OUTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX) dummy_rule
 	\$(HTMLEX) \$< >> Makefile.dep
 
 else
 
-\$(DESTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX)
+\$(OUTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX)
 	\$(HTMLEX) \$< > \$@
 
 -include Makefile.dep
@@ -173,7 +173,7 @@ cat > "$dir/compress.sh" <<EOF
 
 tempfile=\`tempfile\`
 
-for file in dest/*.$html ; do
+for file in out/*.$html ; do
   cat "\$file" \\
 	| expand \\
 	| tr -s '\n' \\
@@ -206,7 +206,7 @@ chmod +x "$dir/rebuild.sh"
 cat > "$dir/upload.sh" <<EOF
 #! /bin/sh
 
-cd dest/
+cd out/
 
 FTP_HOSTNAME=[insert-hostname]
 FTP_USERNAME=[insert-username]
@@ -230,10 +230,10 @@ chmod 700 "$dir/upload.sh"
 
 # make data files
 
-echo "Index"        > "$dir/data/index/en/title"
-echo "Índice"       > "$dir/data/index/es/title"
-echo "Index text"   > "$dir/data/index/en/text"
-echo "Texto índice" > "$dir/data/index/es/text"
+echo "Index"   > "$dir/data/index/en/title"
+echo "Índice"  > "$dir/data/index/es/title"
+echo "Text"    > "$dir/data/index/en/text"
+echo "Texto"   > "$dir/data/index/es/text"
 
 cat > "$dir/data/misc/en/foot" <<EOF
 Copyright (C) \$DATE by \$AUTHOR<BR>
@@ -296,13 +296,8 @@ $text
 <P><!include data/index/\$LANG/text></P>
 EOF
 
-cat > "$dir/src/index.$htex" <<EOF
-<!include src/layout/body.$htex index.en>
-EOF
-
-cat > "$dir/src/index.es.$htex" <<EOF
-<!include src/layout/body.$htex index.es>
-EOF
+echo "<!include src/layout/body.$htex index.en>" > "$dir/src/index.$htex"
+echo "<!include src/layout/body.$htex index.es>" > "$dir/src/index.es.$htex"
 
 # make a image
 
