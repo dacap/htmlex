@@ -1,27 +1,25 @@
-dacap:~/src/htmlex$ cat examples/macro.htex
-<!macro hi bye>
-<!macro bye hello>
+$ cat examples/macro.htex
 
-hi
-bye
-dacap:~/src/htmlex$ ./htmlex -v examples/macro.htex
-examples/macro.htex:1: new macro: "hi" -> "bye"
+  <!macro hi bye>
+  <!macro bye hello>
+  hi
+  bye
 
-examples/macro.htex:2: new macro: "bye" -> "hello"
+$ ./htmlex -v examples/macro.htex
 
+  examples/macro.htex:1: new macro: "hi" -> "bye"
+  examples/macro.htex:2: new macro: "bye" -> "hello"
+  examples/macro.htex:4: macro founded: "hi"
+  bye
+  examples/macro.htex:5: macro founded: "bye"
+  hello
 
-examples/macro.htex:4: macro founded: "hi"
-bye
-examples/macro.htex:5: macro founded: "bye"
-hello
-dacap:~/src/htmlex$ ./htmlex -vp examples/macro.htex
-examples/macro.htex:1: new macro: "hi" -> "bye"
+$ ./htmlex -vp examples/macro.htex
 
-examples/macro.htex:2: new macro: "bye" -> "hello"
-
-
-examples/macro.htex:4: macro founded: "hi"
-examples/macro.htex:4: macro founded: "bye"
-hello
-examples/macro.htex:5: macro founded: "bye"
-hello
+  examples/macro.htex:1: new macro: "hi" -> "bye"
+  examples/macro.htex:2: new macro: "bye" -> "hello"
+  examples/macro.htex:4: macro founded: "hi"
+  examples/macro.htex:4: macro founded: "bye"
+  hello
+  examples/macro.htex:5: macro founded: "bye"
+  hello

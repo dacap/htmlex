@@ -1,7 +1,7 @@
 #! /bin/sh
 # @configure_input@
 #
-# htmlex-site - a helper utility for make a site that will use htmlex
+# htmlex-site - a helper utility for make the skeleton of a htmlex site
 # Copyright (C) 2001 David A. Capello
 #
 # http://htmlex.sourceforge.net
@@ -9,235 +9,289 @@
 
 echo "htmlex-site @VERSION@"
 
+# obtains a line of text from the user
+
+get_option() {
+  read -p "$1 [$2]: " value
+  if test ! "$value" ; then value=$2 ; fi
+  echo $value
+}
+
+# creates a new directory
+
+make_dir() {
+  if [ ! -d "$1" ] ; then
+    mkdir "$1"
+    echo "Building: $1/ ..."
+  else
+    echo "Warning: $1/ exists .."
+    read -p "Continue [y]/n?" value
+    if [ "$value" == "n" ] ; then exit 1 ; fi
+  fi
+}
+
 # get main site information
 
-echo -n "Directory name [$HOSTNAME]: " ; read dir
-if test ! "$dir" ; then dir=$HOSTNAME ; fi
+dir=`get_option "Directory name" $HOSTNAME`
+author=`get_option "Author name" $USER`
+address=`get_option "Author address" $USER@$HOSTNAME`
+date=`get_option "Copyright year" \`date +%Y\``
 
-echo -n "Site name [$dir]: " ; read site
-if test ! "$site" ; then site=$dir ; fi
+# get system configuration
 
-echo -n "Author name [$USER]: " ; read author
-if test ! "$author" ; then author=$USER ; fi
-
-echo -n "Author address [$USER@$HOSTNAME]: " ; read address
-if test ! "$address" ; then address="$USER@$HOSTNAME" ; fi
-
-echo -n "Copyright year [`date +%Y`]: " ; read date
-if test ! "$date" ; then date=`date +%Y` ; fi
-
-# make root directory
-
-if [ ! -d "$dir" ] ; then
-  mkdir "$dir"
-fi
+html=`get_option "HTML extension" html`
+htex=`get_option "htmlex extension" htex`
+jpeg=`get_option "JPEG extension" jpg`
+xpm=`get_option "X11 pixmap extension" xpm`
 
 # make the directory struct
 
-for dirname in dest dest/images src src/bodies src/images src/layout ; do
-  if [ ! -d "$dir/$dirname/" ] ; then
-    echo "Building $dir/$dirname/ directory..."
-    mkdir "$dir/$dirname/"
-  fi
-done
+make_dir $dir
+make_dir $dir/data
+make_dir $dir/data/index
+make_dir $dir/data/index/en
+make_dir $dir/data/index/es
+make_dir $dir/data/misc
+make_dir $dir/data/misc/en
+make_dir $dir/data/misc/es
+make_dir $dir/dest
+make_dir $dir/dest/images
+make_dir $dir/src
+make_dir $dir/src/bodies
+make_dir $dir/src/images
+make_dir $dir/src/layout
 
 # make AUTHORS
 
-if [ ! -f "$dir/AUTHORS" ] ; then
-  echo "Building $dir/AUTHORS file..."
-  echo "$author <$address>" > "$dir/AUTHORS"
-fi
+echo "$author <$address>" > "$dir/AUTHORS"
 
 # make Makefile
 
-if [ ! -f "$dir/Makefile" ] ; then
-  echo "Building $dir/Makefile file..."
-  cat > "$dir/Makefile" <<EOF
-# Makefile for build the \`$site' site
+cat > "$dir/Makefile" <<EOF
+# Makefile for build the site
+
+HTEX = .$htex
+HTML = .$html
+JPEG = .$jpeg
+XPM  = .$xpm
 
 DESTDIR = dest
 SRCDIR = src
 
-HTMLEX = htmlex -I \$(SRCDIR)
+HTMLEX = htmlex
 
 ifdef DEPEND
   HTMLEX += -M
 endif
 
 HTML_FILES = \\
-	\$(addprefix \$(DESTDIR)/, \$(notdir \$(addsuffix .html, \$(basename \$(wildcard \$(SRCDIR)/*.htex)))))
+	\$(addprefix \$(DESTDIR)/, \$(addsuffix \$(HTML), \\
+	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/*\$(HTEX))))))
+
+JPEG_FILES = \\
+	\$(addprefix \$(DESTDIR)/images/, \$(addsuffix \$(JPEG), \\
+	\$(notdir \$(basename \$(wildcard \$(SRCDIR)/images/*\$(XPM))))))
 
 CLEAN_FILES = \\
 	Makefile.dep
 
 DISTCLEAN_FILES = \\
-	\$(HTML_FILES)
+	\$(HTML_FILES) \\
+	\$(JPEG_FILES)
 
 .PHONY: default all clean distclean depend
 
-default: \$(HTML_FILES)
+default: all
+
+all: \$(HTML_FILES) \$(JPEG_FILES)
 	@echo Done!
 
-all: default
-
 clean:
-	-rm -fv \$(CLEAN_FILES)
+	-rm -f \$(CLEAN_FILES)
 
-distclean: clean
-	-rm -fv \$(DISTCLEAN_FILES)
+distclean:
+	-rm -f \$(CLEAN_FILES) \$(DISTCLEAN_FILES)
 
 depend:
 	-rm -f Makefile.dep
 	make \$(HTML_FILES) DEPEND=1
-	cat Makefile.dep | sed -e 's/^\(.*\)\.htex:/\$(DESTDIR)\/\1\.html:/g' > _depend.tmp
+	cat Makefile.dep | sed -e 's/^\$(SRCDIR)\/\(.*\)\$(HTEX):/\$(DESTDIR)\/\1\$(HTML):/g' > _depend.tmp
 	mv _depend.tmp Makefile.dep
 
 ifdef DEPEND
 
 dummy_rule:
 
-\$(DESTDIR)/%.html: dummy_rule
-	\$(HTMLEX) \$(notdir \$(basename \$@)).htex >> Makefile.dep
+\$(DESTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX) dummy_rule
+	\$(HTMLEX) \$< >> Makefile.dep
 
 else
 
-\$(DESTDIR)/%.html: \$(SRCDIR)/%.htex
-	\$(HTMLEX) \$(notdir \$<) > \$@
+\$(DESTDIR)/%\$(HTML): \$(SRCDIR)/%\$(HTEX)
+	\$(HTMLEX) \$< > \$@
 
 -include Makefile.dep
 
 endif
+
+\$(DESTDIR)/images/%\$(JPEG): \$(SRCDIR)/images/%\$(XPM)
+	xpmtoppm \$< | ppmtojpeg > \$@
 EOF
-fi
 
-# make some .htex files
+# compress site utility
 
-file="$dir/src/index.en.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<!include src/layout/body.htex index.en>
+cat > "$dir/compress.sh" <<EOF
+#! /bin/sh
+
+tempfile=\`tempfile\`
+
+for filename in dest/*.$html ; do
+  cat "\$filename" \
+	| expand \
+	| tr -s '\n' \
+	| sed -e 's/^[ ]*//g' \
+	| tr -d '\r' \
+	> "\$tempfile"
+   mv "\$tempfile" "\$filename"
+done
 EOF
-fi
 
-file="$dir/src/index.es.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<!include src/layout/body.htex index.es>
+chmod +x "$dir/compress.sh"
+
+# rebuild site utility
+
+cat > "$dir/rebuild.sh" <<EOF
+#! /bin/sh
+
+make distclean
+make depend
+make all
+
+source compress.sh
 EOF
-fi
 
-file="$dir/src/bodies/index.en.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<P align="center">Welcome to $site</P>
+chmod +x "$dir/rebuild.sh"
+
+# upload site utility
+
+cat > "$dir/upload.sh" <<EOF
+#! /bin/sh
+
+cd dest/
+
+FTP_HOSTNAME=[insert-hostname]
+FTP_USERNAME=[insert-username]
+FTP_PASSWORD=[insert-password]
+
+FTP_ASCII_FILES=\`find -name '*.$html' | sed -e 's/^\.\/\(.*\)/\1/'\`
+FTP_BINARY_FILES=\`find -name '*.$jpeg' | sed -e 's/^\.\/\(.*\)/\1/'\`
+
+ftp-upload \\
+  --verbose \\
+  --host	\$FTP_HOSTNAME \\
+  --user	\$FTP_USERNAME \\
+  --password	\$FTP_PASSWORD \\
+  --ascii	\$FTP_ASCII_FILES \\
+  --binary	\$FTP_BINARY_FILES
+
+cd ../
 EOF
-fi
 
-file="$dir/src/bodies/index.es.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<P align="center">Bienvenido a $site</P>
+chmod 700 "$dir/upload.sh"
+
+# make data files
+
+echo -n "Index"     > "$dir/data/index/en/title"
+echo -n "Índice"    > "$dir/data/index/es/title"
+echo "Index text"   > "$dir/data/index/en/text"
+echo "Texto índice" > "$dir/data/index/es/text"
+
+cat > "$dir/data/misc/en/foot" <<EOF
+Copyright (C) \$DATE by \$AUTHOR<BR>
+<A href="mailto:\$ADDRESS">\$ADDRESS</A>
 EOF
-fi
 
-file="$dir/src/layout/macros.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
+cat > "$dir/data/misc/es/foot" <<EOF
+Copyright (C) \$DATE por \$AUTHOR<BR>
+<A href="mailto:\$ADDRESS">\$ADDRESS</A>
+EOF
+
+# make htmlex files
+
+cat > "$dir/src/layout/macros.$htex" <<EOF
 <!macro \$AUTHOR  "$author">
 <!macro \$ADDRESS "$address">
 <!macro \$DATE    "$date">
 EOF
-fi
 
-file="$dir/src/layout/head.en.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
+cat > "$dir/src/layout/head.$htex" <<EOF
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
-<TITLE>$site</TITLE>
+<TITLE><!include data/\$NAME/\$LANG/title></TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<META name="description" content="$title">
-<META name="keyword" content="$title, $author">
+<META name="description" content="[insert-description]">
+<META name="keyword" content="[insert-keyword]">
 </HEAD>
-<BODY>
-
-<H1>$site</H1>
-<H3>(english)</H3>
-
-<HR>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#ff00ff" alink="#0000ff">
 EOF
-fi
 
-file="$dir/src/layout/head.es.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<HTML>
-<HEAD>
-<TITLE>$site</TITLE>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<META name="description" content="$title">
-<META name="keyword" content="$title, $author">
-</HEAD>
-<BODY>
-
-<H1>$site</H1>
-<H3>(espa&ntilde;ol)</H3>
-
+cat > "$dir/src/layout/foot.$htex" <<EOF
 <HR>
-EOF
-fi
-
-file="$dir/src/layout/foot.en.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<HR>
-
-<DIV align="left"><ADDRESS>
-Copyright (C) \$DATE by \$AUTHOR<BR>
-<A href="mailto:\$ADDRESS">\$ADDRESS</A>
-</ADDRESS></DIV>
-
+<DIV align="left"><ADDRESS><!include data/misc/\$LANG/foot></ADDRESS></DIV>
 </BODY>
 </HTML>
 EOF
-fi
 
-file="$dir/src/layout/foot.es.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
-<HR>
-
-<DIV align="left"><ADDRESS>
-Copyright (C) \$DATE por \$AUTHOR<BR>
-<A href="mailto:\$ADDRESS">\$ADDRESS</A>
-</ADDRESS></DIV>
-
-</BODY>
-</HTML>
-EOF
-fi
-
-file="$dir/src/layout/body.htex"
-if [ ! -f "$file" ] ; then
-  echo "Building "$file" file..."
-  cat > "$file" <<EOF
+cat > "$dir/src/layout/body.$htex" <<EOF
 <!macro \$LANG <!shift <!suffix <!arg1>>>>
 <!macro \$NAME <!basename <!arg1>>>
 
-<!include src/layout/macros.htex>
-<!include src/layout/head.\$LANG.htex>
-<!include src/bodies/\$NAME.\$LANG.htex>
-<!include src/layout/foot.\$LANG.htex>
+<!include src/layout/macros.$htex>
+<!include src/layout/head.$htex>
+<!include src/bodies/\$NAME.$htex>
+<!include src/layout/foot.$htex>
 EOF
-fi
+
+cat > "$dir/src/bodies/index.$htex" <<EOF
+<DIV align="center">
+<IMG src="images/logo.$jpeg" alt="<!include data/index/\$LANG/title>">
+</DIV>
+
+<P><!include data/index/\$LANG/text></P>
+EOF
+
+cat > "$dir/src/index.$htex" <<EOF
+<!include src/layout/body.$htex index.en>
+EOF
+
+cat > "$dir/src/index.es.$htex" <<EOF
+<!include src/layout/body.$htex index.es>
+EOF
+
+# make a image
+
+cat > "$dir/src/images/logo.$xpm" <<EOF
+/* XPM */
+static char * logo_xpm[] = {
+"64 16 3 1",
+" 	c #FFFFFF",
+".	c #7F7F7F",
+"#	c #000000",
+"                                                                ",
+"                                                                ",
+"  ####           ############   ############   ############     ",
+"  ####.          ############.  ############.  ############.    ",
+"  ####.          ############.  ############.  ############.    ",
+"  ####.          ############.  ############.  ############.    ",
+"  ####.          ####....####.  ####.........  ####....####.    ",
+"  ####.          ####.   ####.  ####.          ####.   ####.    ",
+"  ####.          ####.   ####.  ####.   ####   ####.   ####.    ",
+"  ####.          ####.   ####.  ####.   ####.  ####.   ####.    ",
+"  ############.  ############.  ############.  ############.    ",
+"  ############.  ############.  ############.  ############.    ",
+"  ############.  ############.  ############.  ############.    ",
+"  ############.  ############.  ############.  ############.    ",
+"   ............   ............   ............   ............    ",
+"                                                                "};
+EOF

@@ -6,7 +6,7 @@
 @setchapternewpage odd
 @c %**end of header
 
-@set VERSION 0.1.0
+@set VERSION 0.1.2
 
 @ifinfo
 This file documents the @code{htmlex} command which

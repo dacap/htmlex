@@ -17,8 +17,8 @@ use strict;
 
 
 
-# get the real program name
-my $htmlex = __FILE__;
+# the name of the program
+my $htmlex = "htmlex"; # __FILE__
 
 # we are reading from the standard input stream?
 my $htmlex_using_stdin = 0;
@@ -168,19 +168,7 @@ sub htmlex_attach (\$$$)
   my $more = shift;
   my $icanread = shift;
 
-  # attach the text in the case that we really can attach text,
-  # or we can't read from the file (because the text don't go to
-  # the output, rather to a tag argument or something like this)
-#  $$text .= $more if ($htmlex_can_attach || !$icanread);
-
   $$text .= $more if ($htmlex_can_attach);
-
-#  $$text .= $more if ($htmlex_can_attach ||
-#                     (!$icanread &&
-#                      (($#htmlex_if_status < 0) || ($htmlex_if_status[0] == 1))
-#                     ));
-
-#  $$text .= $more;
 }
 
 
@@ -545,7 +533,7 @@ sub htmlex_extag (*$$\$)
 
       # not founded?
       if (!$opened) {
-        die "$htmlex: $filename: $!\n";
+        die ("$htmlex_filename:$htmlex_fileline: $filename: $!.\n");
       }
       # all right
       else {
@@ -628,7 +616,7 @@ sub htmlex_extag (*$$\$)
         }
 
         # error!
-        die "$htmlex: $filename: Not founded in any include path\n";
+        die "$htmlex_filename:$htmlex_fileline: $filename: Not founded in any include path\n";
       }
     }
     # "exec..."
@@ -909,6 +897,10 @@ sub htmlex_extag (*$$\$)
       # update $htmlex_can_attach flag
       htmlex_refresh ();
     }
+    # "htmlex-version"
+    elsif ($name eq 'htmlex-version') {
+      htmlex_attach ($$res, '@VERSION@', $icanread);
+    }
     # this tag isn't defined (or not is a htmlex tag (like <!DOCTYPE ...>))
     else {
       return 0;
@@ -949,6 +941,7 @@ sub htmlex_process_text (*$$)
 
     # is a tag start? ("<...")
     if ($c eq '<') {
+      my $buggy_line = $htmlex_fileline;
       my $bracket_count = 1;
       my $tag_string = '';
       my $old_i = $i;
@@ -991,7 +984,7 @@ sub htmlex_process_text (*$$)
               $i--;
             }
             else {
-              die "$htmlex: $htmlex_filename: Not found the end of comment\n";
+              die "$htmlex_filename:$buggy_line: Not found the end of comment.\n";
             }
           }
         }
@@ -1025,8 +1018,7 @@ sub htmlex_process_text (*$$)
             $i--;
           }
           else {
-            die "$htmlex: $htmlex_filename: Not found the closer bracket > for the tag: \""
-                . substr ($tag_string, 0, 16) . "\"...\n";
+            die "$htmlex_filename:$buggy_line: Not found the closer bracket.\n";
           }
         }
       }

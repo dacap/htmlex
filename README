@@ -4,23 +4,51 @@ Copyright (C) 2001 David A. Capello
 LICENSE
 =======
 
-  htmlex is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+  htmlex is free software; you can redistribute it and/or modify it under the
+  terms of the GNU General Public License as published by the Free Software
+  Foundation; either version 2 of the License, or (at your option) any later
+  version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License along with
+  this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+  Place, Suite 330, Boston, MA  02111-1307  USA
 
 INTRODUCTION
 ============
 
-  [todo: tranlate from spanish version]
+  htmlex is a small but powerful HTML preprocesor, which you can have some
+  advantages relative to the conventional format of the .html files. Besides,
+  as htmlex is fully compatible with the standard HTML syntax, you can use any
+  HTML file that you have, and convert it to .htex.
 
-  - David A. Capello <dacap@users.sourceforge.net>
+FEATURES
+========
+
+  This program offer a set of extra-functions which are very useful and easy
+  to use:
+    - <!argX> to control the arguments which are passed to the file;
+    - <!include> to include a entire fill within other;
+    - <!macro> to create macros (a text that will be replaced with other);
+    - <!exec> to execute extern programs and put its output;
+    - <!if><!elif><!else><!fi> to control conditionals-blocks;
+    - <!lc>, <!lcfirst>, <!uc>, <!ucfirst>, <!chop>, <!shift>, <!basename>,
+      <!dir>, <!notdir>, <!suffix> to control text strings and file names.
+    - between others very useful like <!include-path> and <!macro-reset>
+      (see the man page for more information).
+
+INSTALLATION
+============
+
+  See the INSTALL file.
+
+CREDITS
+=======
+
+  See the AUTHORS file.
+
+  - David A. Capello  <dacap@users.sourceforge.net>

@@ -2,10 +2,8 @@
 # test all examples
 
 for file in *.htex ; do
-  clear ; echo "This code from \`$file'..."
-  cat "$file"
-  echo -n "Press any key to continue..." ; read
-  clear ; echo "Produce this results..."
-  ../htmlex "$file"
-  echo -n "Press any key to continue..." ; read
+  clear ; echo "This code from \`$file'..." ; cat "$file"
+  read -p "Press any key to continue..." -n 1
+  clear ; echo "Produce this results..." ; ../htmlex "$file"
+  read -p "Press any key to continue..." -n 1
 done

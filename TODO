@@ -1,3 +1,14 @@
+* Test <!if> all we can.
+
+* More "verbose" messages for the conditions control?
+
+* Try to provoke errors in things like <!if><!else><!elif><!fi>.
+
+* A *lot* of code with C like style, so need be "PERLized".
+
+* Fix the manuals, and the texi files, and all related to documentation
+  need will be completed.
+
 * Complete all documentation.
 
 * Translate all spanish documents to english.

@@ -8,7 +8,7 @@ Version:	%{version}
 Release:	%{release}
 Vendor:		David A. Capello
 Packager:	David A. Capello dacap@users.sourceforge.net
-#URL:		
+URL:		http://htmlex.sourceforge.net
 Source:         %{name}-%{version}.tar.gz
 #Patch:		
 Group:		Application/Generic
@@ -18,10 +18,10 @@ Copyright:	GPL
 BuildRoot:	/var/tmp/%{name}-%{version}
 Summary:	a powerful hypertext markup language preprocessor
 %description
-a powerful hypertext markup language preprocessor
-@configure_input@
-Please edit htmlex.spec.in to add several more lines of description
-here if appropriate, and to delete these instructions.
+htmlex is a small but powerful HTML preprocesor, which you can have some
+advantages relative to the conventional format of the .html files. Besides,
+as htmlex is fully compatible with the standard HTML syntax, you can use any
+HTML file that you have, and convert it to .htex.
 
 %prep
 %setup -n %{name}-%{version} 

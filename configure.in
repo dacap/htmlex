@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(htmlex.in)
-AM_INIT_AUTOMAKE(htmlex, 0.1.1)
+AM_INIT_AUTOMAKE(htmlex, 0.1.2)
 
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
@@ -22,6 +22,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 
-AC_OUTPUT(Makefile htmlex htmlex-site htmlex.1 htmlex.lsm htmlex.spec es/htmlex.1,
+AC_OUTPUT(Makefile htmlex htmlex-site htmlex.1 htmlex-site.1
+  htmlex.lsm htmlex.spec es/htmlex.1 es/htmlex-site.1,
   [chmod +x htmlex]
   [chmod +x htmlex-site])

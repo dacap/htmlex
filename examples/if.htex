@@ -1,5 +1,5 @@
 <!if <!arg1> == es>
-  Españõl <!if <!arg2> == ar><!uc <!arg2>><!else>(desconocido)<!fi>
+  Español <!if <!arg2> == ar><!uc <!arg2>><!else>(desconocido)<!fi>
 <!elif <!arg1> == en>
   English <!if <!arg2> == uk><!uc <!arg2>><!else>(unknow)<!fi>
 <!elif <!arg1> == --help>

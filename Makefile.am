@@ -3,7 +3,8 @@ bin_SCRIPTS = \
 	htmlex-site
 
 man_MANS = \
-	htmlex.1
+	htmlex.1 \
+	htmlex-site.1
 
 info_TEXINFOS = \
 	htmlex.texi
@@ -15,12 +16,14 @@ EXTRA_DIST = \
 	es/BUGS \
 	es/ChangeLog \
 	es/htmlex.1.in \
+	es/htmlex-site.1.in \
 	es/NEWS \
 	es/README \
 	es/TODO \
 	examples/*.sh \
 	examples/*.htex \
 	htmlex-site.in \
+	htmlex-site.1.in \
 	htmlex.1.in \
 	htmlex.in \
 	htmlex.lsm.in \
