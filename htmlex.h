@@ -23,7 +23,7 @@
 struct _IO_STREAM;
 
 /* version of the program */
-#define VERSION "0.3"
+#define VERSION "0.3.1"
 
 /* classic macros */
 #ifndef NULL
