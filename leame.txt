@@ -215,7 +215,7 @@ CARACTERÍSTICAS
     Ejemplos:
       <!if <!find index.es.html>>
         español
-      </!if>
+      <!fi>
 
   <!if expresión>
     Una de las más poderosas características que tiene htmlex con respecto

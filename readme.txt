@@ -210,7 +210,7 @@ FEATURES
     Examples:
       <!if <!find index.en.html>>
         english
-      </!if>
+      <!fi>
 
   <!if expression>
     One of the more powerful features of htmlex relative to
