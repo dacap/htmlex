@@ -969,6 +969,29 @@ sub htmlex_extag (*$$\$)
 
       htmlex_attach ($$res, $args[0]);
     }
+    # "file-size..."
+    elsif ($name eq 'file-size') {
+      # process the first argument
+      $args[0] = htmlex_process_text (*$filehandle, 0, $args[0]);
+
+      # get the file size in bytes
+      my $size = -s $args[0];
+
+      # convert the size to a human-readable format
+      my $format;
+
+      if ($size < 1024 * 2) {
+        $format = sprintf ("%d", $size);
+      }
+      elsif ($size < 1024 * 1000) {
+        $format = sprintf ("%0.1fk", $size / 1024);
+      }
+      else {
+        $format = sprintf ("%0.2fM", $size / 1024 / 1024);
+      }
+
+      htmlex_attach ($$res, $format);
+    }
     # this tag isn't defined (or not is a htmlex tag (like <!DOCTYPE ...>))
     else {
       return 0;
