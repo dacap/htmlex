@@ -29,15 +29,15 @@ typedef struct STREAM {
 
 STREAM *stopen (const char *filename, const char *mode);
 STREAM *stfile (void *file);
-char *stbuffer (STREAM * stream);
-int stclose (STREAM * stream);
-int steof (STREAM * stream);
-int stflush (STREAM * stream);
-int stgetc (STREAM * stream);
-char *stgets (char *s, int size, STREAM * stream);
-int stputc (int c, STREAM * stream);
-int stputs (const char *s, STREAM * stream);
-int stseek (STREAM * stream, int offset, int whence);
-int sttell (STREAM * stream);
+char *stbuffer (STREAM *stream);
+int stclose (STREAM *stream);
+int steof (STREAM *stream);
+int stflush (STREAM *stream);
+int stgetc (STREAM *stream);
+char *stgets (char *s, int size, STREAM *stream);
+int stputc (int c, STREAM *stream);
+int stputs (const char *s, STREAM *stream);
+int stseek (STREAM *stream, int offset, int whence);
+int sttell (STREAM *stream);
 
 #endif				/* __STREAM_H__ */

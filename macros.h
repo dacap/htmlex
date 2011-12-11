@@ -45,14 +45,14 @@ extern int nmacros_space;
 
 MACRO *new_macro (int type, char *name, char *value);
 MACRO_LIST *new_macro_list (void);
-void free_macro_list (MACRO_LIST * list);
+void free_macro_list (MACRO_LIST *list);
 
-void add_macro (MACRO_LIST * list, MACRO * macro, int sort);
-int remove_macro (MACRO_LIST * list, const char *name);
-MACRO *get_macro (MACRO_LIST * list, const char *name);
-void modify_macro (MACRO * macro, char *value);
+void add_macro (MACRO_LIST *list, MACRO *macro, int sort);
+int remove_macro (MACRO_LIST *list, const char *name);
+MACRO *get_macro (MACRO_LIST *list, const char *name);
+void modify_macro (MACRO *macro, char *value);
 
-char *replace_by_macro (MACRO_LIST * list, char *buf, int *length);
-char *function_macro (MACRO_LIST * list, char *tag);
+char *replace_by_macro (MACRO_LIST *list, char *buf, int *length);
+char *function_macro (MACRO_LIST *list, char *tag);
 
 #endif				/* __MACROS_H__ */

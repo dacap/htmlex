@@ -222,7 +222,7 @@ char *own_strtok (char *s, char **holder)
 }
 
 /* process the file `in' and output the result to `out' file */
-void process_file (STREAM * in, STREAM * out)
+void process_file (STREAM *in, STREAM *out)
 {
   STREAM *old_i_stream = _i_stream;
   STREAM *old_o_stream = _o_stream;

@@ -30,7 +30,7 @@ static unsigned int funcs_table[256];
 static void push_space (void);
 static void pop_space (void);
 
-static void destroy_macro_data (MACRO * macro)
+static void destroy_macro_data (MACRO *macro)
 {
   free (macro->name);
   free (macro->value);
@@ -73,7 +73,7 @@ MACRO_LIST *new_macro_list (void)
   return list;
 }
 
-void free_macro_list (MACRO_LIST * list)
+void free_macro_list (MACRO_LIST *list)
 {
   int c;
 
@@ -92,7 +92,7 @@ static int sort_macros (const void *e1, const void *e2)
   return strlen (((MACRO *) e2)->name) - strlen (((MACRO *) e1)->name);
 }
 
-void add_macro (MACRO_LIST * list, MACRO * macro, int sort)
+void add_macro (MACRO_LIST *list, MACRO *macro, int sort)
 {
   int c = list->num_macros++;
 
@@ -113,7 +113,7 @@ void add_macro (MACRO_LIST * list, MACRO * macro, int sort)
     qsort (list->macros, list->num_macros, sizeof (MACRO), sort_macros);
 }
 
-int remove_macro (MACRO_LIST * list, const char *name)
+int remove_macro (MACRO_LIST *list, const char *name)
 {
   int c;
 
@@ -135,7 +135,7 @@ int remove_macro (MACRO_LIST * list, const char *name)
   return -1;
 }
 
-MACRO *get_macro (MACRO_LIST * list, const char *name)
+MACRO *get_macro (MACRO_LIST *list, const char *name)
 {
   int c;
 
@@ -146,13 +146,13 @@ MACRO *get_macro (MACRO_LIST * list, const char *name)
   return NULL;
 }
 
-void modify_macro (MACRO * macro, char *value)
+void modify_macro (MACRO *macro, char *value)
 {
   free (macro->value);
   macro->value = value;
 }
 
-char *replace_by_macro (MACRO_LIST * list, char *buf, int *length)
+char *replace_by_macro (MACRO_LIST *list, char *buf, int *length)
 {
   int c;
 
@@ -178,7 +178,7 @@ char *replace_by_macro (MACRO_LIST * list, char *buf, int *length)
   return NULL;
 }
 
-char *function_macro (MACRO_LIST * list, char *tag)
+char *function_macro (MACRO_LIST *list, char *tag)
 {
   int c;
 

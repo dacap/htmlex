@@ -70,7 +70,7 @@ STREAM *stfile (void *file)
   return stream;
 }
 
-char *stbuffer (STREAM * stream)
+char *stbuffer (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_MEMORY) {
@@ -85,7 +85,7 @@ char *stbuffer (STREAM * stream)
   return NULL;
 }
 
-int stclose (STREAM * stream)
+int stclose (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE) {
@@ -111,7 +111,7 @@ int stclose (STREAM * stream)
   return EOF;
 }
 
-int steof (STREAM * stream)
+int steof (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -122,7 +122,7 @@ int steof (STREAM * stream)
   return 1;
 }
 
-int stflush (STREAM * stream)
+int stflush (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -133,7 +133,7 @@ int stflush (STREAM * stream)
   return EOF;
 }
 
-int stgetc (STREAM * stream)
+int stgetc (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -146,7 +146,7 @@ int stgetc (STREAM * stream)
   return EOF;
 }
 
-char *stgets (char *s, int size, STREAM * stream)
+char *stgets (char *s, int size, STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -175,7 +175,7 @@ char *stgets (char *s, int size, STREAM * stream)
   return NULL;
 }
 
-int stputc (int c, STREAM * stream)
+int stputc (int c, STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -204,7 +204,7 @@ int stputc (int c, STREAM * stream)
   return EOF;
 }
 
-int stputs (const char *s, STREAM * stream)
+int stputs (const char *s, STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -219,7 +219,7 @@ int stputs (const char *s, STREAM * stream)
   return EOF;
 }
 
-int stseek (STREAM * stream, int offset, int whence)
+int stseek (STREAM *stream, int offset, int whence)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
@@ -248,7 +248,7 @@ int stseek (STREAM * stream, int offset, int whence)
   return -1;
 }
 
-int sttell (STREAM * stream)
+int sttell (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
