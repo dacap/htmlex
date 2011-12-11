@@ -1,1 +1,2 @@
-make/out/
+make/out/*.html
+make/out/sub/*.html
