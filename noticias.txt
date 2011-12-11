@@ -1,6 +1,6 @@
 [-- htmlex 0.4.4 release --]
 
-* Arreglado un error cuando se definen macros dentro de una functión.
+* Arreglado un error cuando se definen macros dentro de una función.
 
 [-- htmlex 0.4.3 release --]
 

@@ -152,7 +152,7 @@ CARACTERÍSTICAS
   <!chop palabra>
     Le quita el último carácter a la _palabra_.
     Ejemplos:
-      <!chop seco>        -> eco
+      <!chop llorón>      -> lloró
       <!chop directorio/> -> directorio
 
   <!clean palabra>
