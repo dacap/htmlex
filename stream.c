@@ -104,7 +104,7 @@ int steof (STREAM *stream)
 {
   if (stream) {
     if (stream->type == STREAM_TYPE_FILE)
-      return feof (stream->data);
+      return feof ((FILE*)stream->data);
     else if (stream->type == STREAM_TYPE_MEMORY)
       return (smemdata->pos == smemdata->end);
   }
