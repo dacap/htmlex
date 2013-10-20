@@ -1,19 +1,20 @@
-# htmlex - a powerful hypertext markup language preprocessor (HTML)
+# htmlex
+**A powerful hypertext markup language preprocessor (HTML)**
 > Copyright (C) 2001, 2002, 2003 by David Capello
 
 ## Introduction
 
-  htmlex is a small but powerful HTML preprocesor, which has numerous
-  advantages compared to conventional HTML files. On top of that, htmlex
-  is fully compatible with the standard HTML syntax. This means that you
-  can use any HTML file that you have previously made, rename it to .htex,
-  and start using htmlex.
+htmlex is a small but powerful HTML preprocesor, which has numerous
+advantages compared to conventional HTML files. On top of that, htmlex
+is fully compatible with the standard HTML syntax. This means that you
+can use any HTML file that you have previously made, rename it to
+`.htex`, and start using htmlex.
 
-  This software is distributed under the [MIT license](license.txt).
+This software is distributed under the [MIT license](license.txt).
 
 ## Options
 
-  htmlex interprets the following options from the command line:
+htmlex interprets the following options from the command line:
 
     -c   compiles all subsequent files (gets an output file name
          from '-o' or generates a name with .html extension, see -E)
@@ -30,316 +31,429 @@
 
 ## Execution
 
-  References
-  -----------
+### References
 
-  STDIN      Standard input: from the keyboard or from file.
+* `STDIN` (standard input): from the keyboard or from file.
+* `STDOUT` (standard output): to the screen or to file.
 
-  STDOUT     Standard output: to the screen or to file.
+### Common behavior
 
-  Common behavior
-  ---------------
+    ./htmlex
+Process `STDIN` and leave the results in `STDOUT`.
 
-  ./htmlex
-  Process STDIN and leave the results in STDOUT.
+    ./htmlex file arguments...
+Process `file` and leave the results in `STDOUT`.
 
-  ./htmlex file arguments...
-  Process `file' and leave the results in STDOUT.
+    ./htmlex -c files... -a arguments...
+Process `files` and leave the results in `files.html`.
 
-  ./htmlex -c files... -a arguments...
-  Process `files' and leave the results in `files.html'.
+    ./htmlex -c files... -o destinations...
+    ./htmlex -o destinations... -c files...
+Process the `files` and leave the results in the `destinations`.
 
-  ./htmlex -c files... -o destinations...
-  ./htmlex -o destinations... -c files...
-  Process the `files' and leave the results in the `destinations'.
+### Some equivalent examples
 
-  Some equivalent examples
-  ------------------------
+    ./htmlex file.htex arg1 arg2 > file.html
+    ./htmlex -c file.htex -a arg1 arg2
+    ./htmlex -c file.htex -o file.html -a arg1 arg2
+    ./htmlex -a arg1 arg2 < file.htex > file.html
+    ./htmlex -a arg1 arg2 -o file.html < file.htex
 
-  ./htmlex file.htex arg1 arg2 > file.html
-  ./htmlex -c file.htex -a arg1 arg2
-  ./htmlex -c file.htex -o file.html -a arg1 arg2
-  ./htmlex -a arg1 arg2 < file.htex > file.html
-  ./htmlex -a arg1 arg2 -o file.html < file.htex
+### Common mistakes
 
-  Common mistakes
-  ---------------
-
-  ./htmlex -I examples file.htex > file.html
-  Here the program waits for input from STDIN, because file.htex
-  counts as another path for "-I".
-  Possible solutions:
+    ./htmlex -I examples file.htex > file.html
+Here the program waits for input from `STDIN`, because `file.htex`
+counts as another path for `-I`.
+Possible solutions:
     ./htmlex -I examples -- file.htex > file.html
     ./htmlex -I examples -c file.htex
     ./htmlex file.htex -I examples > file.html
 
-  ./htmlex -c index.htex en English
-  Here, htmlex will try to compile the files `index.htex', `en' and
-  `English', instead of passing the arguments to `index.htex'.
-  Possible solutions:
+    ./htmlex -c index.htex en English
+Here, htmlex will try to compile the files `index.htex`, `en` and
+`English`, instead of passing the arguments to `index.htex`.
+Possible solutions:
     ./htmlex -c index.htex -a en English
     ./htmlex index.htex en English > index.html
 
-  Changes regarding previous versions
-  -----------------------------------
+### Changes regarding previous versions
 
-  * Now you can use "-I" instead of "-i" (like gcc).
-  * The argument order isn't necessary anymore, so you can do:
+* Now you can use `-I` instead of `-i` (like gcc).
+* The argument order isn't necessary anymore, so you can do:
+
     ./htmlex -c src.htex -o dst.html -I dir
 
 ## Features
 
-  Reference
-  ---------
+### Reference
 
-  This notation will be used along of the definitions:
-    expression            The _expression_ is mandatory.
-    [ expression ]        The _expression_ is optional.
-    { expression }        The _expression_ is optional and repeatable.
-    source -> result      Indicates that _results_ will be obtained
-                          when the program will process the _source_ text.
+This notation will be used along of the definitions:
 
-  Tags
-  ----
+* `expression`: The `expression` is mandatory.
+* `[ expression ]`: The `expression` is optional.
+* `{ expression }`: The `expression` is optional and repeatable.
+* `source -> result`: Indicates that `results` will be obtained when
+  the program will process the `source` text.
 
-  Lists of tags which you can use in the .htex files (by alphabetical
-  sorting):
+### Tags
 
-  <!args>
-    Returns the number of arguments which was passed to the input file.
-    Example:
-      You input <!args> argument(s).
+Lists of tags which you can use in the `.htex` files (by alphabetical
+sorting):
 
-  <!arg1> ... <!argN>
-    Returns the argument's value. The arguments are passed to the files
-    via the command line's -a option, or from the <!include file
-    arg1 ... argN> tag.
-    Example:
-       2nd argument = <!arg2>.
+#### args
 
-  <!basename file>
-    Returns the base name of the _file_. In other words, removes its
-    extension.
-    Examples:
-      <!basename src/foo.c>    -> src/foo
-      <!basename src-1.0/bar>  -> src-1.0/bar
-      <!basename hacks>        -> hacks
+    <!args>
 
-  <!chop word>
-    Removes the last character of _word_.
-    Examples:
-      <!chop hello>       -> hell
-      <!chop directorio/> -> directorio
+Returns the number of arguments which was passed to the input file.
 
-  <!clean word>
-    Cleans _word_ removing blank space (tabulators and line breaks)
-    around it.
-    Example:
-      *<!clean " hola ">* -> *hola*
+Example:
 
-  <!dep file>
-    Adds 'file' as a dependency. This tag takes effect only in the dependency
-    generation process.
-    Example:
-      <!exec ./script.sh>
-      <!dep script.sh>
+    You input <!args> argument(s).
 
-  <!dir file>
-    Returns the directory part of _file_. In other words, deletes the file name.
-    Examples:
-      <!dir src/foo.c> -> src/
-      <!dir a/b/foo.h> -> a/b/
-      <!dir hacks>     -> ./
+#### argN
 
-  <!elif expression>
-    See <!if>.
+    <!arg1> ... <!argN>
+Returns the argument's value. The arguments are passed to the files
+via the command line's -a option, or from the <!include file
+arg1 ... argN> tag.
 
-  <!else>
-    See <!if>.
+Example:
 
-  <!end>
-    See <!function>.
+    2nd argument = <!arg2>.
 
-  <!exec command { arguments }>
-    Executes the indicated _command_ passing the _arguments_ to it. Whatever
-    the command prints to the standard output (STDOUT) will be inserted at
-    this position in the file.
-    Examples:
-      <!exec date>
-      <!exec gcc --version>
+#### basename
 
-  <!exec-proc file { arguments }>
-    Equal to <!exec ...> except that it will process the results as other
-    htmlex file.
-    Examples:
-      <!exec-proc cat header.htex>
-      <!exec-proc cat "a footer.htex">
-      <!exec-proc cat <!find macros.htex>>
+    <!basename file>
 
-  <!fi>
-    See <!if>.
+Returns the base name of the `file`. In other words, removes its
+extension.
 
-  <!file-size file>
-    Returns the size of _file_ in a format that's more human-readable
-    (bytes, KB, MB or GB).
-    Example:
-      image <!file-size image.jpg>
+Examples:
 
-  <!find file>
-    Tries to find _file_ in the search path (the active directory and
-    all directories added with the -i option), and will return the name
-    of the _file_ with the matching path. In the case that the file isn't
-    found, nothing is returned.
-    Examples:
-      <!if <!find index.en.html>>
-        english
-      <!fi>
+    <!basename src/foo.c>    -> src/foo
+    <!basename src-1.0/bar>  -> src-1.0/bar
+    <!basename hacks>        -> hacks
 
-  <!function name { submacros }>
-    Creates a new functional macro like in C/C++. When the program see
-    this tag, it follows reading the file in "raw" mode until finds
-    <!end> tag. Then, the macro could be called like any other tag:
-    <!name {args}>
-    Example:
+#### chop
+
+    <!chop word>
+
+Removes the last character of `word`.
+
+Examples:
+
+    <!chop hello>       -> hell
+    <!chop directorio/> -> directorio
+
+#### clean
+
+    <!clean word>
+
+Cleans `word` removing blank space (tabulators and line breaks)
+around it.
+
+Example:
+
+    *<!clean " hola ">* -> *hola*
+
+#### dep
+
+    <!dep file>
+Adds 'file' as a dependency. This tag takes effect only in the dependency
+generation process.
+
+Example:
+
+    <!exec ./script.sh>
+    <!dep script.sh>
+
+#### dir
+
+    <!dir file>
+
+Returns the directory part of `file`. In other words, deletes the file name.
+
+Examples:
+
+    <!dir src/foo.c> -> src/
+    <!dir a/b/foo.h> -> a/b/
+    <!dir hacks>     -> ./
+
+#### elif
+
+    <!elif expression>
+
+See `<!if>`.
+
+#### else
+
+    <!else>
+
+See `<!if>`.
+
+#### end
+
+    <!end>
+
+See `<!function>`.
+
+#### exec
+
+    <!exec command { arguments }>
+
+Executes the indicated `command` passing the `arguments` to it. Whatever
+the command prints to the standard output (`STDOUT`) will be inserted at
+this position in the file.
+
+Examples:
+
+    <!exec date>
+    <!exec gcc --version>
+
+#### exec-proc
+
+    <!exec-proc file { arguments }>
+
+Equal to `<!exec ...>` except that it will process the results as other
+htmlex file.
+
+Examples:
+
+    <!exec-proc cat header.htex>
+    <!exec-proc cat "a footer.htex">
+    <!exec-proc cat <!find macros.htex>>
+
+#### fi
+
+    <!fi>
+
+See `<!if>`.
+
+#### file-size
+
+    <!file-size file>
+
+Returns the size of `file` in a format that's more human-readable
+(bytes, KB, MB or GB).
+
+Example:
+
+    image <!file-size image.jpg>
+
+#### find
+
+    <!find file>
+
+Tries to find `file` in the search path (the active directory and
+all directories added with the `-I` option), and will return the name
+of the `file` with the matching path. In the case that the file isn't
+found, nothing is returned.
+
+Examples:
+
+    <!if <!find index.en.html>>
+      english
+    <!fi>
+
+#### function
+
+    <!function name { submacros }>
+
+Creates a new functional macro like in C/C++. When the program see
+this tag, it follows reading the file in "raw" mode until finds
+`<!end>` tag. Then, the macro could be called like any other tag:
+`<!name {args}>`
+
+Example:
+
       <!function my_macro a b c>a is b c<!end>
       <!my_macro This my macro>.
     Results:
       This is my macro.
 
-  <!if expression>
-    One of the more powerful features of htmlex relative to
-    conventional HTML is the conditional-blocks.
+#### if
 
-    Through four tags you can do some of the conditional operations
-    of "normal" programming languages. Although nowadays, htmlex has a
-    poor handling of operations, improvements to this construct will
-    made.
+    <!if expression>
 
-    The general syntax is the following:
+One of the more powerful features of htmlex relative to
+conventional HTML is the conditional-blocks.
 
-      <!if [ expression ]> block
-      { <!elif [ expression ]> block }
-      [ <!else> block ]
-      <!fi>
+Through four tags you can do some of the conditional operations
+of "normal" programming languages. Although nowadays, htmlex has a
+poor handling of operations, improvements to this construct will
+made.
 
-    The _block_ can be any text (or just nothing), can have other tags,
-    and consequentialy, can have more nested <!if> tags.
+The general syntax is the following:
 
-    The _expression_ to be evaluated can have any of the formats below:
+    <!if [ expression ]> block
+    { <!elif [ expression ]> block }
+    [ <!else> block ]
+    <!fi>
 
-      FORMAT               TRUE IF...
-      -------              ----------
-      number               _number_ is not zero
-      ! number             _number_ is zero
-      word                 _word_ has one character as minimum
-      ! word               _word_ is empty
-      number1 < number2    _number1_ is less than _number2_
-      number1 > number2    _number1_ is greater than _number2_
-      number1 <= number2   _number1_ is less or equal than _number2_
-      number1 >= number2   _number1_ is greater or equal than _number2_
-      number1 == number2   _number1_ is equal than _number2_
-      number1 != number2   _number1_ is different than _number2_
-      word1 == word2       _word1_ is identical than _word2_
-      word1 != word2       _word1_ differs in just one character than _word2_
+The `block` can be any text (or just nothing), can have other tags,
+and consequentialy, can have more nested <!if> tags.
+
+The `expression` to be evaluated can have any of the formats below:
+
+    FORMAT               TRUE IF...
+    -------              ----------
+    number               number is not zero
+    ! number             number is zero
+    word                 word has one character as minimum
+    ! word               word is empty
+    number1 < number2    number1 is less than number2
+    number1 > number2    number1 is greater than number2
+    number1 <= number2   number1 is less or equal than number2
+    number1 >= number2   number1 is greater or equal than number2
+    number1 == number2   number1 is equal than number2
+    number1 != number2   number1 is different than number2
+    word1 == word2       word1 is identical than word2
+    word1 != word2       word1 differs in just one character than word2
       
-    If the expression format cannot be resolved to the table above, then false
-    is returned.
+If the expression format cannot be resolved to the table above, then
+false is returned.
 
-    _numbers_ are distinguished from _words_ when they have some of these
-    formats:
+`numbers` are distinguished from `words` when they have some of these
+formats:
 
-      [1-9][0-9]*      decimals
-      0x[0-9a-fA-F]*   hexadecimals
-      0[0-7]           octals
+    [1-9][0-9]*      decimals
+    0x[0-9a-fA-F]*   hexadecimals
+    0[0-7]           octals
 
-    Examples:
-      <!if <!arg1> == --help>
-        Do you need help?
-      <!else>
-        Try with --help.
-      <!fi>
-      <!if <!tolower HELLO> == <!tolower Hello>>
-        works
-      <!fi>
-      <!if>For here it won't never pass<!fi>
+Examples:
 
-  <!include file { arguments }>
-    Includes the _file_ to be processed like an normal .htex file. This file
-    will also be used for calculating dependencies. This is equivalent to
-    C's #include.
-    Examples:
-      <!include header.htex>
-      <!include footer.htex en UK>
+    <!if <!arg1> == --help>
+      Do you need help?
+    <!else>
+      Try with --help.
+    <!fi>
+    <!if <!tolower HELLO> == <!tolower Hello>>
+      works
+    <!fi>
+    <!if>For here it won't never pass<!fi>
 
-  <!macro name [ value ]>
-    Creates or modifies a macro with the specified _name_ and _value_.
-    If _value_ is not specified, the macro will be eliminated from
-    memory. The main use of macros is to replace a certain keyword
-    (its _name_) for some predetermined text (its _value_).
-    Example:
-      <!macro hi bye>
-      hi -> bye   <!-- "hi" replaced by "bye" -->
-      <!macro hi>
-      hi -> hi    <!-- "hi" macro is deleted -->
+#### include
 
-  <!macro-reset>
-    Removes any macro which was created before this tag.
-    Example:
-      <!macro a b>a<!macro-reset>a -> ba
+    <!include file { arguments }>
 
-  <!notdir file>
-    Returns the name of the _file_ without the directory.
-    Examples:
-      <!notdir src/foo.c> -> foo.c
-      <!notdir a/b/foo.h> -> foo.h
-      <!notdir hacks>     -> hacks
+Includes the `file` to be processed like an normal `.htex` file. This file
+will also be used for calculating dependencies. This is equivalent to
+C's `#include`.
 
-  <!shift word>
-    Removes the first character of _word_.
-    Examples:
-      <!shift your> -> our
-      <!shift .txt> -> txt
+Examples:
 
-  <!suffix file>
-    Returns the extension of _file_.
-    Examples:
-      <!suffix "src/foo.c">   -> .c
-      <!suffix "src-1.0/bar"> ->
-      <!suffix "hacks">       ->
+    <!include header.htex>
+    <!include footer.htex en UK>
 
-  <!tolower word [ beginning [ final ] ]>
-    See <!toupper>.
+#### macro
 
-  <!toupper word [ beginning [ final ] ]>
-    Converts partially or completelly _word_ to lower or upper case
-    depending on if you specify or not the _beginning_ and/or the _final_
-    character index. Indecies start at 0.
-    If only _beginning_ is specified, then the range starting from
-    _beginning_ to the last character is converted.
-    If you also indicate _final_, you are specifying an upper bound
-    to the conversion range.
-    Note: negative values for _final_ indicates that values are to be taken
-    from the end of the _word_.
-    Examples:
-      <!tolower HELLO>      -> hello
-      <!tolower HELLO 0>    -> hELLO
-      <!toupper hello 1 2>  -> hELlo
-      <!toupper hello 0 -2> -> HELLo
+    <!macro name [ value ]>
 
-  <!version>
-    Shows the program version which is processing the file.
-    Example:
-      This page was created with htmlex <!version>.
+Creates or modifies a macro with the specified `name` and `value`.
+If `value` is not specified, the macro will be eliminated from
+memory. The main use of macros is to replace a certain keyword
+(its `name`) for some predetermined text (its `value`).
+
+Example:
+
+    <!macro hi bye>
+    hi -> bye   <!-- "hi" replaced by "bye" -->
+    <!macro hi>
+    hi -> hi    <!-- "hi" macro is deleted -->
+
+#### macro-reset
+
+    <!macro-reset>
+
+Removes any macro which was created before this tag.
+
+Example:
+
+    <!macro a b>a<!macro-reset>a -> ba
+
+#### notdir
+
+    <!notdir file>
+
+Returns the name of the `file` without the directory.
+
+Examples:
+
+    <!notdir src/foo.c> -> foo.c
+    <!notdir a/b/foo.h> -> foo.h
+    <!notdir hacks>     -> hacks
+
+#### shift
+
+    <!shift word>
+
+Removes the first character of `word`.
+
+Examples:
+
+    <!shift your> -> our
+    <!shift .txt> -> txt
+
+#### suffix
+
+    <!suffix file>
+
+Returns the extension of `file`.
+
+Examples:
+
+    <!suffix "src/foo.c">   -> .c
+    <!suffix "src-1.0/bar"> ->
+    <!suffix "hacks">       ->
+
+#### tolower
+
+    <!tolower word [ beginning [ final ] ]>
+
+See `<!toupper>`.
+
+#### toupper
+
+    <!toupper word [ beginning [ final ] ]>
+
+Converts partially or completelly `word` to lower or upper case
+depending on if you specify or not the `beginning` and/or the `final`
+character index. Indecies start at 0.
+
+If only `beginning` is specified, then the range starting from
+`beginning` to the last character is converted.
+If you also indicate `final`, you are specifying an upper bound
+to the conversion range.
+
+Note: negative values for `final` indicates that values are to be taken
+from the end of the `word`.
+
+Examples:
+
+    <!tolower HELLO>      -> hello
+    <!tolower HELLO 0>    -> hELLO
+    <!toupper hello 1 2>  -> hELlo
+    <!toupper hello 0 -2> -> HELLo
+
+#### version
+
+    <!version>
+
+Shows the program version which is processing the file.
+
+Example:
+
+    This page was created with htmlex <!version>.
 
 # Important Notes
 
-`<!macro X>` deletes the X macro, so if you use `<!if X>`
-that expression will give you true (because the string "X"
-will be used, and not the value of X).
+* `<!macro X>` deletes the X macro, so if you use `<!if X>`
+  that expression will give you true (because the string "X"
+  will be used, and not the value of X).
 
-`<!macro X "">` assigns a null value to the X macro, this is
-necessary for a false result in `<!if X>` (because in this case,
-the X is replaced by its value).
+* `<!macro X "">` assigns a null value to the X macro, this is
+  necessary for a false result in `<!if X>` (because in this case,
+  the X is replaced by its value).
 
 ## Author
 
@@ -348,4 +462,4 @@ David Capello <davidcapello@gmail.com>
 Any suggestion, thank-you letters, or (preferably) donations ;-),
 will be most welcomed.
 
-You can visit http://dacap.com.ar for more information.
+You can visit http://dacap.com.ar/donate/ for more information.
