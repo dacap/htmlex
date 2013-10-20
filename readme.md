@@ -80,6 +80,7 @@ Possible solutions:
 
 * Now you can use `-I` instead of `-i` (like gcc).
 * The argument order isn't necessary anymore, so you can do:
+
       ./htmlex -c src.htex -o dst.html -I dir
 
 ## Features
@@ -113,8 +114,7 @@ Example:
 
     <!arg1> ... <!argN>
 Returns the argument's value. The arguments are passed to the files
-via the command line's -a option, or from the <!include file
-arg1 ... argN> tag.
+via the command line's `-a` option, or from the `<!include file arg1 ... argN>` tag.
 
 Example:
 
@@ -267,7 +267,9 @@ Example:
 
       <!function my_macro a b c>a is b c<!end>
       <!my_macro This my macro>.
-    Results:
+
+Output:
+
       This is my macro.
 
 #### if
@@ -290,7 +292,7 @@ The general syntax is the following:
     <!fi>
 
 The `block` can be any text (or just nothing), can have other tags,
-and consequentialy, can have more nested <!if> tags.
+and consequentialy, can have more nested `<!if>` tags.
 
 The `expression` to be evaluated can have any of the formats below:
 
