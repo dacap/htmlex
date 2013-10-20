@@ -64,8 +64,6 @@ MACRO_LIST *new_macro_list (void)
 
 void free_macro_list (MACRO_LIST *list)
 {
-  int c;
-
   if (list->macros) {
     while (list->num_macros > 0)
       remove_macro (list, list->macros->name);

@@ -423,7 +423,7 @@ static void read_function_body (STREAM * in, STREAM * out)
       /* tag beginning */
       if ((*s == '<') && (s[1] == '!')) {
 	char *tag = s + 1;
-	int c, i;
+	int c;
 
 	/* jump the comment? */
 	if ((s[2] == '-') && (s[3] == '-')) {
