@@ -76,12 +76,11 @@ Possible solutions:
     ./htmlex -c index.htex -a en English
     ./htmlex index.htex en English > index.html
 
-### Changes regarding previous versions
+### Changes from previous versions
 
 * Now you can use `-I` instead of `-i` (like gcc).
 * The argument order isn't necessary anymore, so you can do:
-
-    ./htmlex -c src.htex -o dst.html -I dir
+      ./htmlex -c src.htex -o dst.html -I dir
 
 ## Features
 
