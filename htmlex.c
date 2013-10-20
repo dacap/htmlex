@@ -554,7 +554,7 @@ Options:\n\
   -h   displays help screen and exit\n\
   --   breaks -coaI arguments\n\
 \n\
-Report bugs and patches to <dacap@users.sourceforge.net>\n\
+Report bugs and patches to https://github.com/dacap/htmlex\n\
 ", VERSION);
 }
 
