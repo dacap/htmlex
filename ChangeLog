@@ -1,34 +1,38 @@
-2003-07-11  David A. Capello  <dacap@users.sourceforge.net>
+2013-10-19  David Capello  <davidcapello@gmail.com>
+
+	* LICENSE.txt: Switched to MIT license.
+
+2003-07-11  David Capello  <davidcapello@gmail.com>
 
 	* macros.c: Fixed a bug when define macros inside functions.
 
-2003-06-27  David A. Capello  <dacap@users.sourceforge.net>
+2003-06-27  David Capello  <davidcapello@gmail.com>
 
 	* COPYING: Added.
 
 	* htmlex.c (usage): Added some "\n\" (by Andreas Kraft).
 	(log_printf): Renamed PRINTF (Andreas Kraft idea).
 
-2003-05-14  David A. Capello  <dacap@users.sourceforge.net>
+2003-05-14  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (usage): Fixed a stupid and incorrect comment about the
 	"-a" parameter.
 
-2003-05-13  David A. Capello  <dacap@users.sourceforge.net>
+2003-05-13  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (own_strtok): Fixed for nestle usage.
 
 	* macros.c (get_macro): Added.
 	(modify_macro): Optimized (doesn't make search anymore).
 
-2003-03-03  David A. Capello  <dacap@users.sourceforge.net>
+2003-03-03  David Capello  <davidcapello@gmail.com>
 
 	* htmlex 0.4.2 released.
 
 	* make/: Added a sample site to use htmlex with Makefile, also,
 	added make.exe in DOS distribution (Andrew Vovk ideas).
 
-2003-03-02  David A. Capello  <dacap@users.sourceforge.net>
+2003-03-02  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (main): Added "-E" option to change the default .html
 	extension (Andrew Vovk idea).
@@ -37,17 +41,17 @@
 	english comments. Also, I removed old comments about Perl version
 	of htmlex.
 
-2003-02-23  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-23  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (main): Reestructured arguments processing. Now is not
 	necessary use "-o" y "-a" before "-c" (Andrew Vovk idea).
 
-2003-02-21  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-21  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (process_file): Fixed some strange behavior of
 	functional macros.
 
-2003-02-17  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-17  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c (main): Fixed dependencies generation.
 
@@ -58,17 +62,17 @@
 	Michail for report that comments are necessary in some cases like
 	javascripts).
 
-2003-02-16  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-16  David Capello  <davidcapello@gmail.com>
 
 	* htmlex.c: Added "can_dep" to make less dependencies.
 
-2003-02-10  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-10  David Capello  <davidcapello@gmail.com>
 
 	* htmlex-filter.pl: Added this script to optimize htmlex output.
 
 	* htmlex.c, macros.c: Functional macros works perfectly.
 
-2003-02-09  David A. Capello  <dacap@users.sourceforge.net>
+2003-02-09  David Capello  <davidcapello@gmail.com>
 
 	* macros.c: Rewritten with a better API. Support for functional
 	macros, now you can make customized tags (like C/C++ macros).
@@ -77,7 +81,7 @@
 	(<!macro a "my \"macro\"">).
 	(main): Fixed a little bug of illegal access to arguments.
 
-2002-12-16  David A. Capello  <dacap@users.sourceforge.net>
+2002-12-16  David Capello  <davidcapello@gmail.com>
 
 	* Fixed the behavior to use arguments like:
 	  htmlex -a hello -- file.htex bye
@@ -85,7 +89,7 @@
 	  <!arg1> = hello
 	  <!arg2> = bye
 
-2002-10-13  David A. Capello  <dacap@users.sourceforge.net>
+2002-10-13  David Capello  <davidcapello@gmail.com>
 
 	* Fixed the general <!if> behavior: now, the tags
 	  in a false-if-block, aren't processing.
@@ -95,7 +99,7 @@
 	  believe how the program doesn't crash all the other times.
 	* Added -V and changed -v for two new verbose modes.
 
-2002-03-15  David A. Capello  <dacap@users.sourceforge.net>
+2002-03-15  David Capello  <davidcapello@gmail.com>
 
 	* Fixed the `readme.txt' (to more understandable English): Thanks a
 	  lot to Robert J Ohannessian for this.
@@ -104,33 +108,33 @@
 	  Mingw without problems). Also, he makes some aesthetics changes
 	  to the <!file-size> tag.
 
-2002-01-03  David A. Capello  <dacap@users.sourceforge.net>
+2002-01-03  David Capello  <davidcapello@gmail.com>
 
 	* I write the rest of the readme.txt file.
 	* Eliminated a `warning' of gcc-3.0 in usage():
 	  "multi-line string literals are deprecated".
 
-2002-01-02  David A. Capello  <dacap@users.sourceforge.net>
+2002-01-02  David Capello  <davidcapello@gmail.com>
 
 	* Fixed a stupid bug in sseek(): changed the `return 0' to `break's
 	  (thanks to Jorge Ramírez Flores).
 
-2001-12-04  David A. Capello  <dacap@users.sourceforge.net>
+2001-12-04  David Capello  <davidcapello@gmail.com>
 
 	* Fixed some bugs with <!file-size> tag:
 	  The buffer for the format was very-small.
 
-2001-12-03  David A. Capello  <dacap@users.sourceforge.net>
+2001-12-03  David Capello  <davidcapello@gmail.com>
 
 	* New tag <!dep file>.
 
-2001-11-03  David A. Capello  <dacap@users.sourceforge.net>
+2001-11-03  David Capello  <davidcapello@gmail.com>
 
 	* Added sort_macros: Now the macros with more long names
 	  are in the beginning of `macros[]'.
 	* Already the comments are skip.
 
-2001-11-01  David A. Capello  <dacap@users.sourceforge.net>
+2001-11-01  David Capello  <davidcapello@gmail.com>
 
 	* All Perl code was removed.
 	* Ready, in 5 days I make a program much better that I made in two

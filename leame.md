@@ -1,5 +1,5 @@
 htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
-Copyright (C) 2001, 2002, 2003 por David A. Capello
+Copyright (C) 2001, 2002, 2003 por David Capello
 
 LICENCIA
 ========
@@ -380,8 +380,8 @@ ACTUALIZACIONES
 AUTOR
 =====
 
-  David A. Capello <dacap@users.sourceforge.net>
+  David Capello <davidcapello@gmail.com>
 
   Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
-  será bien recibida. Puede visitar http://www.davidcapello.com.ar para
+  será bien recibida. Puede visitar http://dacap.com.ar/ para
   mayor información.

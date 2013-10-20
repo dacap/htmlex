@@ -1,6 +1,6 @@
 #! /usr/bin/env perl
 # htmlex-filter.pl
-# Copyright (C) 2003 by David A. Capello
+# Copyright (C) 2003 by David Capello
 #
 # Usage:
 #   htmlex file.htex | htmlex-filter.pl > file.html
