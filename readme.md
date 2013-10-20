@@ -1,25 +1,7 @@
-htmlex - a powerful hypertext markup language preprocessor (HTML)
-Copyright (C) 2001, 2002, 2003 by David Capello
+# htmlex - a powerful hypertext markup language preprocessor (HTML)
+> Copyright (C) 2001, 2002, 2003 by David Capello
 
-LICENSE
-=======
-
-  htmlex is free software; you can redistribute it and/or modify it under the
-  terms of the GNU General Public License as published by the Free Software
-  Foundation; either version 2 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
-
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-  Place, Suite 330, Boston, MA  02111-1307  USA
-
-INTRODUCTION
-============
+## Introduction
 
   htmlex is a small but powerful HTML preprocesor, which has numerous
   advantages compared to conventional HTML files. On top of that, htmlex
@@ -27,8 +9,9 @@ INTRODUCTION
   can use any HTML file that you have previously made, rename it to .htex,
   and start using htmlex.
 
-OPTIONS
-=======
+  This software is distributed under the [MIT license](license.txt).
+
+## Options
 
   htmlex interprets the following options from the command line:
 
@@ -45,11 +28,10 @@ OPTIONS
     -h   displays help screen and exit
     --   breaks -coaI arguments
 
-EXECUTION
-=========
+## Execution
 
   References
-  ----------
+  -----------
 
   STDIN      Standard input: from the keyboard or from file.
 
@@ -105,8 +87,7 @@ EXECUTION
   * The argument order isn't necessary anymore, so you can do:
     ./htmlex -c src.htex -o dst.html -I dir
 
-FEATURES
-========
+## Features
 
   Reference
   ---------
@@ -350,34 +331,21 @@ FEATURES
     Example:
       This page was created with htmlex <!version>.
 
-IMPORTANT NOTES
-===============
+# Important Notes
 
-  <!macro X> deletes the X macro, so if you use <!if X>
-  that expression will give you true (because the string "X"
-  will be used, and not the value of X).
+`<!macro X>` deletes the X macro, so if you use `<!if X>`
+that expression will give you true (because the string "X"
+will be used, and not the value of X).
 
-  <!macro X ""> assigns a null value to the X macro, this is
-  necessary for a false result in <!if X> (because in this case,
-  the X is replaced by its value).
+`<!macro X "">` assigns a null value to the X macro, this is
+necessary for a false result in `<!if X>` (because in this case,
+the X is replaced by its value).
 
-BUGS
-====
+## Author
 
-  Report bugs to <dacap@users.sourceforge.net>.
+David Capello <davidcapello@gmail.com>
 
-UPDATES
-=======
+Any suggestion, thank-you letters, or (preferably) donations ;-),
+will be most welcomed.
 
-  To obtain the latest information about htmlex, go to:
-
-    http://htmlex.sourceforge.net
-
-AUTHOR
-======
-
-  David Capello <davidcapello@gmail.com>
-
-  Any suggestion, thank-you letters, or (preferably) donations ;-),
-  will be most welcomed.
-  You can visit http://dacap.com.ar for more information.
+You can visit http://dacap.com.ar for more information.

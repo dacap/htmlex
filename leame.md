@@ -1,26 +1,7 @@
-htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
-Copyright (C) 2001, 2002, 2003 por David Capello
+# htmlex - un poderoso preprocesador del lenguaje de marcado de hipertexto (HTML)
+> Copyright (C) 2001, 2002, 2003 por David Capello
 
-LICENCIA
-========
-
-  htmlex es software libre; usted puede redistribuirlo y/o modificarlo bajo los
-  términos de la Licencia Pública General GNU (o GNU General Public License)
-  publicada por la Fundación de Software Libre (Free Software Foundation);
-  cualquier versión 2 de la Licencia, o (a su elección) alguna versión más
-  antigua.
-
-  Este programa es distribuido con la esperanza de que sea útil, pero SIN
-  GARANTÍA ALGUNA; sin incluso la garantía implícita de COMERCIALIZACIÓN o
-  IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la GNU General Public License
-  para más detalles.
-
-  Usted debe de haber recibido una copia de la GNU General Public License junto
-  con este programa; si no, escriba a la Free Software Foundation, Inc., 59
-  Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-INTRODUCCIÓN
-============
+# Introducción
 
   htmlex es un pequeño pero poderoso preprocesador de ficheros HTML, con el
   cual podrá tener varias ventajas con respecto al formato convencional de
@@ -28,13 +9,14 @@ INTRODUCCIÓN
   sintaxis HTML estandard, significa que cualquier archivo que ya haya creado
   en HTML puro, lo podrá renombrar tranquilamente a .htex.
 
-OPCIONES
-========
+  Este software se distribuye bajo la [licencia MIT](license.txt).
+
+## Opciones
 
   htmlex interpreta las siguientes opciones en la línea de comandos:
 
     -c   compila todos los próximos ficheros (obtiene un archivo de salida
-	 desde "-o" o genera un nombre con extension .html, mire -E)
+         desde "-o" o genera un nombre con extension .html, mire -E)
     -o   agrega ficheros de salida
     -a   agrega argumentos a los archivos de entrada
     -I   agrega rutas de inclusión para búscar ficheros
@@ -48,8 +30,7 @@ OPCIONES
     -h   muestra esta ayuda (en inglés) y sale
     --   frena los argumentos -coaI
 
-EJECUCIÓN
-=========
+## Ejecución
 
   Referencias
   -----------
@@ -109,8 +90,7 @@ EJECUCIÓN
     puede hacer cosas como:
     ./htmlex -c orig.htex -o dest.html -I dir
 
-CARACTERÍSTICAS
-===============
+## Características
 
   Referencias
   -----------
@@ -354,34 +334,20 @@ CARACTERÍSTICAS
     Ejemplo:
       Está página fue creada con htmlex <!version>.
 
-NOTAS IMPORTANTES
-=================
+## Notas Importantes
 
-  <!macro X> borra la macro X, por lo que si utiliza <!if X>
-  la expresión dá verdadero (ya que se utiliza la cadena "X"
-  y no el valor de X).
+`<!macro X>` borra la macro X, por lo que si utiliza `<!if X>`
+la expresión dá verdadero (ya que se utiliza la cadena "X"
+y no el valor de X).
 
-  <!macro $X ""> le asigna a la macro X un valor nulo, esto es
-  necesario para que <!if X> dé falso (ya que en este caso, X
-  sí es reemplazado por su valor).
+`<!macro $X "">` le asigna a la macro X un valor nulo, esto es
+necesario para que `<!if X>` dé falso (ya que en este caso, X
+sí es reemplazado por su valor).
 
-FALLOS
-======
+## Autor
 
-  Comunicar `bugs' y errores a <dacap@users.sourceforge.net>.
+David Capello <davidcapello@gmail.com>
 
-ACTUALIZACIONES
-===============
-
-  Para obtener la última información sobre htmlex, puede dirigirse a:
-
-    http://htmlex.sourceforge.net
-
-AUTOR
-=====
-
-  David Capello <davidcapello@gmail.com>
-
-  Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
-  será bien recibida. Puede visitar http://dacap.com.ar/ para
-  mayor información.
+Cualquier sugerencia, agradeciemiento, y, con preferencia, donación ;-),
+será bien recibida. Puede visitar http://dacap.com.ar/ para mayor
+información.
