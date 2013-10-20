@@ -183,19 +183,19 @@ Examples:
 
     <!elif expression>
 
-See `<!if>`.
+See [if](#if).
 
 #### else
 
     <!else>
 
-See `<!if>`.
+See [if](#if).
 
 #### end
 
     <!end>
 
-See `<!function>`.
+See [function](#function).
 
 #### exec
 
@@ -227,7 +227,7 @@ Examples:
 
     <!fi>
 
-See `<!if>`.
+See [if](#if).
 
 #### file-size
 
@@ -410,7 +410,7 @@ Examples:
 
     <!tolower word [ beginning [ final ] ]>
 
-See `<!toupper>`.
+See [toupper](#toupper).
 
 #### toupper
 
