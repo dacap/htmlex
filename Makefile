@@ -2,16 +2,23 @@
 
 PACKAGE = htmlex
 
-ifdef DJDIR
-  EXE = .exe
-else
-  EXE =
-endif
-
 GCC = gcc
 
-CFLAGS = -g -W -Wall -Wno-unused
-LFLAGS = -g
+CFLAGS = -W -Wall -Wno-unused-parameter
+LFLAGS =
+
+ifdef DEBUG
+CFLAGS += -s
+LFLAGS += -s
+else
+CFLAGS += -g
+LFLAGS += -g
+endif
+
+ifeq ($(OS),Windows_NT)
+LFLAGS += -mconsole
+EXE = .exe
+endif
 
 FILES = htmlex macros stream tags
 
