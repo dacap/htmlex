@@ -61,18 +61,26 @@ Process the `files` and leave the results in the `destinations`.
 
 ### Common mistakes
 
+#### File to compile
+
     ./htmlex -I examples file.htex > file.html
+
 Here the program waits for input from `STDIN`, because `file.htex`
 counts as another path for `-I`.
 Possible solutions:
+
     ./htmlex -I examples -- file.htex > file.html
     ./htmlex -I examples -c file.htex
     ./htmlex file.htex -I examples > file.html
 
+#### Arguments for the input file
+
     ./htmlex -c index.htex en English
+
 Here, htmlex will try to compile the files `index.htex`, `en` and
 `English`, instead of passing the arguments to `index.htex`.
 Possible solutions:
+
     ./htmlex -c index.htex -a en English
     ./htmlex index.htex en English > index.html
 
@@ -81,7 +89,7 @@ Possible solutions:
 * Now you can use `-I` instead of `-i` (like gcc).
 * The argument order isn't necessary anymore, so you can do:
 
-      ./htmlex -c src.htex -o dst.html -I dir
+        ./htmlex -c src.htex -o dst.html -I dir
 
 ## Features
 
