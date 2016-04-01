@@ -9,13 +9,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include "htmlex.h"
 #include "macros.h"
 #include "stream.h"
 #include "tags.h"
+
+#ifndef _WIN32
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#endif
 
 static char *tag_basename (int argc, char *argv[])
 {
@@ -108,6 +111,8 @@ static char *tag_dir (int argc, char *argv[])
     return NULL;
 }
 
+#ifndef _WIN32
+
 /* executes an extern command and redirects the stdout */
 static char *tag_exec (int argc, char *argv[])
 {
@@ -186,6 +191,8 @@ static char *tag_exec_proc (int argc, char *argv[])
   /* nothing to add */
   return NULL;
 }
+
+#endif
 
 /* returns in a human-readable format the file size */
 static char *tag_file_size (int argc, char *argv[])
@@ -730,8 +737,10 @@ static TAG all_tags[] = {
   {"clean", tag_clean, FALSE},
   {"dep", tag_dep, FALSE},
   {"dir", tag_dir, FALSE},
+#ifndef _WIN32
   {"exec", tag_exec, FALSE},
   {"exec-proc", tag_exec_proc, FALSE},
+#endif
   {"file-size", tag_file_size, FALSE},
   {"find", tag_find, FALSE},
   {"include", tag_include, FALSE},
