@@ -2,6 +2,9 @@
 # htmlex-filter.pl
 # Copyright (C) 2003 by David Capello
 #
+# This file is released under the terms of the MIT license.
+# Read LICENSE.txt for more information.
+#
 # Usage:
 #   htmlex file.htex | htmlex-filter.pl > file.html
 #

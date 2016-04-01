@@ -1,6 +1,8 @@
 /* htmlex - a powerful hypertext markup language preprocessor
  * Copyright (C) 2001, 2002, 2003 by David Capello
  *
+ * This file is released under the terms of the MIT license.
+ * Read LICENSE.txt for more information.
  */
 
 #ifndef __TAGS_H__
