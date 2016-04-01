@@ -318,7 +318,7 @@ The `expression` to be evaluated can have any of the formats below:
     number1 != number2   number1 is different than number2
     word1 == word2       word1 is identical than word2
     word1 != word2       word1 differs in just one character than word2
-      
+
 If the expression format cannot be resolved to the table above, then
 false is returned.
 
@@ -471,4 +471,4 @@ David Capello <davidcapello@gmail.com>
 Any suggestion, thank-you letters, or (preferably) donations ;-),
 will be most welcomed.
 
-You can visit http://dacap.com.ar/donate/ for more information.
+You can visit http://davidcapello.com/donate/ for more information.
